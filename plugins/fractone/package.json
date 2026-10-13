@@ -1,0 +1,34 @@
+{
+  "name": "fractone",
+  "version": "0.13.0",
+  "description": "Fractone: unofficial tools for Fractal Audio's FM9 (Axe-Fx III and FM3 planned). Not affiliated with Fractal Audio Systems.",
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "pi-package",
+    "fractal",
+    "fm9",
+    "axe-fx",
+    "fm3",
+    "guitar",
+    "mcp"
+  ],
+  "files": [
+    "extensions",
+    "skills",
+    ".claude-plugin",
+    ".mcp.json",
+    "README.md"
+  ],
+  "pi": {
+    "extensions": [
+      "./extensions/fractone.ts"
+    ],
+    "skills": [
+      "./skills"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*"
+  }
+}

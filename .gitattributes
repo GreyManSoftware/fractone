@@ -1,0 +1,11 @@
+# Store and check out text as LF on every platform (matches .editorconfig and the Linux Docker builds).
+* text=auto eol=lf
+
+*.syx binary
+*.wav binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.db binary
+*.dll binary
+*.exe binary

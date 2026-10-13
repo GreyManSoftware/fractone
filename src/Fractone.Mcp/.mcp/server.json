@@ -1,0 +1,22 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.greymansoftware/fractone",
+  "title": "Fractone",
+  "description": "Unofficial tools for Fractal Audio's FM9 (Axe-Fx III and FM3 planned): presets, live control, favourites, search, tone design and tone matching. Not affiliated with Fractal Audio Systems.",
+  "version": "0.13.0",
+  "repository": {
+    "url": "https://github.com/GreyManSoftware/fractone",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "nuget",
+      "registryBaseUrl": "https://api.nuget.org",
+      "identifier": "Fractone",
+      "version": "0.13.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

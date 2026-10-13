@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The FM9 itself: preset format, FM9-Edit dictionary and catalogues, MIDI transport and the verified store path.
+       A plain library so the MCP bridge and FracAI's Companion tooling share one copy. The namespaces and resource
+       names keep their Companion origin for now, so this move changes no behaviour. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Fractal.Companion</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NAudio.Midi" Version="2.2.1" />
+    <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
+    <PackageReference Include="NAudio.Asio" Version="2.2.1" />
+    <PackageReference Include="NVorbis" Version="0.10.5" />
+    <PackageReference Include="Concentus" Version="2.2.2" />
+    <PackageReference Include="Concentus.Oggfile" Version="1.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fractal.Application\Fractal.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="fractone-mcp" />
+    <InternalsVisibleTo Include="Fractone.Mcp.Tests" />
+    <InternalsVisibleTo Include="Fractal.Fm9.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Catalog\*.json" />
+    <EmbeddedResource Include="Separation\separate.py" LogicalName="Fractal.Fm9.Separation.separate.py" />
+    <EmbeddedResource Include="Capture\capture.js" LogicalName="Fractal.Fm9.Capture.capture.js" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    # Nothing private may reach this repository: secrets (gitleaks, whole history) and personal or deployment details
+    # plus Fractal's own dictionary file (scripts/check-public.ps1).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Public check
+        shell: pwsh
+        run: ./scripts/check-public.ps1
+
+  test:
+    # The server reaches the FM9 through Windows MIDI, so it is built and tested on Windows. Tests that need FM9-Edit's
+    # dictionary are skipped here (it is never redistributed); run the full suite on a machine with FM9-Edit before a release.
+    runs-on: windows-latest
+    needs: scan
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Build
+        run: dotnet build Fractone.slnx --configuration Release
+      - name: Test
+        run: dotnet test Fractone.slnx --configuration Release --no-build
+      - name: Pack
+        run: dotnet pack src/Fractone.Mcp/Fractone.Mcp.csproj --configuration Release --no-build --output artifacts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nuget
+          path: artifacts/*.nupkg

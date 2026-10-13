@@ -1,0 +1,3445 @@
+{
+  "schemaVersion": 1,
+  "firmwareVersion": "12",
+  "source": "Hardware-isolated discrete parameter probes",
+  "families": [
+    {
+      "blockType": "Input",
+      "instance": 1,
+      "effectId": 37,
+      "plannedMappings": 3,
+      "acceptedMappings": 3,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "INPUT_Z",
+          "parameterId": 4,
+          "enumerationCount": 13,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "INPUT_TYPE",
+          "parameterId": 7,
+          "enumerationCount": 3,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "INPUT_MODE",
+          "parameterId": 9,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Output",
+      "instance": 1,
+      "effectId": 42,
+      "plannedMappings": 0,
+      "acceptedMappings": 0,
+      "rejectedMappings": 0,
+      "mappings": []
+    },
+    {
+      "blockType": "Compressor",
+      "instance": 1,
+      "effectId": 46,
+      "plannedMappings": 10,
+      "acceptedMappings": 10,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "COMP_KNEE",
+          "parameterId": 5,
+          "enumerationCount": 5,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "COMP_AUTO",
+          "parameterId": 6,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "COMP_PEAKRMS",
+          "parameterId": 7,
+          "enumerationCount": 4,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "COMP_SIDECHAIN",
+          "parameterId": 10,
+          "enumerationCount": 12,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "COMP_TYPE",
+          "parameterId": 12,
+          "enumerationCount": 19,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "COMP_BYPASSMODE",
+          "parameterId": 14,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "COMP_AUTOMODE",
+          "parameterId": 16,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "COMP_INPUTSWITCH",
+          "parameterId": 19,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "COMP_EQTYPE",
+          "parameterId": 26,
+          "enumerationCount": 12,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "COMP_SCENEIGNORE",
+          "parameterId": 34,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Graphic EQ",
+      "instance": 1,
+      "effectId": 50,
+      "plannedMappings": 3,
+      "acceptedMappings": 3,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "GEQ_BYPASSMODE",
+          "parameterId": 13,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "GEQ_TYPE",
+          "parameterId": 15,
+          "enumerationCount": 18,
+          "baselineWireValue": 4,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "GEQ_SCENEIGNORE",
+          "parameterId": 19,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Parametric EQ",
+      "instance": 1,
+      "effectId": 54,
+      "plannedMappings": 14,
+      "acceptedMappings": 14,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "PEQ_TYPE1",
+          "parameterId": 15,
+          "enumerationCount": 5,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PEQ_TYPE2",
+          "parameterId": 16,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PEQ_TYPE3",
+          "parameterId": 17,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PEQ_TYPE4",
+          "parameterId": 18,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PEQ_TYPE5",
+          "parameterId": 19,
+          "enumerationCount": 5,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PEQ_BYPASSMODE",
+          "parameterId": 22,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PEQ_SOLO1",
+          "parameterId": 25,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PEQ_SOLO2",
+          "parameterId": 26,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PEQ_SOLO3",
+          "parameterId": 27,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PEQ_SOLO4",
+          "parameterId": 28,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PEQ_SOLO5",
+          "parameterId": 29,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PEQ_LOWSLOPE",
+          "parameterId": 30,
+          "enumerationCount": 6,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PEQ_HIGHSLOPE",
+          "parameterId": 31,
+          "enumerationCount": 6,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PEQ_SCENEIGNORE",
+          "parameterId": 32,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Amp",
+      "instance": 1,
+      "effectId": 58,
+      "plannedMappings": 32,
+      "acceptedMappings": 32,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "DISTORT_BYPASSMODE",
+          "parameterId": 3,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_SCENEIGNORE",
+          "parameterId": 6,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_TYPE",
+          "parameterId": 10,
+          "enumerationCount": 336,
+          "baselineWireValue": 314,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_TONELOC",
+          "parameterId": 24,
+          "enumerationCount": 5,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_INPUTSELECT",
+          "parameterId": 25,
+          "enumerationCount": 3,
+          "baselineWireValue": 2,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_CLIPTYPE2",
+          "parameterId": 28,
+          "enumerationCount": 13,
+          "baselineWireValue": 10,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_TONETYPE",
+          "parameterId": 40,
+          "enumerationCount": 138,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_BRIGHT",
+          "parameterId": 45,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_BOOST",
+          "parameterId": 46,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_CUT",
+          "parameterId": 51,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_MVPOSITION",
+          "parameterId": 55,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_SATSWITCH",
+          "parameterId": 60,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_TUBETYPE",
+          "parameterId": 74,
+          "enumerationCount": 26,
+          "baselineWireValue": 2,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_PRETUBETYPE",
+          "parameterId": 75,
+          "enumerationCount": 9,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_FAT",
+          "parameterId": 84,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_SUPPLYTYPE",
+          "parameterId": 92,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_EQTYPE",
+          "parameterId": 98,
+          "enumerationCount": 11,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_PRESAG",
+          "parameterId": 102,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_INEQTYPE",
+          "parameterId": 108,
+          "enumerationCount": 4,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_PRESSHIFT",
+          "parameterId": 110,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_COMPTYPE",
+          "parameterId": 115,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_EQPOSITION",
+          "parameterId": 116,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_PRECOMPTYPE",
+          "parameterId": 117,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_BOOSTTYPE",
+          "parameterId": 129,
+          "enumerationCount": 15,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_OUTPUTTYPE",
+          "parameterId": 130,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_EQONOFF",
+          "parameterId": 132,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_SPKRMODEL",
+          "parameterId": 134,
+          "enumerationCount": 93,
+          "baselineWireValue": 38,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_PAONOFF",
+          "parameterId": 140,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_SPKRBREAKUP",
+          "parameterId": 141,
+          "enumerationCount": 3,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_PLATEDIODE",
+          "parameterId": 143,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_AUTO_SPKR_Z",
+          "parameterId": 145,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DISTORT_NFBCOMP",
+          "parameterId": 146,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Cab",
+      "instance": 1,
+      "effectId": 62,
+      "plannedMappings": 17,
+      "acceptedMappings": 17,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "CABINET_BANK1",
+          "parameterId": 0,
+          "enumerationCount": 5,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_BANK2",
+          "parameterId": 1,
+          "enumerationCount": 5,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_BYPASSMODE",
+          "parameterId": 30,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_INPUTSEL",
+          "parameterId": 42,
+          "enumerationCount": 4,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_PRETYPE",
+          "parameterId": 43,
+          "enumerationCount": 12,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_OVERSAMPLE",
+          "parameterId": 47,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_ROOMSHAPE",
+          "parameterId": 56,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_LENGTH1",
+          "parameterId": 70,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_LENGTH2",
+          "parameterId": 71,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_LOSLOPE1",
+          "parameterId": 74,
+          "enumerationCount": 4,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_LOSLOPE2",
+          "parameterId": 75,
+          "enumerationCount": 4,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_HISLOPE1",
+          "parameterId": 78,
+          "enumerationCount": 4,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_HISLOPE2",
+          "parameterId": 79,
+          "enumerationCount": 4,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_PRELOSLOPE",
+          "parameterId": 82,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_PREHISLOPE",
+          "parameterId": 83,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_SCENEIGNORE",
+          "parameterId": 84,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CABINET_AUTO_ALIGN",
+          "parameterId": 105,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Formant",
+      "instance": 1,
+      "effectId": 98,
+      "plannedMappings": 5,
+      "acceptedMappings": 5,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "FORMANT_F1",
+          "parameterId": 0,
+          "enumerationCount": 10,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FORMANT_F2",
+          "parameterId": 1,
+          "enumerationCount": 10,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FORMANT_F3",
+          "parameterId": 2,
+          "enumerationCount": 10,
+          "baselineWireValue": 2,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FORMANT_BYPASSMODE",
+          "parameterId": 9,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FORMANT_SCENEIGNORE",
+          "parameterId": 11,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Volume/Pan",
+      "instance": 1,
+      "effectId": 102,
+      "plannedMappings": 3,
+      "acceptedMappings": 3,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "VOLUME_TAPER",
+          "parameterId": 2,
+          "enumerationCount": 7,
+          "baselineWireValue": 2,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "VOLUME_BYPASSMODE",
+          "parameterId": 7,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "VOLUME_INPUTSELECT",
+          "parameterId": 8,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Multitap Delay",
+      "instance": 1,
+      "effectId": 74,
+      "plannedMappings": 19,
+      "acceptedMappings": 19,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "MULTITAP_BASETYPE",
+          "parameterId": 0,
+          "enumerationCount": 6,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_TEMPO1",
+          "parameterId": 5,
+          "enumerationCount": 79,
+          "baselineWireValue": 14,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_TEMPO2",
+          "parameterId": 6,
+          "enumerationCount": 79,
+          "baselineWireValue": 11,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_TEMPO3",
+          "parameterId": 7,
+          "enumerationCount": 79,
+          "baselineWireValue": 12,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_TEMPO4",
+          "parameterId": 8,
+          "enumerationCount": 79,
+          "baselineWireValue": 15,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_LFOTYPE1",
+          "parameterId": 25,
+          "enumerationCount": 10,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_LFOTYPE2",
+          "parameterId": 26,
+          "enumerationCount": 10,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_LFOTEMPO1",
+          "parameterId": 27,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_LFOTEMPO2",
+          "parameterId": 28,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_BYPASSMODE",
+          "parameterId": 34,
+          "enumerationCount": 5,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_FLTTYPE",
+          "parameterId": 68,
+          "enumerationCount": 10,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_FLTTEMPO",
+          "parameterId": 69,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_COMBTYPE",
+          "parameterId": 76,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_INPUTSELECT",
+          "parameterId": 103,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_FILTER_TYPE",
+          "parameterId": 106,
+          "enumerationCount": 9,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_LOWSLOPE",
+          "parameterId": 110,
+          "enumerationCount": 6,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_HIGHSLOPE",
+          "parameterId": 111,
+          "enumerationCount": 6,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_SCENEIGNORE",
+          "parameterId": 115,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTITAP_KILLDRY",
+          "parameterId": 120,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Chorus",
+      "instance": 1,
+      "effectId": 78,
+      "plannedMappings": 9,
+      "acceptedMappings": 9,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "CHORUS_TYPE",
+          "parameterId": 0,
+          "enumerationCount": 27,
+          "baselineWireValue": 3,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CHORUS_TEMPO",
+          "parameterId": 3,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CHORUS_LFOTYPE",
+          "parameterId": 8,
+          "enumerationCount": 10,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CHORUS_AUTO",
+          "parameterId": 9,
+          "enumerationCount": 3,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CHORUS_BYPASSMODE",
+          "parameterId": 13,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CHORUS_PHASEREV",
+          "parameterId": 16,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CHORUS_MODE",
+          "parameterId": 23,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CHORUS_TEMPO2",
+          "parameterId": 27,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CHORUS_SCENEIGNORE",
+          "parameterId": 28,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Flanger",
+      "instance": 1,
+      "effectId": 82,
+      "plannedMappings": 12,
+      "acceptedMappings": 12,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "FLANGER_TYPE",
+          "parameterId": 0,
+          "enumerationCount": 31,
+          "baselineWireValue": 3,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FLANGER_TEMPO",
+          "parameterId": 2,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FLANGER_LFOTYPE",
+          "parameterId": 8,
+          "enumerationCount": 10,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FLANGER_AUTO",
+          "parameterId": 10,
+          "enumerationCount": 4,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FLANGER_BYPASSMODE",
+          "parameterId": 14,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FLANGER_PHASEREV",
+          "parameterId": 17,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FLANGER_THRUZERO",
+          "parameterId": 18,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FLANGER_LFORESET",
+          "parameterId": 23,
+          "enumerationCount": 5,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FLANGER_LPF_ORDER",
+          "parameterId": 24,
+          "enumerationCount": 6,
+          "baselineWireValue": 3,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FLANGER_HPF_ORDER",
+          "parameterId": 25,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FLANGER_VCO_CURVE",
+          "parameterId": 27,
+          "enumerationCount": 3,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FLANGER_SCENEIGNORE",
+          "parameterId": 32,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Rotary",
+      "instance": 1,
+      "effectId": 86,
+      "plannedMappings": 4,
+      "acceptedMappings": 4,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "ROTARY_TEMPO",
+          "parameterId": 4,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "ROTARY_BYPASSMODE",
+          "parameterId": 8,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "ROTARY_INPUTSELECT",
+          "parameterId": 19,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "ROTARY_SCENEIGNORE",
+          "parameterId": 20,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Phaser",
+      "instance": 1,
+      "effectId": 90,
+      "plannedMappings": 7,
+      "acceptedMappings": 7,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "PHASER_TYPE",
+          "parameterId": 0,
+          "enumerationCount": 17,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PHASER_LFOTYPE",
+          "parameterId": 3,
+          "enumerationCount": 10,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PHASER_TEMPO",
+          "parameterId": 4,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PHASER_BYPASSMODE",
+          "parameterId": 14,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PHASER_LFORESET",
+          "parameterId": 22,
+          "enumerationCount": 5,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PHASER_SCENEIGNORE",
+          "parameterId": 31,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PHASER_LFOMODE",
+          "parameterId": 34,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Wah",
+      "instance": 1,
+      "effectId": 94,
+      "plannedMappings": 5,
+      "acceptedMappings": 5,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "WAH_TYPE",
+          "parameterId": 0,
+          "enumerationCount": 9,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "WAH_BYPASSMODE",
+          "parameterId": 8,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "WAH_TAPER",
+          "parameterId": 11,
+          "enumerationCount": 6,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "WAH_EQON",
+          "parameterId": 15,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "WAH_SCENEIGNORE",
+          "parameterId": 24,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Reverb",
+      "instance": 1,
+      "effectId": 66,
+      "plannedMappings": 11,
+      "acceptedMappings": 11,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "REVERB_BYPASSMODE",
+          "parameterId": 3,
+          "enumerationCount": 5,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "REVERB_SCENEIGNORE",
+          "parameterId": 6,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "REVERB_TYPE",
+          "parameterId": 10,
+          "enumerationCount": 79,
+          "baselineWireValue": 5,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "REVERB_QUALITY",
+          "parameterId": 47,
+          "enumerationCount": 4,
+          "baselineWireValue": 3,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "REVERB_HOLD",
+          "parameterId": 48,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "REVERB_INPUTSELECT",
+          "parameterId": 51,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "REVERB_LOWSLOPE",
+          "parameterId": 53,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "REVERB_HIGHSLOPE",
+          "parameterId": 54,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "REVERB_PREDLYTEMPO",
+          "parameterId": 64,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "REVERB_SPRINGTYPE",
+          "parameterId": 68,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "REVERB_PREDLYTAP",
+          "parameterId": 70,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Delay",
+      "instance": 1,
+      "effectId": 70,
+      "plannedMappings": 25,
+      "acceptedMappings": 25,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "DELAY_BYPASSMODE",
+          "parameterId": 3,
+          "enumerationCount": 5,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_SCENEIGNORE",
+          "parameterId": 6,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_TYPE",
+          "parameterId": 11,
+          "enumerationCount": 8,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_TEMPO",
+          "parameterId": 19,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_LFO1TYPE",
+          "parameterId": 28,
+          "enumerationCount": 10,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_LFO2TYPE",
+          "parameterId": 29,
+          "enumerationCount": 10,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_HOLD",
+          "parameterId": 31,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_TEMPOR",
+          "parameterId": 33,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_RUN",
+          "parameterId": 43,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_MODE",
+          "parameterId": 44,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_LPF_ORDER",
+          "parameterId": 45,
+          "enumerationCount": 5,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_PHASEREV",
+          "parameterId": 51,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_LFO1TARGET",
+          "parameterId": 52,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_LFO2TARGET",
+          "parameterId": 53,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_LFO1TEMPO",
+          "parameterId": 54,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_LFO2TEMPO",
+          "parameterId": 55,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_LFO3TYPE",
+          "parameterId": 57,
+          "enumerationCount": 10,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_LFO3TEMPO",
+          "parameterId": 59,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_MAXDEPTH",
+          "parameterId": 71,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_HPF_ORDER",
+          "parameterId": 74,
+          "enumerationCount": 5,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_COMPANDER",
+          "parameterId": 75,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_LFO4TYPE",
+          "parameterId": 81,
+          "enumerationCount": 10,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_LFO4TEMPO",
+          "parameterId": 83,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_LFO4TARGET",
+          "parameterId": 86,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "DELAY_SVFTYPE",
+          "parameterId": 89,
+          "enumerationCount": 3,
+          "baselineWireValue": 2,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Pan/Tremolo",
+      "instance": 1,
+      "effectId": 106,
+      "plannedMappings": 6,
+      "acceptedMappings": 6,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "TREMOLO_TYPE",
+          "parameterId": 0,
+          "enumerationCount": 7,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "TREMOLO_LFOTYPE",
+          "parameterId": 1,
+          "enumerationCount": 10,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "TREMOLO_TEMPO",
+          "parameterId": 5,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "TREMOLO_BYPASSMODE",
+          "parameterId": 9,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "TREMOLO_ORDER",
+          "parameterId": 16,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "TREMOLO_SCENEIGNORE",
+          "parameterId": 19,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Ring Modulator",
+      "instance": 1,
+      "effectId": 150,
+      "plannedMappings": 4,
+      "acceptedMappings": 4,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "RINGMOD_TRACK",
+          "parameterId": 2,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "RINGMOD_BYPASSMODE",
+          "parameterId": 7,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "RINGMOD_SCENEIGNORE",
+          "parameterId": 11,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "RINGMOD_PD_RANGE",
+          "parameterId": 12,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Filter",
+      "instance": 1,
+      "effectId": 114,
+      "plannedMappings": 10,
+      "acceptedMappings": 9,
+      "rejectedMappings": 1,
+      "mappings": [
+        {
+          "parameterName": "FILTER_TYPE",
+          "parameterId": 0,
+          "enumerationCount": 18,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FILTER_BYPASSMODE",
+          "parameterId": 6,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FILTER_PHASE",
+          "parameterId": 11,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FILTER_LFOENABLE",
+          "parameterId": 16,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FILTER_LFOTYPE",
+          "parameterId": 17,
+          "enumerationCount": 10,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FILTER_QUANTIZE",
+          "parameterId": 21,
+          "enumerationCount": 32,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 1,
+          "acceptedDiscrete": false,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FILTER_SCENEIGNORE",
+          "parameterId": 23,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FILTER_EVFTYPE",
+          "parameterId": 24,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FILTER_SOURCE",
+          "parameterId": 32,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FILTER_TEMPO",
+          "parameterId": 35,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Drive",
+      "instance": 1,
+      "effectId": 118,
+      "plannedMappings": 9,
+      "acceptedMappings": 9,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "FUZZ_BYPASSMODE",
+          "parameterId": 5,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FUZZ_CLIPTYPE",
+          "parameterId": 10,
+          "enumerationCount": 14,
+          "baselineWireValue": 6,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FUZZ_INPUTSELECT",
+          "parameterId": 17,
+          "enumerationCount": 3,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FUZZ_EQON",
+          "parameterId": 21,
+          "enumerationCount": 3,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FUZZ_PDTYPE",
+          "parameterId": 32,
+          "enumerationCount": 22,
+          "baselineWireValue": 3,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FUZZ_NDTYPE",
+          "parameterId": 34,
+          "enumerationCount": 22,
+          "baselineWireValue": 3,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FUZZ_SCENEIGNORE",
+          "parameterId": 39,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FUZZ_WICKER",
+          "parameterId": 40,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "FUZZ_TONESWITCH",
+          "parameterId": 41,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Enhancer",
+      "instance": 1,
+      "effectId": 122,
+      "plannedMappings": 3,
+      "acceptedMappings": 3,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "ENHANCER_TYPE",
+          "parameterId": 6,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "ENHANCER_PHASE",
+          "parameterId": 7,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "ENHANCER_SCENEIGNORE",
+          "parameterId": 11,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Mixer",
+      "instance": 1,
+      "effectId": 126,
+      "plannedMappings": 2,
+      "acceptedMappings": 2,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "MIXER_MODE",
+          "parameterId": 14,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MIXER_BYPASSMODE",
+          "parameterId": 15,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Synth",
+      "instance": 1,
+      "effectId": 130,
+      "plannedMappings": 9,
+      "acceptedMappings": 9,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "SYNTH_TYPE1",
+          "parameterId": 0,
+          "enumerationCount": 8,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "SYNTH_TRACK1",
+          "parameterId": 2,
+          "enumerationCount": 4,
+          "baselineWireValue": 2,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "SYNTH_TYPE2",
+          "parameterId": 11,
+          "enumerationCount": 8,
+          "baselineWireValue": 7,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "SYNTH_TRACK2",
+          "parameterId": 13,
+          "enumerationCount": 4,
+          "baselineWireValue": 2,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "SYNTH_BYPASSMODE",
+          "parameterId": 26,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "SYNTH_TYPE3",
+          "parameterId": 29,
+          "enumerationCount": 8,
+          "baselineWireValue": 7,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "SYNTH_TRACK3",
+          "parameterId": 31,
+          "enumerationCount": 4,
+          "baselineWireValue": 2,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "SYNTH_SCENEIGNORE",
+          "parameterId": 40,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "SYNTH_PD_RANGE",
+          "parameterId": 41,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Crossover",
+      "instance": 1,
+      "effectId": 142,
+      "plannedMappings": 2,
+      "acceptedMappings": 2,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "CROSSOVER_FREQRANGE",
+          "parameterId": 1,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "CROSSOVER_BYPASSMODE",
+          "parameterId": 13,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Return",
+      "instance": 1,
+      "effectId": 186,
+      "plannedMappings": 1,
+      "acceptedMappings": 1,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "FDBKRET_BYPASSMODE",
+          "parameterId": 3,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Pitch",
+      "instance": 1,
+      "effectId": 110,
+      "plannedMappings": 27,
+      "acceptedMappings": 26,
+      "rejectedMappings": 1,
+      "mappings": [
+        {
+          "parameterName": "PITCH_PITCHMODE",
+          "parameterId": 1,
+          "enumerationCount": 6,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_KEY",
+          "parameterId": 8,
+          "enumerationCount": 12,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_SCALE",
+          "parameterId": 9,
+          "enumerationCount": 18,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_QUANTIZE",
+          "parameterId": 10,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_TRACKMODE",
+          "parameterId": 35,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 1,
+          "acceptedDiscrete": false,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_BYPASSMODE",
+          "parameterId": 41,
+          "enumerationCount": 5,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_XFADETYPE",
+          "parameterId": 46,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_DTEMPO1",
+          "parameterId": 49,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_DTEMPO2",
+          "parameterId": 50,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_DTEMPO3",
+          "parameterId": 51,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_DTEMPO4",
+          "parameterId": 52,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_STEMPO1",
+          "parameterId": 53,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_STEMPO2",
+          "parameterId": 54,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_FBTYPE",
+          "parameterId": 55,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_DIRECTION",
+          "parameterId": 56,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_ARPRUN",
+          "parameterId": 75,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_TEMPO",
+          "parameterId": 76,
+          "enumerationCount": 78,
+          "baselineWireValue": 6,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_AMPSHAPE",
+          "parameterId": 93,
+          "enumerationCount": 6,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_PANSHAPE",
+          "parameterId": 95,
+          "enumerationCount": 6,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_SOURCE",
+          "parameterId": 99,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_INMODE",
+          "parameterId": 100,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_LEARN",
+          "parameterId": 101,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_FDBKMODE",
+          "parameterId": 103,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_LFOTEMPO",
+          "parameterId": 105,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_TEMPERAMENT",
+          "parameterId": 108,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_SCENEIGNORE",
+          "parameterId": 111,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PITCH_KILLDRY",
+          "parameterId": 112,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Multiband Compressor",
+      "instance": 1,
+      "effectId": 154,
+      "plannedMappings": 11,
+      "acceptedMappings": 11,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "MULTICOMP_DETECT1",
+          "parameterId": 7,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTICOMP_MUTE1",
+          "parameterId": 8,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTICOMP_DETECT2",
+          "parameterId": 14,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTICOMP_MUTE2",
+          "parameterId": 15,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTICOMP_DETECT3",
+          "parameterId": 21,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTICOMP_MUTE3",
+          "parameterId": 22,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTICOMP_BYPASSMODE",
+          "parameterId": 26,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTICOMP_ORDER",
+          "parameterId": 33,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTICOMP_KNEE",
+          "parameterId": 34,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTICOMP_AUTO",
+          "parameterId": 35,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTICOMP_SCENEIGNORE",
+          "parameterId": 36,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Ten-Tap Delay",
+      "instance": 1,
+      "effectId": 158,
+      "plannedMappings": 7,
+      "acceptedMappings": 7,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "TENTAP_STEREO",
+          "parameterId": 1,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "TENTAP_QUANTIZE",
+          "parameterId": 4,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "TENTAP_RTEMPO",
+          "parameterId": 9,
+          "enumerationCount": 79,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "TENTAP_PANSHAPE",
+          "parameterId": 11,
+          "enumerationCount": 6,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "TENTAP_BYPASSMODE",
+          "parameterId": 43,
+          "enumerationCount": 5,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "TENTAP_LEARN",
+          "parameterId": 46,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "TENTAP_SCENEIGNORE",
+          "parameterId": 47,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Resonator",
+      "instance": 1,
+      "effectId": 162,
+      "plannedMappings": 7,
+      "acceptedMappings": 7,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "RESONATOR_CHORD",
+          "parameterId": 1,
+          "enumerationCount": 9,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "RESONATOR_LOC1",
+          "parameterId": 17,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "RESONATOR_LOC2",
+          "parameterId": 18,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "RESONATOR_LOC3",
+          "parameterId": 19,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "RESONATOR_LOC4",
+          "parameterId": 20,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "RESONATOR_BYPASSMODE",
+          "parameterId": 36,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "RESONATOR_INPUTMODE",
+          "parameterId": 39,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Looper",
+      "instance": 1,
+      "effectId": 166,
+      "plannedMappings": 5,
+      "acceptedMappings": 5,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "LOOPER_BYPASSMODE",
+          "parameterId": 3,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "LOOPER_QUANTIZE",
+          "parameterId": 18,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "LOOPER_RECORDMODE",
+          "parameterId": 19,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "LOOPER_HALF",
+          "parameterId": 20,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "LOOPER_XFADE",
+          "parameterId": 21,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Plex Delay",
+      "instance": 1,
+      "effectId": 178,
+      "plannedMappings": 17,
+      "acceptedMappings": 17,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "PLEX_TEMPO1",
+          "parameterId": 26,
+          "enumerationCount": 78,
+          "baselineWireValue": 14,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_TEMPO2",
+          "parameterId": 27,
+          "enumerationCount": 78,
+          "baselineWireValue": 11,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_TEMPO3",
+          "parameterId": 28,
+          "enumerationCount": 78,
+          "baselineWireValue": 12,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_TEMPO4",
+          "parameterId": 29,
+          "enumerationCount": 78,
+          "baselineWireValue": 15,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_TEMPO5",
+          "parameterId": 30,
+          "enumerationCount": 78,
+          "baselineWireValue": 16,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_TEMPO6",
+          "parameterId": 31,
+          "enumerationCount": 78,
+          "baselineWireValue": 10,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_TEMPO7",
+          "parameterId": 32,
+          "enumerationCount": 78,
+          "baselineWireValue": 13,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_TEMPO8",
+          "parameterId": 33,
+          "enumerationCount": 78,
+          "baselineWireValue": 17,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_DIRECTION",
+          "parameterId": 58,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_LFOTEMPO",
+          "parameterId": 69,
+          "enumerationCount": 78,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_BYPASSMODE",
+          "parameterId": 76,
+          "enumerationCount": 5,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_FILTERTYPE",
+          "parameterId": 82,
+          "enumerationCount": 12,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_INPUTSELECT",
+          "parameterId": 87,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_HOLD",
+          "parameterId": 88,
+          "enumerationCount": 3,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_FLTLFOTYPE",
+          "parameterId": 91,
+          "enumerationCount": 11,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_SCENEIGNORE",
+          "parameterId": 94,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "PLEX_KILLDRY",
+          "parameterId": 95,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Send",
+      "instance": 1,
+      "effectId": 182,
+      "plannedMappings": 0,
+      "acceptedMappings": 0,
+      "rejectedMappings": 0,
+      "mappings": []
+    },
+    {
+      "blockType": "Gate/Expander",
+      "instance": 1,
+      "effectId": 146,
+      "plannedMappings": 6,
+      "acceptedMappings": 6,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "GATE_KEY",
+          "parameterId": 5,
+          "enumerationCount": 12,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "GATE_BYPASSMODE",
+          "parameterId": 11,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "GATE_TYPE",
+          "parameterId": 14,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "GATE_PEAKRMS",
+          "parameterId": 16,
+          "enumerationCount": 2,
+          "baselineWireValue": 1,
+          "probeOrdinal": 0,
+          "observedWireValue": 0,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "GATE_SCENEIGNORE",
+          "parameterId": 17,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "GATE_KNEE",
+          "parameterId": 18,
+          "enumerationCount": 5,
+          "baselineWireValue": 2,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    },
+    {
+      "blockType": "Multiplexer",
+      "instance": 1,
+      "effectId": 191,
+      "plannedMappings": 4,
+      "acceptedMappings": 4,
+      "rejectedMappings": 0,
+      "mappings": [
+        {
+          "parameterName": "MULTIPLEXER_INPUTSEL",
+          "parameterId": 0,
+          "enumerationCount": 11,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTIPLEXER_INPUTMODE",
+          "parameterId": 1,
+          "enumerationCount": 4,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTIPLEXER_BYPASSMODE",
+          "parameterId": 4,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        },
+        {
+          "parameterName": "MULTIPLEXER_SCENEIGNORE",
+          "parameterId": 6,
+          "enumerationCount": 2,
+          "baselineWireValue": 0,
+          "probeOrdinal": 1,
+          "observedWireValue": 1,
+          "acceptedDiscrete": true,
+          "baselineRestored": true
+        }
+      ]
+    }
+  ]
+}

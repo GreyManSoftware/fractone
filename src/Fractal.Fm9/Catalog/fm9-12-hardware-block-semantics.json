@@ -1,0 +1,380 @@
+{
+  "schemaVersion": 1,
+  "firmwareVersion": "12.00",
+  "source": "Isolated hardware block placement with synchronized FM9-Edit UI Automation rendered names",
+  "exactCount": 32,
+  "catalogAliasCount": 5,
+  "conflictCount": 0,
+  "results": [
+    {
+      "blockType": "Input",
+      "instance": 1,
+      "effectId": 37,
+      "renderedBlockIdentity": "Input 1",
+      "classification": "Exact",
+      "dumpSha256": "9E575874512B514206D3B6E9CBD02FB61D542CD2FE793091C78016BAA3FB00B1",
+      "serializedRecordSha256": "F756E6717C22D8146C703B7E3B03F2C834E61DC7A646A911682C5D8A995B5A1A",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Output",
+      "instance": 1,
+      "effectId": 42,
+      "renderedBlockIdentity": "Output 1",
+      "classification": "Exact",
+      "dumpSha256": "24F1D134F58200171C187710FEDE9DD358D870D9A6D0F4447DD9F1951C62C503",
+      "serializedRecordSha256": "48C4A95EF67507932BCF8995AD22A66317F2A5F7670F69E9043F5F5B1ACCD309",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Compressor",
+      "instance": 1,
+      "effectId": 46,
+      "renderedBlockIdentity": "Compressor 1",
+      "classification": "Exact",
+      "dumpSha256": "EE4AF74E292A97E529C3351E6A294A2052F39ECCC66CA266B6B06272B6CA3575",
+      "serializedRecordSha256": "E6A18F9BF2D697475BF7F4F4F1F0DABE29E1BF85D35E68B61AAA1A0D49623AFA",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Graphic EQ",
+      "instance": 1,
+      "effectId": 50,
+      "renderedBlockIdentity": "Graphic EQ 1",
+      "classification": "Exact",
+      "dumpSha256": "FD37E4D5E2B52876AE8C69FFFF85F53F89099DA171CA8DD08575650F9CF58852",
+      "serializedRecordSha256": "56813B2D2EE831FAAE8AA01F998CBA77E855C9396DD7195A84004D62514CE2D9",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Parametric EQ",
+      "instance": 1,
+      "effectId": 54,
+      "renderedBlockIdentity": "Parametric EQ 1",
+      "classification": "Exact",
+      "dumpSha256": "B792D3F4B7CB12051CA50054BD90A6BAAF717AB2C4A13EB6E43300270EC61DF0",
+      "serializedRecordSha256": "AEBBEA1ADBC496F4EA5537EFAF9B55AC9F83A601305FA3651E972E8F40DFF44D",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Amp",
+      "instance": 1,
+      "effectId": 58,
+      "renderedBlockIdentity": "Amp 1",
+      "classification": "Exact",
+      "dumpSha256": "4B7C5F38085D99595F62CD43011DD62F30FC31256D2F9234B04467785C0E0082",
+      "serializedRecordSha256": "8C490A5BB7555BA93E90333246B7EF722EA0CFECBD6EA87FB7F34C9430E025BE",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Cab",
+      "instance": 1,
+      "effectId": 62,
+      "renderedBlockIdentity": "Cab 1",
+      "classification": "Exact",
+      "dumpSha256": "DA9555FDC3F91026B1FB7D0DFD6533C28329ABCCBF250B0EBC0F5D80474A08DC",
+      "serializedRecordSha256": "D4DCF5FFFB5F38DE3B5D8D5DC7B61EA39A347433D3B90269990099A06B850AAD",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Reverb",
+      "instance": 1,
+      "effectId": 66,
+      "renderedBlockIdentity": "Reverb 1",
+      "classification": "Exact",
+      "dumpSha256": "9C12F0F057A0A5976B545D93CA7FD38ABC686AF26E74E4D17FB9B70BA2D70D12",
+      "serializedRecordSha256": "594735839E3C96DD3467B56ADD7665E8803CE9C8C513D94738890EC98F1FC337",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Delay",
+      "instance": 1,
+      "effectId": 70,
+      "renderedBlockIdentity": "Delay 1",
+      "classification": "Exact",
+      "dumpSha256": "23AC347D50409AA2479E350AF6250ECD005AA71626F8F7612386D10EE7114D6E",
+      "serializedRecordSha256": "D22BAB28D02681FCC0CDC606BB112B75B243B74AF63A8BCA79EB659366531AD1",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Multitap Delay",
+      "instance": 1,
+      "effectId": 74,
+      "renderedBlockIdentity": "Multitap Delay 1",
+      "classification": "Exact",
+      "dumpSha256": "787AE3534A1179F35660E1DE0D7BDC56C8F6F83C8402410311DCD8436B56DC15",
+      "serializedRecordSha256": "29304EA89EA99AEFB630D3A8F9753CF58C7660F28AD108C0F48B65899BC08E98",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Chorus",
+      "instance": 1,
+      "effectId": 78,
+      "renderedBlockIdentity": "Chorus 1",
+      "classification": "Exact",
+      "dumpSha256": "7BE573E8F4D4F178F8815B9F4BC6041205638305C442DFED5EBF440CAA7F8068",
+      "serializedRecordSha256": "589F6A59FB98DB1E52ADDFEDF8283A5F2A920B6FDA18E05E5061B8D9218F9157",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Flanger",
+      "instance": 1,
+      "effectId": 82,
+      "renderedBlockIdentity": "Flanger 1",
+      "classification": "Exact",
+      "dumpSha256": "368304C3772EF201F03F7D3F0219896A90052F38E0E97F1278AFCDCBED3D08DF",
+      "serializedRecordSha256": "6B696C9AC73F559CF9FFAA6C1595C1020B2226A97B5F594D3AAFED92FA55F421",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Rotary",
+      "instance": 1,
+      "effectId": 86,
+      "renderedBlockIdentity": "Rotary 1",
+      "classification": "Exact",
+      "dumpSha256": "9C8088B3B1DBCF84F30C589D621C26709B0E89D10B8A88297C6EB8E541516FDD",
+      "serializedRecordSha256": "3841BCC3125C9E0C75A97F8F95D3B59920B979A159FF6F2C0F7ACC95CA69B19A",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Phaser",
+      "instance": 1,
+      "effectId": 90,
+      "renderedBlockIdentity": "Phaser 1",
+      "classification": "Exact",
+      "dumpSha256": "54EC510CD6EF802E7A7AD0D94157EADFE00E3362A7B57C1E051FE08B4CEF77AC",
+      "serializedRecordSha256": "7C717114113E2EB1E851C9856939C93092F90ABF630F411AB1099BE42B9269F6",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Wah",
+      "instance": 1,
+      "effectId": 94,
+      "renderedBlockIdentity": "Wahwah 1",
+      "classification": "CatalogAlias",
+      "dumpSha256": "AA6082A72C92A72A7F0A5A988704820DC9D5A59F9DCD90AB286740EED16A7930",
+      "serializedRecordSha256": "A0BFC034F6BB1464A8A51769AC29FEABDC75D3E31D7A94D33288A9F71FB9EF11",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Formant",
+      "instance": 1,
+      "effectId": 98,
+      "renderedBlockIdentity": "Formant 1",
+      "classification": "Exact",
+      "dumpSha256": "B2A41D2A70E7F1F86E319EA567232946880C3826CBA87313D8E5399CEE0B5CCF",
+      "serializedRecordSha256": "7652D7CAED728EAB1493D79C6F10F9742B565AA828E4D3F4730FA41643D94AF5",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Volume/Pan",
+      "instance": 1,
+      "effectId": 102,
+      "renderedBlockIdentity": "Volume/Pan 1",
+      "classification": "Exact",
+      "dumpSha256": "5A512EBD4F50C13BD96A91B6A6F0B5511CD6B0EF224C943C27BC2DA83F740EEB",
+      "serializedRecordSha256": "B6EE3DA72B710D36AC5DC219BC7F3C3BCB9B9611F5D17E54AEC0BBF6F9C82FF8",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Pan/Tremolo",
+      "instance": 1,
+      "effectId": 106,
+      "renderedBlockIdentity": "Tremolo/Panner 1",
+      "classification": "CatalogAlias",
+      "dumpSha256": "B9591D1CE63932E8D834A886EEB768BDE9D62D73F83303C159C86AA2FB0ABA9C",
+      "serializedRecordSha256": "44BC1A63A07EFEC8D00ADEC584BB6A33B81A16B787DB91D16F22E5D1586B3630",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Pitch",
+      "instance": 1,
+      "effectId": 110,
+      "renderedBlockIdentity": "Pitch",
+      "classification": "Exact",
+      "dumpSha256": "9FCECBC2031AD94D3BE9E39FE2CD04D2CAD2D8673E084AB0B66271ABCF5E6F4F",
+      "serializedRecordSha256": "201704860B8D606B66258C303294F14AE3692F26993E2A2F1383149A10753409",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Filter",
+      "instance": 1,
+      "effectId": 114,
+      "renderedBlockIdentity": "Filter 1",
+      "classification": "Exact",
+      "dumpSha256": "E5E57E7822701F058F58078DF7606789FA5EFD4578C49A609EC24D0F3A68F71A",
+      "serializedRecordSha256": "3B4810D1F21FC38204A319AAD4F1A21A2211B7BF48338347B02D8A8F5A8BC52B",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Drive",
+      "instance": 1,
+      "effectId": 118,
+      "renderedBlockIdentity": "Drive 1",
+      "classification": "Exact",
+      "dumpSha256": "2576DF0BF562EBC8539B454D9278C4060235959891E00B1662DC601F6FC807DB",
+      "serializedRecordSha256": "D7FD9784A536AF8AF92BBC5678706B61800E8062BCA66F14F7473854B6DB7FA8",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Enhancer",
+      "instance": 1,
+      "effectId": 122,
+      "renderedBlockIdentity": "Enhancer 1",
+      "classification": "Exact",
+      "dumpSha256": "6F32ECCB291D88603E6E095593BAF3F58EEF178776BB72837A1B468C810B4A7E",
+      "serializedRecordSha256": "368A1D5184436FED47912DB71795C607BEEB718F21CBBD6914F07B048A87E573",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Mixer",
+      "instance": 1,
+      "effectId": 126,
+      "renderedBlockIdentity": "Mixer 1",
+      "classification": "Exact",
+      "dumpSha256": "9FA83B655EBBAA2EDB851502903BCB3CCA69DD32A33BD07CB4C356866E8834F9",
+      "serializedRecordSha256": "B41F8B64C79136B427560BAEEC80EDEC8C12CBCF2E01DB1DF01417B5C9AC17F3",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Synth",
+      "instance": 1,
+      "effectId": 130,
+      "renderedBlockIdentity": "Synth",
+      "classification": "Exact",
+      "dumpSha256": "F77B90AB078EB54228508A8613BFBF87A3AF59396DC88A7F89DB0A2289FFEFE3",
+      "serializedRecordSha256": "CADC0096258FE5AF6030A4CB29227F001C78E3930C1042EBB1436041F1D482CA",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Megatap Delay",
+      "instance": 1,
+      "effectId": 138,
+      "renderedBlockIdentity": "Megatap Delay 1",
+      "classification": "Exact",
+      "dumpSha256": "B49AC8F611C135C2E14A14F081BDD50FE8D46DA4DB5CA981CE4B34820D5A0FD9",
+      "serializedRecordSha256": "3D44CD4DB4B653D0B20ACC55855737D2255B0C963E5995B62FA89A5781583A4D",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Crossover",
+      "instance": 1,
+      "effectId": 142,
+      "renderedBlockIdentity": "Crossover 1",
+      "classification": "Exact",
+      "dumpSha256": "40583D84A71F3B455CD7841CD5A250DADB0168834236BA80BB35D689C2854A03",
+      "serializedRecordSha256": "37D9EEDD6289D19BCEA9853CA7B0582506628B5EA71E26C2D79E25B6F10B24AD",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Gate/Expander",
+      "instance": 1,
+      "effectId": 146,
+      "renderedBlockIdentity": "Gate/Expander 1",
+      "classification": "Exact",
+      "dumpSha256": "DB77D571B62EC50953CEE589B5F5813572A87B9A9C5FE4997D7F756E56751D8C",
+      "serializedRecordSha256": "9BF819742B5F20992650FAF60FA53D4E9FC2EAACB41EA413D0D17658849787BE",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Ring Modulator",
+      "instance": 1,
+      "effectId": 150,
+      "renderedBlockIdentity": "Ring Modulator",
+      "classification": "Exact",
+      "dumpSha256": "8D88EE673AB64EEE9613431DD3715F69B311F03644A294EC30B2BBD71D84C463",
+      "serializedRecordSha256": "93D7A84C8A3BE3D7FF5A8AD1909DEADBC44EC156FE10571D3AF6502EB3EF5DC9",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Multiband Compressor",
+      "instance": 1,
+      "effectId": 154,
+      "renderedBlockIdentity": "Multiband Comp. 1",
+      "classification": "CatalogAlias",
+      "dumpSha256": "1A26747688A88BE8CC614A59E42B92423ACF8BF8FE341D22F9A9A4F4A0A5EA51",
+      "serializedRecordSha256": "C5DAB5A064FB35C3DDF6297F72FD9669C7CAC0EF622D0F35352AF22AA62E43C7",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Ten-Tap Delay",
+      "instance": 1,
+      "effectId": 158,
+      "renderedBlockIdentity": "Ten-Tap Delay 1",
+      "classification": "Exact",
+      "dumpSha256": "2577ACBFC46104203BB85ABE6051A5819C63FDD0C904E154ADB88727AB210D49",
+      "serializedRecordSha256": "5BF64AFF891694FB280CC174A3C2427860D20E2A2521C54525F927E823047F54",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Resonator",
+      "instance": 1,
+      "effectId": 162,
+      "renderedBlockIdentity": "Resonator 1",
+      "classification": "Exact",
+      "dumpSha256": "1C4BBC2F9FC7021ADDC661FD5363583C6AB34C7D4A1EFF0CA035182B91D2FDBF",
+      "serializedRecordSha256": "8C9012807283EBC24D51DF7B1F47AF1CD0FEC12D78F9BBAA091793F0DBDCB659",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Looper",
+      "instance": 1,
+      "effectId": 166,
+      "renderedBlockIdentity": "Looper",
+      "classification": "Exact",
+      "dumpSha256": "55C54A7959CB3FEA9DF6FEF0923E331D9EA81171AB9B0CFB7F2537E073DC00F3",
+      "serializedRecordSha256": "1A235F7EDF5DD24A78E46BC93BE91F6D0BF48AB10CFA90CCB42E24FDD4A2DCC2",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Plex Delay",
+      "instance": 1,
+      "effectId": 178,
+      "renderedBlockIdentity": "Plex Delay",
+      "classification": "Exact",
+      "dumpSha256": "629E9AA2F5606F718BD046429E5AD88C3F5DAB1F7BD7BC70C1C87A1B0C3E505A",
+      "serializedRecordSha256": "394F24BE7EFB34D14C903AF654B21E151FB7527B9A29507C9EACAE16F0961C6C",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Send",
+      "instance": 1,
+      "effectId": 182,
+      "renderedBlockIdentity": "Feedback Send 1",
+      "classification": "CatalogAlias",
+      "dumpSha256": "DB58C0C14608948F00F57CEB19B8B12D94AA5CE3B6ACCA4BE895DB2933211BEE",
+      "serializedRecordSha256": "89E53D88AF917DC09084508A5E6D2B6CD64BC36A41FF12C2EFB3085D81C1111E",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Return",
+      "instance": 1,
+      "effectId": 186,
+      "renderedBlockIdentity": "Feedback Return 1",
+      "classification": "CatalogAlias",
+      "dumpSha256": "793F945EE56F45E199DCDF5F44E279210243E5A6C57D2B5BAD616FE23238AD74",
+      "serializedRecordSha256": "2DC5A08B7A336ED88C032139543C8FE17195FBDFC0951027C0DD6D2F9C1E26A6",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "MIDI Block",
+      "instance": 1,
+      "effectId": 190,
+      "renderedBlockIdentity": "MIDI Block",
+      "classification": "Exact",
+      "dumpSha256": "C5AF7DE84C5BB98276E5D9A47C9EBD7FE6D3989E793764A69E0030EF0322CE9A",
+      "serializedRecordSha256": "9803B09299918CEE0CD5B0059DEF095A3A913964E17DC0F49C78F5508321FAA8",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Multiplexer",
+      "instance": 1,
+      "effectId": 191,
+      "renderedBlockIdentity": "Multiplexer 1",
+      "classification": "Exact",
+      "dumpSha256": "41075169E7C9F30E0D97054383205F03441F015265A9E13477EFB2843AB24977",
+      "serializedRecordSha256": "2658B631979F4F3CF44009A682DCAEFE9E5FFC0BD9E67BDF43FA3F8D25F837EA",
+      "baselineRestored": true
+    }
+  ]
+}

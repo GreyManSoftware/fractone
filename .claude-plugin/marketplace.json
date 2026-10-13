@@ -1,0 +1,14 @@
+{
+  "name": "fractone",
+  "description": "Fractone: unofficial tools for Fractal Audio's FM9 (Axe-Fx III and FM3 planned). Not affiliated with Fractal Audio Systems.",
+  "owner": {
+    "name": "GreyManSoftware"
+  },
+  "plugins": [
+    {
+      "name": "fractone",
+      "source": "./plugins/fractone",
+      "description": "Fractone: unofficial tools for Fractal Audio's FM9 (Axe-Fx III and FM3 planned). Not affiliated with Fractal Audio Systems."
+    }
+  ]
+}

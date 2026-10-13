@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "firmwareVersion": "12.00",
+  "source": "Representative portable Cab selections with exact bulk readback, synchronized bank/slot/name UI evidence and isolated/full-preset restoration; not exhaustive roster qualification",
+  "anchors": [
+    {
+      "bank": 0,
+      "ordinal": 0,
+      "renderedName": "1x4 Pig 57",
+      "bulkSha256": "341956D13D4B1F5125B73A005C7714D9839712C88E75987BBE0254782F34CFD3",
+      "rawEvidenceSha256": "C3705FC1BA239949D450E96069DBE49E34F7BB321A81FDD519664884D3B0EDF3",
+      "baselineRestored": true,
+      "fullPresetBaselineRestored": true
+    },
+    {
+      "bank": 0,
+      "ordinal": 1,
+      "renderedName": "1x4 Pig 121",
+      "bulkSha256": "44F5EAFDE1704BACF8884583EE6EA723B7E1E0F4AE4DC49EA958468BCF9439FB",
+      "rawEvidenceSha256": "C3705FC1BA239949D450E96069DBE49E34F7BB321A81FDD519664884D3B0EDF3",
+      "baselineRestored": true,
+      "fullPresetBaselineRestored": true
+    },
+    {
+      "bank": 0,
+      "ordinal": 1023,
+      "renderedName": "2x12 Double Verb 906 C",
+      "bulkSha256": "4DAC2D9C6A74E869EE9263B860053C9766EA2C944D8398B6132E3409DFDD85AD",
+      "rawEvidenceSha256": "C3705FC1BA239949D450E96069DBE49E34F7BB321A81FDD519664884D3B0EDF3",
+      "baselineRestored": true,
+      "fullPresetBaselineRestored": true
+    },
+    {
+      "bank": 1,
+      "ordinal": 0,
+      "renderedName": "2x12 Double Verb 906 Cone",
+      "bulkSha256": "9F6EAB17D6CC2C62EC2A45BC1A63BBF45D1FB49EFBDDA2FDEE4734DC29025CF3",
+      "rawEvidenceSha256": "B9B07DB15EB455BD05BF296576051BF84628281FB63071F6718CE1967919093A",
+      "baselineRestored": true,
+      "fullPresetBaselineRestored": true
+    },
+    {
+      "bank": 1,
+      "ordinal": 587,
+      "renderedName": "4x12 Cali 57 Edge",
+      "bulkSha256": "A9A750F6B13CAD70C3260AB74AE296B90F530F7E3159654718DE168C3E964C25",
+      "rawEvidenceSha256": "B9B07DB15EB455BD05BF296576051BF84628281FB63071F6718CE1967919093A",
+      "baselineRestored": true,
+      "fullPresetBaselineRestored": true
+    },
+    {
+      "bank": 1,
+      "ordinal": 1023,
+      "renderedName": "TOTALLY-FLAT",
+      "bulkSha256": "D4ECEF5FEF6B25BE8C00089FB08AEAFE241655C51604E926BE791E0438F6BD80",
+      "rawEvidenceSha256": "B9B07DB15EB455BD05BF296576051BF84628281FB63071F6718CE1967919093A",
+      "baselineRestored": true,
+      "fullPresetBaselineRestored": true
+    },
+    {
+      "bank": 3,
+      "ordinal": 0,
+      "renderedName": "1x6 OVAL",
+      "bulkSha256": "98FE5345633BE0C6BE705CBDCD01E9092A6989D2BDFD048AC1BB2DB9B8DD770C",
+      "rawEvidenceSha256": "EFBCE82768B657DA766CC09CCD917FAB3757110B4B05E114A616E9068AB98779",
+      "baselineRestored": true,
+      "fullPresetBaselineRestored": true
+    },
+    {
+      "bank": 3,
+      "ordinal": 94,
+      "renderedName": "2x12 SUPREMO MIX",
+      "bulkSha256": "D63F30F26DA71A135F796EB8574C943D848A9A7253591CC2FA37724F43BC0033",
+      "rawEvidenceSha256": "EFBCE82768B657DA766CC09CCD917FAB3757110B4B05E114A616E9068AB98779",
+      "baselineRestored": true,
+      "fullPresetBaselineRestored": true
+    },
+    {
+      "bank": 3,
+      "ordinal": 188,
+      "renderedName": "4x12 G12M CREAMBACK MIX (CEL)",
+      "bulkSha256": "2DC5C3B34677F2BC4FBA5D0395AA45BAA379F7C06072EA5F3AF28100B5CDACA2",
+      "rawEvidenceSha256": "EFBCE82768B657DA766CC09CCD917FAB3757110B4B05E114A616E9068AB98779",
+      "baselineRestored": true,
+      "fullPresetBaselineRestored": true
+    }
+  ]
+}

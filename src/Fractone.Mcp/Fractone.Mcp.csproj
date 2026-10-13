@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!-- The FM9 MCP bridge: tools over stdio (default) or local HTTP, plus the setup and build commands. Runs on the
+       Windows host because it reaches the FM9 through Windows USB MIDI. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>fractone-mcp</AssemblyName>
+    <RootNamespace>Fractone.Mcp</RootNamespace>
+    <Version>0.13.0</Version>
+    <!-- A .NET tool, so `dnx Fractone` runs it; the McpServer package type lists it as an MCP server on NuGet. -->
+    <IsPackable>true</IsPackable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>fractone-mcp</ToolCommandName>
+    <PackageId>Fractone</PackageId>
+    <PackageType>McpServer</PackageType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>Fractone: unofficial tools for Fractal Audio&apos;s FM9 (Axe-Fx III and FM3 planned). Not affiliated with Fractal Audio Systems. An MCP server for presets, live control, FM9-Edit favourites, preset search, tone design and tone matching.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ModelContextProtocol" Version="2.2.0" />
+    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fractal.Fm9\Fractal.Fm9.csproj" />
+    <ProjectReference Include="..\Fractal.Ai\Fractal.Ai.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Fractone.Mcp.Tests" />
+  </ItemGroup>
+
+  <!-- NuGet's MCP server listing reads .mcp/server.json from the package. -->
+  <ItemGroup>
+    <None Include=".mcp/server.json" Pack="true" PackagePath="/.mcp/" />
+    <None Include="../../plugins/fractone/README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+  <!-- The Ride baseline the tone designer exports into (the same template the site downloads). -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\Presets\EMPTY.syx" LogicalName="Fractone.Mcp.ride-baseline.syx" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "firmwareVersion": "12.00",
+  "source": "Catalogue-independent isolated volatile-grid sweep with FM9-Edit UI Automation names",
+  "testedRanges": [
+    {
+      "firstEffectId": 1,
+      "lastEffectId": 255,
+      "cataloguedIdsSkipped": 141,
+      "untestedIdsAttempted": 114,
+      "acceptedIds": 3
+    },
+    {
+      "firstEffectId": 256,
+      "lastEffectId": 383,
+      "cataloguedIdsSkipped": 0,
+      "untestedIdsAttempted": 128,
+      "acceptedIds": 0
+    }
+  ],
+  "discoveries": [
+    {
+      "effectId": 138,
+      "renderedGridName": "Megatap Delay 1A, Active",
+      "blockType": "Megatap Delay",
+      "instance": 1,
+      "parameterFamily": "MEGATAP",
+      "bulkValueCount": 70,
+      "parameterColumns": 35,
+      "parameterRows": 2,
+      "recordLength": 186,
+      "serializedRecordSha256": "3D44CD4DB4B653D0B20ACC55855737D2255B0C963E5995B62FA89A5781583A4D",
+      "dumpSha256": "B49AC8F611C135C2E14A14F081BDD50FE8D46DA4DB5CA981CE4B34820D5A0FD9",
+      "baselineRestored": true
+    },
+    {
+      "effectId": 139,
+      "renderedGridName": "Megatap Delay 2A, Active",
+      "blockType": "Megatap Delay",
+      "instance": 2,
+      "parameterFamily": "MEGATAP",
+      "bulkValueCount": 70,
+      "parameterColumns": 35,
+      "parameterRows": 2,
+      "recordLength": 186,
+      "serializedRecordSha256": "3D44CD4DB4B653D0B20ACC55855737D2255B0C963E5995B62FA89A5781583A4D",
+      "dumpSha256": "8181154DEA702D3ADE88C7A711EBE95914E45031AC7658F5FC94AE8B7D10A1AB",
+      "baselineRestored": true
+    },
+    {
+      "effectId": 190,
+      "renderedGridName": "MIDI BlockA, Active",
+      "blockType": "MIDI Block",
+      "instance": 1,
+      "parameterFamily": "MIDIBLOCK",
+      "bulkValueCount": 257,
+      "parameterColumns": 257,
+      "parameterRows": 1,
+      "recordLength": 560,
+      "serializedRecordSha256": "9803B09299918CEE0CD5B0059DEF095A3A913964E17DC0F49C78F5508321FAA8",
+      "dumpSha256": "C5AF7DE84C5BB98276E5D9A47C9EBD7FE6D3989E793764A69E0030EF0322CE9A",
+      "baselineRestored": true
+    }
+  ],
+  "parameterQualifications": [
+    {
+      "effectId": 138,
+      "blockType": "Megatap Delay",
+      "instance": 1,
+      "continuousPlanned": 25,
+      "continuousAccepted": 23,
+      "continuousRejected": 2,
+      "continuousRejectedParameters": [
+        "MEGATAP_NUMTAPS",
+        "MEGATAP_FDBKTAP"
+      ],
+      "discretePlanned": 7,
+      "discreteAccepted": 7,
+      "discreteRejected": 0,
+      "restoredMappings": 32,
+      "continuousEvidenceSha256": "C5A74EDDE1200C9CC170CC47BC64F8C4062320D0F1E3E52DB02E8A1BD0A9BAF4",
+      "discreteEvidenceSha256": "B6C9124396559FB31CE429CCE9FA31D5C3576E252D095B91A848240E7B195318"
+    }
+  ]
+}

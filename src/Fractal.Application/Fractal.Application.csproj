@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fractal.Core\Fractal.Core.csproj" />
+    <EmbeddedResource Include="..\Fractal.Fm9\Catalog\fm9-12-hardware-type-semantics.json" LogicalName="Fractal.Application.fm9-types.json" />
+    <EmbeddedResource Include="..\Fractal.Fm9\Catalog\fm9-12-hardware-cab-anchors.json" LogicalName="Fractal.Application.fm9-cabs.json" />
+    <EmbeddedResource Include="..\Fractal.Fm9\Catalog\fm9-12-community-beta.json" LogicalName="Fractal.Application.fm9-community.json" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

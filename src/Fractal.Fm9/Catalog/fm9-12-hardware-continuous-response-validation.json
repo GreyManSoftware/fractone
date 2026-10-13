@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 1,
+  "firmwareVersion": "12",
+  "source": "Hardware-isolated normalized and display-value response profiles",
+  "mappings": [
+    {
+      "blockType": "Amp",
+      "instance": 1,
+      "effectId": 58,
+      "parameterName": "DISTORT_GAINMON",
+      "parameterId": 125,
+      "baselineWireValue": 0,
+      "normalizedPoints": [
+        {
+          "requestedWireValue": 0,
+          "observedWireValue": 0
+        },
+        {
+          "requestedWireValue": 16384,
+          "observedWireValue": 0
+        },
+        {
+          "requestedWireValue": 32767,
+          "observedWireValue": 0
+        },
+        {
+          "requestedWireValue": 49151,
+          "observedWireValue": 0
+        },
+        {
+          "requestedWireValue": 65534,
+          "observedWireValue": 0
+        }
+      ],
+      "displayValuePoints": [],
+      "classification": "ReadOnlyOrNoOp",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Amp",
+      "instance": 1,
+      "effectId": 58,
+      "parameterName": "DISTORT_MDMON",
+      "parameterId": 126,
+      "baselineWireValue": 0,
+      "normalizedPoints": [
+        {
+          "requestedWireValue": 0,
+          "observedWireValue": 0
+        },
+        {
+          "requestedWireValue": 16384,
+          "observedWireValue": 0
+        },
+        {
+          "requestedWireValue": 32767,
+          "observedWireValue": 0
+        },
+        {
+          "requestedWireValue": 49151,
+          "observedWireValue": 0
+        },
+        {
+          "requestedWireValue": 65534,
+          "observedWireValue": 0
+        }
+      ],
+      "displayValuePoints": [],
+      "classification": "ReadOnlyOrNoOp",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Crossover",
+      "instance": 1,
+      "effectId": 142,
+      "parameterName": "CROSSOVER_MIX",
+      "parameterId": 10,
+      "baselineWireValue": 0,
+      "normalizedPoints": [
+        {
+          "requestedWireValue": 0,
+          "observedWireValue": 0
+        },
+        {
+          "requestedWireValue": 16384,
+          "observedWireValue": 0
+        },
+        {
+          "requestedWireValue": 32767,
+          "observedWireValue": 0
+        },
+        {
+          "requestedWireValue": 49151,
+          "observedWireValue": 0
+        },
+        {
+          "requestedWireValue": 65534,
+          "observedWireValue": 0
+        }
+      ],
+      "displayValuePoints": [
+        {
+          "requestedValue": 0.0,
+          "observedWireValue": 0
+        },
+        {
+          "requestedValue": 12.5,
+          "observedWireValue": 0
+        },
+        {
+          "requestedValue": 25.0,
+          "observedWireValue": 0
+        },
+        {
+          "requestedValue": 37.5,
+          "observedWireValue": 0
+        },
+        {
+          "requestedValue": 50.0,
+          "observedWireValue": 0
+        }
+      ],
+      "classification": "ReadOnlyOrNoOp",
+      "baselineRestored": true
+    },
+    {
+      "blockType": "Ten-Tap Delay",
+      "instance": 1,
+      "effectId": 158,
+      "parameterName": "TENTAP_TIMEM",
+      "parameterId": 2,
+      "baselineWireValue": 3214,
+      "normalizedPoints": [
+        {
+          "requestedWireValue": 0,
+          "observedWireValue": 0
+        },
+        {
+          "requestedWireValue": 16384,
+          "observedWireValue": 10868
+        },
+        {
+          "requestedWireValue": 32767,
+          "observedWireValue": 10868
+        },
+        {
+          "requestedWireValue": 49151,
+          "observedWireValue": 10868
+        },
+        {
+          "requestedWireValue": 65534,
+          "observedWireValue": 10868
+        }
+      ],
+      "displayValuePoints": [
+        {
+          "requestedValue": 1.0,
+          "observedWireValue": 10868
+        },
+        {
+          "requestedValue": 500.0,
+          "observedWireValue": 10868
+        },
+        {
+          "requestedValue": 1000.0,
+          "observedWireValue": 10868
+        },
+        {
+          "requestedValue": 1500.0,
+          "observedWireValue": 10868
+        },
+        {
+          "requestedValue": 2000.0,
+          "observedWireValue": 10868
+        }
+      ],
+      "classification": "UnsupportedEncoding",
+      "baselineRestored": true
+    }
+  ]
+}

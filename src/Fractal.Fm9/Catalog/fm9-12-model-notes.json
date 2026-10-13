@@ -1,0 +1,63 @@
+{
+  "Source": "Re-amped FM9 takes of one DI, measured band by band against each other and judged by ear (2026-10). Generic model and control behaviour, never settings for a particular song.",
+  "Blocks": {
+    "Amp": {
+      "General": [
+        "On a saturated amp, Gain and Overdrive above about 8 barely change the level or the spectrum, so don't use them to fix loudness or brightness; the server sets Amp Level from how players level the model. A quieter preset sounds like less gain, so compare changes at equal loudness.",
+        "Presence, a graphic EQ's upper bands, the amp model and the cab mic position all move bite (2-4 kHz) and fizz (4-8 kHz) together (Presence 2 to 6 added about 5 dB of both). Don't turn Presence down to fight fizz: that loses the bite and the clarity; set Presence for the bite the recording has (high-gain Mark and Recto tones often sit around 5-7) and tame fizz with the Cab's high cut.",
+        "Speaker Imp. Curve is a large share of the cab feel: match it to the cab family (e.g. 4x12 USA MC90 for a Mesa 4x12). With Auto Dyna-Cab Imp. ON, choosing a DynaCab silently replaces it; a Marshall TV 4x12 DynaCab gives a stronger treble bump and a weaker bass bump than the MC90 curve.",
+        "Speaker Drive and Speaker Thump hardly change the spectrum, but they add cone compression and a sub-bass kick on palm mutes; tight high-gain rhythm tones often run both at 0."
+      ],
+      "Models": {
+        "USA MK IIC+": [
+          "For Metallica, choose USA MK IIC++ rather than this model: Hetfield and Hammett are widely reported to have used IIC++ amps (see the USA MK IIC++ note).",
+          "Mark IIC+ lead channel: Gain and Overdrive are its two lead gain stages and Master the power amp. Fractal follows the original tapers, so documented Mark IIC+ knob settings transfer directly; players run Treble high (7-8), Bass low (1-3) and Mid low to moderate (2-4). Master is the power-amp drive: players run high-gain Mark rhythm with Master about 3.5-5 (median 4 over 36 played Mark channels at Gain 6 or more, none above 5.1), letting the preamp make the distortion; a Master of 7 or more adds power-amp compression and loosens the low end.",
+          "The five-band graphic EQ shapes a Mark more than Bass and Mid do: set Output EQ Location to PrePowerAmp, as on the amp. A V with 750 Hz cut 6-10 dB trims mud; boosting 2200 Hz adds bite and fizz together, so keep it near 0 for a cleaner-edged rhythm. Overdrive at 10 sounds fizzier than about 8.5.",
+          "Fat (the pull Treble Shift) adds low-mid body plus a low grit or fizz between picks: off gives a tighter, more articulate rhythm; Bright on and a little more Mid restore the definition."
+        ],
+        "USA MK IIC+ Deep": [
+          "The IIC+ with its Deep switch on (more low end). Same tapers and the same graphic EQ and Fat advice as the USA MK IIC+, so documented IIC+ settings transfer; darker and fuller than the USA MK IIC++."
+        ],
+        "USA MK IIC+ Bright": [
+          "The IIC+ with its Bright switch on: more treble, most noticeable at lower Gain. Same tapers and the same graphic EQ and Fat advice as the USA MK IIC+."
+        ],
+        "USA MK IIC+ Deep Bright": [
+          "The IIC+ with both its Deep and Bright switches on. Same tapers and the same graphic EQ and Fat advice as the USA MK IIC+."
+        ],
+        "USA JP IIC+ Red": [
+          "The Mesa JP-2C (John Petrucci's 2016 signature reissue of the Mark IIC+), not an original 1980s Mark IIC+: for a 1980s Mark recording choose USA MK IIC+ or USA MK IIC++."
+        ],
+        "USA JP IIC+ Yellow": [
+          "The Mesa JP-2C (John Petrucci's 2016 signature reissue of the Mark IIC+), not an original 1980s Mark IIC+: for a 1980s Mark recording choose USA MK IIC+ or USA MK IIC++."
+        ],
+        "USA JP IIC+ Green": [
+          "The Mesa JP-2C (John Petrucci's 2016 signature reissue of the Mark IIC+), not an original 1980s Mark IIC+: for a 1980s Mark recording choose USA MK IIC+ or USA MK IIC++."
+        ],
+        "USA JP IIC+ Red Shred": [
+          "The Mesa JP-2C (John Petrucci's 2016 signature reissue of the Mark IIC+), not an original 1980s Mark IIC+: for a 1980s Mark recording choose USA MK IIC+ or USA MK IIC++."
+        ],
+        "USA JP IIC+ Yellow Shred": [
+          "The Mesa JP-2C (John Petrucci's 2016 signature reissue of the Mark IIC+), not an original 1980s Mark IIC+: for a 1980s Mark recording choose USA MK IIC+ or USA MK IIC++."
+        ],
+        "USA MK IIC++": [
+          "A modded Mark IIC+ with different tapers: at the same knob numbers it ran about 8 dB quieter and colder than the IIC+ Deep, so documented IIC+ settings don't transfer one to one; expect Gain and Overdrive toward 8-10 for the same saturation.",
+          "Widely reported gear: Mesa built only about 20 IIC++ amps (the IIC+ with an extra-gain mod), and Metallica's James Hetfield and Kirk Hammett used them (the 'Crunch Berries' amp). For a Metallica tone where a Mark IIC+ is reported, choose USA MK IIC++ (labelled inferred) and set its knobs as an IIC++, not from documented IIC+ numbers.",
+          "Brighter than the IIC+ Deep, mostly above 8 kHz (about 5 dB more air) and about 2 dB more at 4-8 kHz, which suits a cutting, articulate high-gain rhythm. The same Master, graphic EQ (PrePowerAmp) and Fat advice as the USA MK IIC+ applies: players run the IIC++ at Gain about 8 with Master 3.7-5 (23 played channels)."
+        ]
+      }
+    },
+    "Cab": {
+      "General": [
+        "The cab IR and mic position set a high-gain tone's clarity more than any amp control. Mesa-style 4x12s (Recto, V30 or MC90 speakers) give a focused 2-4 kHz bite with a steep roll-off above 4 kHz; Marshall T75-style 4x12s (1960A, TV) carry 5-10 dB more 250 Hz-2 kHz and more fizz, so they sound muddier and fizzier on a tight rhythm.",
+        "For a tight Mesa 4x12, the factory York Audio Recto IRs '4x12 Recto ST 57M Brt YA' and '4x12 Recto ST 57V Brt YA' work well; any factory roster name is valid when copied exactly.",
+        "To tame fizz without losing bite, use the block's master High Cut 2 at about 8-10 kHz with a gentle High Cut Slope (6-12 dB/oct) rather than Presence or EQ cuts.",
+        "DynaCab mode: the mic position (Dyna Cab) runs from cap (0, brightest and fizziest) to edge (10, darkest); about 4 is balanced for a close SM57 (Dynamic 1), and each 2 steps trades about 1 dB of bite for 4-5 dB less fizz."
+      ]
+    },
+    "Parametric EQ": {
+      "General": [
+        "The player's tone matching later fits this EQ to the recording, so keep it gentle here (a few dB) and let the amp and cab carry the voicing."
+      ]
+    }
+  }
+}
