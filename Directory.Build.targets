@@ -1,0 +1,8 @@
+<Project>
+	<!-- No build sends Avalonia's build telemetry (local, CI or the public repository). Avalonia.BuildServices only runs
+	     its AvaloniaStats target while UsedAvaloniaProducts is set, which Avalonia.props does earlier in evaluation;
+	     clearing it here stops the target without the AVALONIA_TELEMETRY_OPTOUT=1 environment variable (CI sets that too). -->
+	<PropertyGroup>
+		<UsedAvaloniaProducts></UsedAvaloniaProducts>
+	</PropertyGroup>
+</Project>

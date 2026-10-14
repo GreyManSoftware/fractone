@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FracTone.Probe\FracTone.Probe.csproj" />
+    <ProjectReference Include="..\..\src\FracTone.Probe.Cli\FracTone.Probe.Cli.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Presets\metallica-eight-scenes.syx" Link="Presets\metallica-eight-scenes.syx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\Presets\fm9-synthetic-ride.syx" Link="Presets\fm9-synthetic-ride.syx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\Presets\fm9-synthetic-ride-fm9-readback.syx" Link="Presets\fm9-synthetic-ride-fm9-readback.syx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\Presets\gen3-*.syx" LinkBase="Presets" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

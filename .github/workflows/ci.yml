@@ -6,6 +6,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+# No build sends Avalonia's build telemetry (the probe GUI); Directory.Build.targets also switches it off.
+env:
+  AVALONIA_TELEMETRY_OPTOUT: '1'
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true

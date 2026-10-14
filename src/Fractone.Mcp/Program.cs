@@ -116,7 +116,7 @@ static string? Take(List<string> arguments, string option)
 
 static async Task ServeStdioAsync(string settingsPath)
 {
-	HostApplicationBuilder builder = Host.CreateApplicationBuilder();
+	HostApplicationBuilder builder = Host.CreateApplicationBuilder(Server.HostSettings());
 	// stdout carries MCP; every log line goes to stderr.
 	builder.Logging.ClearProviders();
 	builder.Logging.AddConsole(options => options.LogToStandardErrorThreshold = LogLevel.Trace);
@@ -129,7 +129,7 @@ static async Task ServeStdioAsync(string settingsPath)
 static async Task ServeHttpAsync(string settingsPath, int port)
 {
 	string token = Server.HttpToken();
-	WebApplicationBuilder builder = WebApplication.CreateBuilder();
+	WebApplicationBuilder builder = WebApplication.CreateBuilder(Server.WebOptions());
 	builder.Logging.SetMinimumLevel(LogLevel.Warning);
 	// Loopback only: an agent in a container reaches it through host.docker.internal; nothing on the network can.
 	builder.WebHost.ConfigureKestrel(kestrel => kestrel.Listen(System.Net.IPAddress.Loopback, port));
@@ -215,6 +215,18 @@ namespace Fractone.Mcp
 				"FracTone: unofficial tools for a Fractal Audio FM9 on this computer (not affiliated with Fractal Audio Systems). Presets travel as .syx file paths (relative paths are in the work " +
 				"folder); offline edits always write a new file. Writes to the FM9 report what they replaced. Call status first.";
 		}
+
+		// The generic host defaults its content root to the working folder and watches it, recursively, for appsettings
+		// changes. Agents start this server in whatever folder their session is in, so a busy repository (a build or a
+		// job writing temp files) kept every idle server busy handling change events. Nothing is configured by files, so
+		// the root is the install folder and nothing is watched.
+		public static HostApplicationBuilderSettings HostSettings() => new()
+		{
+			Args = ["--hostBuilder:reloadConfigOnChange=false"],
+			ContentRootPath = AppContext.BaseDirectory
+		};
+
+		public static WebApplicationOptions WebOptions() => new() { Args = HostSettings().Args, ContentRootPath = AppContext.BaseDirectory };
 
 		public static string HttpTokenPath => Path.Combine(Path.GetDirectoryName(Fm9Settings.DefaultPath)!, "http-token");
 

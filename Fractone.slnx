@@ -5,9 +5,14 @@
     <Project Path="src/Fractal.Ai/Fractal.Ai.csproj" />
     <Project Path="src/Fractal.Fm9/Fractal.Fm9.csproj" />
     <Project Path="src/Fractone.Mcp/Fractone.Mcp.csproj" />
+    <Project Path="src/FracTone.Probe/FracTone.Probe.csproj" />
+    <Project Path="src/FracTone.Probe.Cli/FracTone.Probe.Cli.csproj" />
+    <Project Path="src/FracTone.Probe.Gui/FracTone.Probe.Gui.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Fractal.Fm9.Tests/Fractal.Fm9.Tests.csproj" />
     <Project Path="tests/Fractone.Mcp.Tests/Fractone.Mcp.Tests.csproj" />
+    <Project Path="tests/FracTone.Probe.Tests/FracTone.Probe.Tests.csproj" />
+    <Project Path="tests/FracTone.Probe.Gui.Tests/FracTone.Probe.Gui.Tests.csproj" />
   </Folder>
 </Solution>

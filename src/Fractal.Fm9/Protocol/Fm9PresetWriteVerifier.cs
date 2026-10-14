@@ -31,19 +31,54 @@ namespace Fractal.Companion.Protocol
 				[119] = "DISTORT_CFHARDNESS"
 			};
 
+		// The same Amp words by symbol on the FM3 and Axe-Fx III, whose Amp ids differ from the FM9's (FracCompat's
+		// xref-by-symbol.json, from each editor's dictionary). The three hardness words are the device profile's
+		// RecomputedAmpParameters; the others are FM9-proven and assumed on the other units until a probe run confirms them.
+		private static readonly (string Symbol, int Fm3, int AxeFx3)[] OtherAmpNormalizations =
+		[
+			("DISTORT_OFFSET1", 23, 17),
+			("DISTORT_WSHPF", 34, 32),
+			("DISTORT_FBTYPE", 39, 37),
+			("DISTORT_PI_RATIO", 40, 38),
+			("DISTORT_EXCURSIONTIME", 66, 64),
+			("DISTORT_RECOVERYTIME", 67, 65),
+			("DISTORT_TRIODE2EXTIME", 109, 107),
+			("DISTORT_TRIODE2RECTIME", 110, 108)
+		];
+
+		private static readonly string[] RecomputedSymbols = ["DISTORT_CFGRID", "DISTORT_GRIDHARDNESS", "DISTORT_CFHARDNESS"];
+
+		// The Amp words a device may recalculate on import, by its own parameter ids.
+		public static IReadOnlyDictionary<int, string> AmpNormalizations(Gen3Device device)
+		{
+			ArgumentNullException.ThrowIfNull(device);
+			if (device == Gen3Device.Fm9)
+				return AllowedAmpNormalizations;
+			bool fm3 = device == Gen3Device.Fm3;
+			if (!fm3 && device != Gen3Device.AxeFx3)
+				throw new NotSupportedException($"No Amp parameter ids are known for the {device.Name}.");
+			Dictionary<int, string> ids = OtherAmpNormalizations.ToDictionary(entry => fm3 ? entry.Fm3 : entry.AxeFx3, entry => entry.Symbol);
+			for (int index = 0; index < RecomputedSymbols.Length; index++)
+				ids[device.RecomputedAmpParameters[index]] = RecomputedSymbols[index];
+			return ids;
+		}
+
 		// Checks what the FM9 holds after importing a preset against what was sent. The FM9 recalculates the proven
 		// model-dependent Amp values above when it loads an amp model (seen on the Ride template's Amp); the same columns are
 		// allowed on every Amp record and channel of any preset. Anything else that differs means the import changed the
-		// preset. Returns the recalculated fields (empty when the body came back exactly).
-		public static IReadOnlyList<Fm9NormalizedFieldExpectation> VerifyImportedBody(Fm9PresetDump authored, Fm9PresetDump imported)
+		// preset. Returns the recalculated fields (empty when the body came back exactly). Another unit's dumps (as the
+		// FM9 would send them, Gen3Device.Normalise) are checked with its grid and its Amp ids.
+		public static IReadOnlyList<Fm9NormalizedFieldExpectation> VerifyImportedBody(Fm9PresetDump authored, Fm9PresetDump imported,
+			Gen3Device? device = null)
 		{
 			ArgumentNullException.ThrowIfNull(authored);
 			ArgumentNullException.ThrowIfNull(imported);
+			device ??= Gen3Device.Fm9;
 			if (authored.FormatVersion != imported.FormatVersion ||
 				!string.Equals(authored.PresetName, imported.PresetName, StringComparison.Ordinal))
 				throw new InvalidDataException("The FM9's edit buffer does not hold the preset that was sent.");
-			Fm9PresetBody authoredBody = Fm9PresetBodyDecoder.Decode(authored);
-			Fm9PresetBody importedBody = Fm9PresetBodyDecoder.Decode(imported);
+			Fm9PresetBody authoredBody = Fm9PresetBodyDecoder.Decode(authored, device);
+			Fm9PresetBody importedBody = Fm9PresetBodyDecoder.Decode(imported, device);
 			if (authoredBody.Bytes.Span.SequenceEqual(importedBody.Bytes.Span))
 				return [];
 			if (authoredBody.Bytes.Length != importedBody.Bytes.Length ||
@@ -52,10 +87,11 @@ namespace Fractal.Companion.Protocol
 				throw new InvalidDataException("The FM9 changed the grid or block layout of the preset on import.");
 
 			Dictionary<int, int> allowed = [];
-			foreach (Fm9UploadedBlock amp in Fm9UploadedPreset.Read(authored).Blocks.Where(block => block.BlockType == "Amp" && block.Record is not null))
-				for (int row = 0; row < amp.Record!.ParameterRows; row++)
-					foreach (int id in AllowedAmpNormalizations.Keys.Where(id => id < amp.Record.ParameterColumns))
-						allowed[Fm9ChannelParameterStorage.GetOffset(amp.Record, row, id)] = id;
+			IReadOnlyDictionary<int, string> normalizations = AmpNormalizations(device);
+			foreach (Fm9PresetBlockRecord amp in AmpRecords(authored, authoredBody))
+				for (int row = 0; row < amp.ParameterRows; row++)
+					foreach (int id in normalizations.Keys.Where(id => id < amp.ParameterColumns))
+						allowed[Fm9ChannelParameterStorage.GetOffset(amp, row, id)] = id;
 			ReadOnlySpan<byte> before = authoredBody.Bytes.Span, after = importedBody.Bytes.Span;
 			List<int> unexpected = [];
 			for (int offset = 0; offset < before.Length; offset++)
@@ -68,8 +104,20 @@ namespace Fractal.Companion.Protocol
 			List<Fm9NormalizedFieldExpectation> fields = [];
 			foreach ((int offset, int id) in allowed.OrderBy(pair => pair.Key))
 				if (ReadUInt16(before, offset) != ReadUInt16(after, offset))
-					fields.Add(new(id, AllowedAmpNormalizations[id], offset, ReadUInt16(before, offset), ReadUInt16(after, offset)));
+					fields.Add(new(id, normalizations[id], offset, ReadUInt16(before, offset), ReadUInt16(after, offset)));
 			return fields;
+		}
+
+		// The FM9's Amp records as the uploaded-preset reader finds them (FM9 catalogue); another unit's by the effect id
+		// 12 bytes before each record (Amp 1-4 are 58-61 on all three), since the FM9 catalogue's record shapes don't fit.
+		private static IEnumerable<Fm9PresetBlockRecord> AmpRecords(Fm9PresetDump authored, Fm9PresetBody body)
+		{
+			const int prefixBytes = 12, firstAmp = 58, amps = 4;
+			if (body.Device == Gen3Device.Fm9)
+				return Fm9UploadedPreset.Read(authored).Blocks.Where(block => block.BlockType == "Amp" && block.Record is not null)
+					.Select(block => block.Record!);
+			return body.BlockRecords.Where(record => record.Offset >= prefixBytes &&
+				ReadUInt16(body.Bytes.Span, record.Offset - prefixBytes) is >= firstAmp and < firstAmp + amps).ToArray();
 		}
 
 		public static Fm9PresetNormalizationExpectation CreateNormalizationExpectation(

@@ -47,13 +47,16 @@ namespace Fractal.Companion.Auditioning
 		public Fm9StoredPresetReplacer(IFractalMidiTransport transport, int displayedPresetNumber = 500, int midiChannel = DefaultMidiChannel,
 			int? stagingPresetNumber = null)
 		{
+			// The slot range is the unit's (Axe-Fx III Mk II: 1,024); a plain transport is an FM9.
+			_device = Gen3DeviceTransport.DeviceOf(transport);
+			string range = $"{_device.Name} presets are 0 through {_device.Presets - 1}.";
 			// Which slot may serve as staging is the caller's policy (FracTone's probes keep to scratch slots 500-505).
-			if (stagingPresetNumber is < 0 or > 511)
-				throw new ArgumentOutOfRangeException(nameof(stagingPresetNumber), "FM9 presets are 0 through 511.");
+			if (stagingPresetNumber < 0 || stagingPresetNumber >= _device.Presets)
+				throw new ArgumentOutOfRangeException(nameof(stagingPresetNumber), range);
 			_stagingPresetNumber = stagingPresetNumber;
 			_transport = transport ?? throw new ArgumentNullException(nameof(transport));
-			if (displayedPresetNumber is < 0 or > 511)
-				throw new ArgumentOutOfRangeException(nameof(displayedPresetNumber), "FM9 presets are 0 through 511.");
+			if (displayedPresetNumber < 0 || displayedPresetNumber >= _device.Presets)
+				throw new ArgumentOutOfRangeException(nameof(displayedPresetNumber), range);
 			if (midiChannel is < 1 or > 16)
 				throw new ArgumentOutOfRangeException(nameof(midiChannel), "MIDI channels are 1 through 16.");
 			DisplayedPresetNumber = displayedPresetNumber;
@@ -74,6 +77,7 @@ namespace Fractal.Companion.Auditioning
 		public bool KeepEvidence { get; init; } = true;
 
 		private readonly int? _stagingPresetNumber;
+		private readonly Gen3Device _device;
 
 		// The preset shown on the FM9 while importing: the staging slot when one is used, otherwise the target.
 		private int ContextPresetNumber => _stagingPresetNumber ?? DisplayedPresetNumber;
@@ -87,7 +91,7 @@ namespace Fractal.Companion.Auditioning
 			string? readbackPath = null)
 		{
 			Fm9PresetDump dump = Fm9PresetDump.Parse(File.ReadAllBytes(Path.GetFullPath(presetPath)));
-			_ = Fm9PresetBodyDecoder.Decode(dump);
+			_ = Fm9PresetBodyDecoder.Decode(dump, _device);
 			List<string> operations = [];
 			await SelectTargetAsync(operations, cancellationToken);
 			_ = await new Fm9TargetVerifier(_transport).VerifyAsync(DisplayedPresetNumber, RequiredSceneNumber, cancellationToken);
@@ -121,11 +125,11 @@ namespace Fractal.Companion.Auditioning
 		}
 
 		// Whether the buffer holds the preset sent, allowing the values the FM9 recalculates when it loads an amp model.
-		private static bool Holds(Fm9PresetDump sent, Fm9PresetDump buffer)
+		private bool Holds(Fm9PresetDump sent, Fm9PresetDump buffer)
 		{
 			try
 			{
-				_ = Fm9PresetWriteVerifier.VerifyImportedBody(sent, buffer);
+				_ = Fm9PresetWriteVerifier.VerifyImportedBody(sent, buffer, _device);
 				return true;
 			}
 			catch (InvalidDataException)
@@ -183,7 +187,7 @@ namespace Fractal.Companion.Auditioning
 
 			byte[] repairedBytes = File.ReadAllBytes(repairedFullPath);
 			Fm9PresetDump repaired = Fm9PresetDump.Parse(repairedBytes);
-			_ = Fm9PresetBodyDecoder.Decode(repaired);
+			_ = Fm9PresetBodyDecoder.Decode(repaired, _device);
 			string repairedSha256 = CalculateSha256(repairedBytes);
 			Fm9PresetNormalizationExpectation? normalizationExpectation = null;
 			string? normalizationReferenceFullPath = null;
@@ -292,7 +296,7 @@ namespace Fractal.Companion.Auditioning
 				{
 					// Without a reference, the FM9's own import is the reference: it may only have recalculated the proven
 					// model-dependent Amp values, and the stored copy must then match what it holds exactly.
-					importNormalized = Fm9PresetWriteVerifier.VerifyImportedBody(repaired, imported.Dump);
+					importNormalized = Fm9PresetWriteVerifier.VerifyImportedBody(repaired, imported.Dump, _device);
 					if (importNormalized.Count > 0)
 					{
 						expectedStored = imported.Dump;
@@ -316,7 +320,7 @@ namespace Fractal.Companion.Auditioning
 
 				storeAttempted = true;
 				await _transport.SendAsync(
-					FractalSysExCodec.CreateStorePreset(DisplayedPresetNumber),
+					FractalSysExCodec.CreateStorePreset(DisplayedPresetNumber, _device),
 					cancellationToken);
 				operations.Add($"Store command sent for preset #{DisplayedPresetNumber} only.");
 				await Wait(TimeSpan.FromSeconds(2), cancellationToken);
@@ -432,7 +436,7 @@ namespace Fractal.Companion.Auditioning
 							_ = await new Fm9TargetVerifier(_transport).VerifyAsync(
 								ContextPresetNumber, RequiredSceneNumber, cancellationToken);
 							await _transport.SendAsync(
-								FractalSysExCodec.CreateStorePreset(DisplayedPresetNumber),
+								FractalSysExCodec.CreateStorePreset(DisplayedPresetNumber, _device),
 								cancellationToken);
 							await Wait(TimeSpan.FromSeconds(2), cancellationToken);
 						}

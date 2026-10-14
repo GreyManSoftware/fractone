@@ -27,6 +27,7 @@
     <None Include="..\..\Presets\metallica-eight-scenes.syx" Link="Presets\metallica-eight-scenes.syx" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\Presets\fm9-uploaded-shunts.syx" Link="Presets\fm9-uploaded-shunts.syx" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\Presets\fm9-uploaded-usb-input.syx" Link="Presets\fm9-uploaded-usb-input.syx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\Presets\gen3-*.syx" LinkBase="Presets" CopyToOutputDirectory="PreserveNewest" />
     <!-- One-second 440 Hz tones made with ffmpeg's sine generator, one per format. -->
     <None Include="Audio\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

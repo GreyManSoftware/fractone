@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- fractone-probe-gui: a small wizard over the probe engine for people who don't use a command line. Avalonia keeps Mac
+       and Linux possible later; v1 ships for Windows (USB MIDI through WinMM). The view models hold no Avalonia types, so
+       the wizard's flow is tested without a UI or a device. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>fractone-probe-gui</AssemblyName>
+    <RootNamespace>FracTone.Probe.Gui</RootNamespace>
+    <Version>0.1.0</Version>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.3" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FracTone.Probe\FracTone.Probe.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="FracTone.Probe.Gui.Tests" />
+  </ItemGroup>
+
+</Project>

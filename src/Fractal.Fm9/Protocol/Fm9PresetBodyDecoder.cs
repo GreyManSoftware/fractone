@@ -11,7 +11,12 @@ namespace Fractal.Companion.Protocol
 		ushort CompressedSize,
 		IReadOnlyList<Fm9PresetGridCell> GridCells,
 		ReadOnlyMemory<byte> Bytes,
-		IReadOnlyList<Fm9PresetBlockRecord> BlockRecords);
+		IReadOnlyList<Fm9PresetBlockRecord> BlockRecords)
+	{
+		// The unit the body was written for, which sets its grid shape (and so where the record chain starts), its record
+		// order and the Axe-Fx III's prefix words. Edits made with `with` keep it.
+		public Gen3Device Device { get; init; } = Gen3Device.Fm9;
+	}
 
 	public sealed record Fm9PresetBlockRecord(
 		int Offset,
@@ -25,13 +30,14 @@ namespace Fractal.Companion.Protocol
 		private const int CompressedSizeOffset = 0x4A;
 		private const int CompressedBodyOffset = 0x4C;
 		private const int GridOffset = 0x104;
-		private const int GridRows = 6;
-		private const int GridColumns = 14;
 		private const int GridCellSize = 4;
 
-		public static Fm9PresetBody Decode(Fm9PresetDump dump)
+		// The grid's shape is the device's: 6 x 14 on the FM9 and Axe-Fx III, 4 x 12 on the FM3; default the FM9.
+		public static Fm9PresetBody Decode(Fm9PresetDump dump, Gen3Device? device = null)
 		{
 			ArgumentNullException.ThrowIfNull(dump);
+			device ??= Gen3Device.Fm9;
+			int GridRows = device.GridRows, GridColumns = device.GridColumns;
 			ReadOnlySpan<byte> rawPatch = dump.RawPatch.Span;
 			ushort decompressedSize = ReadUInt16(rawPatch, DecompressedSizeOffset);
 			ushort compressedSize = ReadUInt16(rawPatch, CompressedSizeOffset);
@@ -74,7 +80,10 @@ namespace Fractal.Companion.Protocol
 				compressedSize,
 				gridCells,
 				body,
-				ReadBlockRecords(body));
+				ReadBlockRecords(body))
+			{
+				Device = device
+			};
 		}
 
 		private static byte[] Decompress(ReadOnlySpan<byte> compressedData, int outputSize)

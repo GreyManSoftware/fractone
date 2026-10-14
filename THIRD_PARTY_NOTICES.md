@@ -52,6 +52,23 @@ with the NuGet package. The transport is not registered or instantiated
 automatically; constructing it explicitly opens the selected Windows MIDI
 ports.
 
+## System.IO.Ports
+
+The FM3's USB serial transport references [`System.IO.Ports` 10.0.0](https://www.nuget.org/packages/System.IO.Ports/10.0.0)
+(with its `runtime.*.runtime.native.System.IO.Ports` packages on macOS and Linux), part of .NET.
+
+Copyright (c) .NET Foundation and Contributors
+
+System.IO.Ports is licensed under the MIT License. Its licence text is distributed with the NuGet package. A serial
+port is opened only when the FM3 transport is constructed explicitly.
+
+## Avalonia (probe kit GUI)
+
+`fractone-probe-gui` is built with [Avalonia](https://github.com/AvaloniaUI/Avalonia) 12.1.3 (`Avalonia`,
+`Avalonia.Desktop`, `Avalonia.Themes.Fluent`), MIT License, Copyright The Avalonia Project (AvaloniaUI OÜ and
+contributors). It brings in SkiaSharp and HarfBuzzSharp (MIT, Copyright Microsoft Corporation and Xamarin), MicroCom
+(MIT), ANGLE on Windows (BSD-3-Clause, Copyright The ANGLE Project Authors) and, on Linux, Tmds.DBus (MIT). Their licence texts come with their NuGet packages.
+
 ## Stem separator add-on (downloaded on the user's machine, not distributed)
 
 The optional `separate` tool installs these on first use into a folder the user chooses. None of them is bundled

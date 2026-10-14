@@ -13,29 +13,34 @@ namespace Fractal.Companion.Protocol
 	// Hardware-checked 2026-10-08: all 84 cells of a preset with Drive 1 (id 146), shunts 1024-1025 and a two-row route
 	// matched its stored grid. Reading from bit 46 (as this once did) kept only the id's low 7 bits and shifted the
 	// route mask, so Send/Return (182-189) read back as PEQ and Amp ids and the MIDI block as Cab 1.
+	// The cell count is the device's (84 on the FM9 and Axe-Fx III, 48 on the FM3's 4 x 12 grid); the frame is read as the
+	// FM9 sends it (Gen3DeviceTransport normalises other units' replies). The FM3 and III layouts are unverified until a
+	// probe run reads one.
 	public static class Fm9GridLayout
 	{
 		public const int FirstShuntId = 1024;
-		private const int Rows = 6;
-		private const int Columns = 14;
 		private const int BaseBit = 45;
 		private const int CellBits = 32;
+		// The FM9's reply carries at least this much before the grid; a shorter frame is not a grid read.
+		private const int MinimumRegionOffset = 350;
 
-		public static IReadOnlyList<Fm9GridCell>? TryParse(ReadOnlySpan<byte> bytes)
+		public static IReadOnlyList<Fm9GridCell>? TryParse(ReadOnlySpan<byte> bytes, Gen3Device? device = null)
 		{
 			if (!FractalSysExCodec.IsValidFm9Frame(bytes) || bytes[5] != 0x01 || bytes[6] != 0x2E) return null;
+			device ??= Gen3Device.Fm9;
+			int rows = device.GridRows, columns = device.GridColumns;
 
-			int regionByteCount = (BaseBit + (Columns * Rows * CellBits) + 6) / 7;
+			int regionByteCount = (BaseBit + (columns * rows * CellBits) + 6) / 7;
 			int regionOffset = bytes.Length - 2 - regionByteCount;
-			if (regionOffset < 350) return null;
+			if (regionOffset < MinimumRegionOffset) return null;
 
 			ReadOnlySpan<byte> region = bytes.Slice(regionOffset, regionByteCount);
 			List<Fm9GridCell> cells = [];
-			for (int column = 0; column < Columns; column++)
+			for (int column = 0; column < columns; column++)
 			{
-				for (int row = 0; row < Rows; row++)
+				for (int row = 0; row < rows; row++)
 				{
-					int cellBit = BaseBit + (((column * Rows) + row) * CellBits);
+					int cellBit = BaseBit + (((column * rows) + row) * CellBits);
 					int effectId = Word(region, cellBit);
 					if (effectId == 0) continue;
 					bool isShunt = effectId >= FirstShuntId;
@@ -46,10 +51,12 @@ namespace Fractal.Companion.Protocol
 			return cells;
 		}
 
-		public static bool HasIncomingCable(Fm9GridCell destination, int sourceRow)
+		public static bool HasIncomingCable(Fm9GridCell destination, int sourceRow, Gen3Device? device = null)
 		{
 			ArgumentNullException.ThrowIfNull(destination);
-			if (sourceRow is < 1 or > Rows) throw new ArgumentOutOfRangeException(nameof(sourceRow), "FM9 grid source rows are 1 through 6.");
+			device ??= Gen3Device.Fm9;
+			if (sourceRow < 1 || sourceRow > device.GridRows)
+				throw new ArgumentOutOfRangeException(nameof(sourceRow), $"{device.Name} grid source rows are 1 through {device.GridRows}.");
 			return (destination.RouteMask & (1 << (sourceRow - 1))) != 0;
 		}
 

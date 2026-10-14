@@ -2,13 +2,12 @@ using Fractal.Companion.Catalog;
 
 namespace Fractal.Companion.Protocol
 {
+	// Grid edits follow the body's device (Fm9PresetBody.Device): 6 x 14 on the FM9 and Axe-Fx III, 4 x 12 on the FM3. The
+	// Input/Output instance swap stays FM9-only, since it checks against the FM9's Ride template and port catalogue.
 	public static class Fm9PresetBodyGridEditor
 	{
 		private const int GridOffset = 0x104;
-		private const int GridRows = 6;
-		private const int GridColumns = 14;
 		private const int GridCellSize = 4;
-		private const ushort ValidRouteMask = 0x003F;
 		private static readonly Lazy<IReadOnlyDictionary<(string BlockType, int Instance), int>> PortEffects =
 			new(() => Task.Run(async () =>
 			{
@@ -43,6 +42,8 @@ namespace Fractal.Companion.Protocol
 		public static byte[] WithInputOutputInstances(Fm9PresetBody source, int input, int output)
 		{
 			ArgumentNullException.ThrowIfNull(source);
+			if (source.Device != Gen3Device.Fm9)
+				throw new NotSupportedException($"Input and Output instances are swapped on FM9 presets only, not the {source.Device.Name}'s.");
 			ValidateInputOutputInstances(input, output);
 			EnsureBlockRecordsArePreserved(source);
 			Fm9BlockRecordTemplateProfile profile = Fm9BlockRecordTemplateProfile.CreateRideBaseline(source);
@@ -54,7 +55,7 @@ namespace Fractal.Companion.Protocol
 				Fm9PresetGridCell[] cells = source.GridCells.Where(cell => cell.EffectId == existingEffect).ToArray();
 				if (cells.Length != 1)
 					throw new InvalidOperationException($"The export requires exactly one existing {blockType} block.");
-				WriteUInt16(bytes, GetCellOffset(new(cells[0].Row, cells[0].Column)),
+				WriteUInt16(bytes, GetCellOffset(new(cells[0].Row, cells[0].Column), source.Device),
 					checked((ushort)ResolvePort(blockType, instance)));
 			}
 			return bytes;
@@ -70,12 +71,12 @@ namespace Fractal.Companion.Protocol
 			ushort routeMask)
 		{
 			ArgumentNullException.ThrowIfNull(source);
-			position.Validate();
-			ValidateRouteMask(routeMask);
+			position.Validate(source.Device);
+			ValidateRouteMask(routeMask, source.Device);
 			EnsureBlockRecordsArePreserved(source);
 
 			byte[] bytes = source.Bytes.ToArray();
-			int offset = GetCellOffset(position);
+			int offset = GetCellOffset(position, source.Device);
 
 			if (ReadUInt16(bytes, offset) == 0)
 			{
@@ -93,8 +94,8 @@ namespace Fractal.Companion.Protocol
 			GridPosition to)
 		{
 			ArgumentNullException.ThrowIfNull(source);
-			from.Validate();
-			to.Validate();
+			from.Validate(source.Device);
+			to.Validate(source.Device);
 			EnsureBlockRecordsArePreserved(source);
 
 			if (from == to)
@@ -105,8 +106,8 @@ namespace Fractal.Companion.Protocol
 			}
 
 			byte[] bytes = source.Bytes.ToArray();
-			int sourceOffset = GetCellOffset(from);
-			int destinationOffset = GetCellOffset(to);
+			int sourceOffset = GetCellOffset(from, source.Device);
+			int destinationOffset = GetCellOffset(to, source.Device);
 			ushort effectId = ReadUInt16(bytes, sourceOffset);
 
 			if (effectId == 0)
@@ -147,8 +148,8 @@ namespace Fractal.Companion.Protocol
 
 			foreach (Fm9PresetGridMove move in moves)
 			{
-				move.From.Validate();
-				move.To.Validate();
+				move.From.Validate(source.Device);
+				move.To.Validate(source.Device);
 
 				if (!sources.Add(move.From) || !destinations.Add(move.To))
 				{
@@ -161,7 +162,7 @@ namespace Fractal.Companion.Protocol
 
 			foreach (Fm9PresetGridMove move in moves)
 			{
-				int sourceOffset = GetCellOffset(move.From);
+				int sourceOffset = GetCellOffset(move.From, source.Device);
 
 				if (ReadUInt16(bytes, sourceOffset) != move.ExpectedEffectId)
 				{
@@ -169,7 +170,7 @@ namespace Fractal.Companion.Protocol
 						"The requested FM9 grid move does not match the template block.");
 				}
 
-				int destinationOffset = GetCellOffset(move.To);
+				int destinationOffset = GetCellOffset(move.To, source.Device);
 
 				if (!sources.Contains(move.To) &&
 					ReadUInt16(bytes, destinationOffset) != 0)
@@ -182,21 +183,21 @@ namespace Fractal.Companion.Protocol
 			List<(ushort EffectId, ushort RouteMask)> values = moves
 				.Select(move =>
 				{
-					int offset = GetCellOffset(move.From);
+					int offset = GetCellOffset(move.From, source.Device);
 					return (ReadUInt16(bytes, offset), ReadUInt16(bytes, offset + sizeof(ushort)));
 				})
 				.ToList();
 
 			foreach (Fm9PresetGridMove move in moves)
 			{
-				int offset = GetCellOffset(move.From);
+				int offset = GetCellOffset(move.From, source.Device);
 				WriteUInt16(bytes, offset, 0);
 				WriteUInt16(bytes, offset + sizeof(ushort), 0);
 			}
 
 			for (int index = 0; index < moves.Count; index++)
 			{
-				int offset = GetCellOffset(moves[index].To);
+				int offset = GetCellOffset(moves[index].To, source.Device);
 				WriteUInt16(bytes, offset, values[index].EffectId);
 				WriteUInt16(bytes, offset + sizeof(ushort), values[index].RouteMask);
 			}
@@ -223,18 +224,19 @@ namespace Fractal.Companion.Protocol
 			}
 		}
 
-		private static int GetCellOffset(GridPosition position)
+		private static int GetCellOffset(GridPosition position, Gen3Device device)
 		{
-			return GridOffset + (((position.Column - 1) * GridRows + (position.Row - 1)) * GridCellSize);
+			return GridOffset + (((position.Column - 1) * device.GridRows + (position.Row - 1)) * GridCellSize);
 		}
 
-		private static void ValidateRouteMask(ushort routeMask)
+		// A bit per source row in the previous column, so only the device's rows.
+		private static void ValidateRouteMask(ushort routeMask, Gen3Device device)
 		{
-			if ((routeMask & ~ValidRouteMask) != 0)
+			if ((routeMask & ~((1 << device.GridRows) - 1)) != 0)
 			{
 				throw new ArgumentOutOfRangeException(
 					nameof(routeMask),
-					"An FM9 grid route mask can only address rows 1 through 6.");
+					$"An {device.Name} grid route mask can only address rows 1 through {device.GridRows}.");
 			}
 		}
 

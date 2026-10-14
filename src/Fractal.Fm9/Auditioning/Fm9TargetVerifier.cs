@@ -22,11 +22,12 @@ namespace Fractal.Companion.Auditioning
 			int expectedSceneNumber,
 			CancellationToken cancellationToken)
 		{
-			if (expectedVisiblePresetNumber is < 0 or > 511)
+			Gen3Device device = Gen3DeviceTransport.DeviceOf(_transport);
+			if (expectedVisiblePresetNumber < 0 || expectedVisiblePresetNumber >= device.Presets)
 			{
 				throw new ArgumentOutOfRangeException(
 					nameof(expectedVisiblePresetNumber),
-					"FM9 visible preset numbers are 0 through 511.");
+					$"{device.Name} visible preset numbers are 0 through {device.Presets - 1}.");
 			}
 
 			if (expectedSceneNumber is < 1 or > 8)

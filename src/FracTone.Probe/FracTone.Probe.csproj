@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The probe kit's engine: identifies an Axe-Fx III, FM3 or FM9, backs up the user's safe slot and edit buffer, runs the
+       probe script for that device and firmware, always restores, and writes one anonymised report zip per run. The GUI
+       and the CLI share it. Steps are data (Scripts/*.json), so a new firmware is a new script, not a new program. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>FracTone.Probe</RootNamespace>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fractal.Fm9\Fractal.Fm9.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- DPAPI for the saved upload code (UploadCodeStore). -->
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="FracTone.Probe.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\*.json" LogicalName="FracTone.Probe.Scripts.%(Filename)%(Extension)" />
+    <!-- The templates level 2 loads: FracCompat's from-scratch Ride for each device, the device's own format. -->
+    <EmbeddedResource Include="..\..\Presets\fm9-synthetic-ride.syx" LogicalName="FracTone.Probe.Templates.fm9-12.00-ride.syx" />
+    <EmbeddedResource Include="..\..\Presets\gen3-fm3-13.00-ride.syx" LogicalName="FracTone.Probe.Templates.fm3-13.00-ride.syx" />
+    <EmbeddedResource Include="..\..\Presets\gen3-axe3-32.06-ride.syx" LogicalName="FracTone.Probe.Templates.axe3-32.06-ride.syx" />
+    <!-- Empty presets (no blocks) for fresh inserts and cable checks. -->
+    <EmbeddedResource Include="..\..\Presets\gen3-fm9-12.00-empty.syx" LogicalName="FracTone.Probe.Templates.fm9-12.00-empty.syx" />
+    <EmbeddedResource Include="..\..\Presets\gen3-fm3-13.00-empty.syx" LogicalName="FracTone.Probe.Templates.fm3-13.00-empty.syx" />
+    <EmbeddedResource Include="..\..\Presets\gen3-axe3-32.06-empty.syx" LogicalName="FracTone.Probe.Templates.axe3-32.06-empty.syx" />
+  </ItemGroup>
+
+</Project>

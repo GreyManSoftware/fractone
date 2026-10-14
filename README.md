@@ -45,6 +45,8 @@ Tests that need the dictionary run only where FM9-Edit is installed, and are ski
 The media-capture tests need the headless browser: run `fractone-mcp setup-browser`, then set `FRACTONE_BROWSER_FOLDER`
 to its folder.
 Before a release, run them all on such a machine and do the hardware checklist in `docs/release-checklist.md`.
+Builds don't send Avalonia's build telemetry (the probe GUI uses Avalonia): `Directory.Build.targets` switches it off, and
+CI also sets `AVALONIA_TELEMETRY_OPTOUT=1`, the opt-out Avalonia documents.
 
 ## Licence
 

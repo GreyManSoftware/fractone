@@ -2,16 +2,20 @@ namespace Fractal.Companion.Protocol
 {
 	public readonly record struct GridPosition(int Row, int Column)
 	{
-		public void Validate()
+		public void Validate() => Validate(Gen3Device.Fm9);
+
+		// The FM3's grid is 4 x 12; the FM9's and Axe-Fx III's 6 x 14.
+		public void Validate(Gen3Device device)
 		{
-			if (Row is < 1 or > 6)
+			ArgumentNullException.ThrowIfNull(device);
+			if (Row < 1 || Row > device.GridRows)
 			{
-				throw new ArgumentOutOfRangeException(nameof(Row), "FM9 grid rows are 1 through 6.");
+				throw new ArgumentOutOfRangeException(nameof(Row), $"{device.Name} grid rows are 1 through {device.GridRows}.");
 			}
 
-			if (Column is < 1 or > 14)
+			if (Column < 1 || Column > device.GridColumns)
 			{
-				throw new ArgumentOutOfRangeException(nameof(Column), "FM9 grid columns are 1 through 14.");
+				throw new ArgumentOutOfRangeException(nameof(Column), $"{device.Name} grid columns are 1 through {device.GridColumns}.");
 			}
 		}
 	}
@@ -48,31 +52,35 @@ namespace Fractal.Companion.Protocol
 
 		public static IReadOnlyList<FractalSysExFrame> CreateBlockPlacementCommands(
 			int blockId,
-			GridPosition position)
+			GridPosition position,
+			Gen3Device? device = null)
 		{
 			if (blockId < 0)
 			{
 				throw new ArgumentOutOfRangeException(nameof(blockId), "A block ID cannot be negative.");
 			}
 
-			position.Validate();
+			device ??= Gen3Device.Fm9;
+			position.Validate(device);
 
 			return
 			[
-				CreateGridCellSelection(position),
-				CreateGridBlockInsertion(blockId, position)
+				CreateGridCellSelection(position, device),
+				CreateGridBlockInsertion(blockId, position, device)
 			];
 		}
 
 		public static IReadOnlyList<FractalSysExFrame> CreateBlockClearCommands(
-			GridPosition position)
+			GridPosition position,
+			Gen3Device? device = null)
 		{
-			position.Validate();
+			device ??= Gen3Device.Fm9;
+			position.Validate(device);
 
 			return
 			[
-				CreateGridCellSelection(position),
-				CreateGridBlockInsertion(0, position)
+				CreateGridCellSelection(position, device),
+				CreateGridBlockInsertion(0, position, device)
 			];
 		}
 
@@ -179,33 +187,36 @@ namespace Fractal.Companion.Protocol
 		}
 
 		// Cables a block to one in the next column. The code is the source and destination cells (column-major, 6 rows per
-		// column) as two bytes packed MSB-first into septets, as the live grid read packs its words (BigSaurus's reading).
-		// Hardware-checked on 505 (2026-10-13) for same-row, cross-row and even-column routes; the formula this replaced
-		// was right only for same-row routes on row 3.
+		// column on the FM9) as two bytes packed MSB-first into septets, as the live grid read packs its words (BigSaurus's
+		// reading). Hardware-checked on 505 (2026-10-13) for same-row, cross-row and even-column routes; the formula this
+		// replaced was right only for same-row routes on row 3. The FM3's cells are expected to number by its 4 rows
+		// (FracCompat; unverified until a probe run).
 		public static FractalSysExFrame CreateGridRoute(
 			int sourceRow,
 			int sourceColumn,
-			int destinationRow)
+			int destinationRow,
+			Gen3Device? device = null)
 		{
+			device ??= Gen3Device.Fm9;
 			GridPosition source = new(sourceRow, sourceColumn);
-			source.Validate();
+			source.Validate(device);
 
-			if (sourceColumn >= 14)
+			if (sourceColumn >= device.GridColumns)
 			{
 				throw new ArgumentOutOfRangeException(
 					nameof(sourceColumn),
 					"Grid routing requires a destination column to the right of the source.");
 			}
 
-			if (destinationRow is < 1 or > 6)
+			if (destinationRow < 1 || destinationRow > device.GridRows)
 			{
 				throw new ArgumentOutOfRangeException(
 					nameof(destinationRow),
-					"FM9 grid destination rows are 1 through 6.");
+					$"{device.Name} grid destination rows are 1 through {device.GridRows}.");
 			}
 
-			int sourceCell = ToGridPosition(source);
-			int destinationCell = ToGridPosition(new GridPosition(destinationRow, sourceColumn + 1));
+			int sourceCell = ToGridPosition(source, device);
+			int destinationCell = ToGridPosition(new GridPosition(destinationRow, sourceColumn + 1), device);
 
 			return CreateFrame(
 				ParameterFunction,
@@ -245,10 +256,9 @@ namespace Fractal.Companion.Protocol
 
 		// 01 27 switches the FM9 to a preset (number at bytes 12-13, low septet first), dropping unsaved edits. It was once
 		// named "preset import preparation"; an all-zero frame jumps to preset 0 (hardware-checked 2026-10-13).
-		public static FractalSysExFrame CreateSwitchPreset(int displayedPresetNumber)
+		public static FractalSysExFrame CreateSwitchPreset(int displayedPresetNumber, Gen3Device? device = null)
 		{
-			if (displayedPresetNumber is < 0 or > 511)
-				throw new ArgumentOutOfRangeException(nameof(displayedPresetNumber), "FM9 presets are 0 through 511.");
+			ValidatePresetNumber(displayedPresetNumber, device ?? Gen3Device.Fm9);
 			return CreateFrame(
 				ParameterFunction,
 				[SwitchPresetSubcommand, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -258,10 +268,9 @@ namespace Fractal.Companion.Protocol
 
 		// Which slots may be written is the caller's decision: probes enforce the 500-505 scratch policy, and the stored-preset
 		// replacer writes only a slot the user named, after backing it up.
-		public static FractalSysExFrame CreateStorePreset(int displayedPresetNumber)
+		public static FractalSysExFrame CreateStorePreset(int displayedPresetNumber, Gen3Device? device = null)
 		{
-			if (displayedPresetNumber is < 0 or > 511)
-				throw new ArgumentOutOfRangeException(nameof(displayedPresetNumber), "FM9 presets are 0 through 511.");
+			ValidatePresetNumber(displayedPresetNumber, device ?? Gen3Device.Fm9);
 
 			List<byte> payload =
 			[
@@ -447,9 +456,9 @@ namespace Fractal.Companion.Protocol
 			return true;
 		}
 
-		private static FractalSysExFrame CreateGridCellSelection(GridPosition position)
+		private static FractalSysExFrame CreateGridCellSelection(GridPosition position, Gen3Device device)
 		{
-			int gridPosition = ToGridPosition(position);
+			int gridPosition = ToGridPosition(position, device);
 			List<byte> payload =
 			[
 				SelectGridCellSubcommand, 0x00, 0x00, 0x00, 0x00, 0x00
@@ -460,9 +469,9 @@ namespace Fractal.Companion.Protocol
 			return CreateFrame(ParameterFunction, payload);
 		}
 
-		private static FractalSysExFrame CreateGridBlockInsertion(int blockId, GridPosition position)
+		private static FractalSysExFrame CreateGridBlockInsertion(int blockId, GridPosition position, Gen3Device device)
 		{
-			int gridPosition = ToGridPosition(position);
+			int gridPosition = ToGridPosition(position, device);
 			List<byte> payload =
 			[
 				InsertGridBlockSubcommand, 0x00
@@ -562,9 +571,17 @@ namespace Fractal.Companion.Protocol
 			return (byte)(checksum & 0x7F);
 		}
 
-		private static int ToGridPosition(GridPosition position)
+		private static int ToGridPosition(GridPosition position, Gen3Device device)
 		{
-			return (position.Column - 1) * 6 + position.Row - 1;
+			return (position.Column - 1) * device.GridRows + position.Row - 1;
+		}
+
+		// 512 presets on the FM9, FM3 and Axe-Fx III Mk I; 1,024 on the III Mk II and Turbo, which share the Mk I's model byte,
+		// so the III profile allows 1,024 and the device answers 0x0E for a number it lacks.
+		internal static void ValidatePresetNumber(int displayedPresetNumber, Gen3Device device)
+		{
+			if (displayedPresetNumber < 0 || displayedPresetNumber >= device.Presets)
+				throw new ArgumentOutOfRangeException(nameof(displayedPresetNumber), $"{device.Name} presets are 0 through {device.Presets - 1}.");
 		}
 
 		private static void ValidateParameterAddress(int effectId, int parameterId)

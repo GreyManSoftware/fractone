@@ -1,0 +1,113 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:FracTone.Probe.Gui.ViewModels"
+        x:Class="FracTone.Probe.Gui.MainWindow"
+        x:DataType="vm:WizardViewModel"
+        Title="FracTone device check"
+        Width="640" Height="560" MinWidth="480" MinHeight="460"
+        WindowStartupLocation="CenterScreen">
+  <DockPanel Margin="24">
+    <TextBlock DockPanel.Dock="Top" Classes="note" Text="{Binding StepTitle}" />
+
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8"
+                IsVisible="{Binding ShowNavigation}" Margin="0,12,0,0">
+      <Button Content="Back" Command="{Binding BackCommand}" IsVisible="{Binding !IsWelcome}" />
+      <Button Content="{Binding NextText}" Command="{Binding NextCommand}" Classes="accent" />
+    </StackPanel>
+
+    <ScrollViewer>
+      <Panel>
+        <!-- 1. Before you start -->
+        <StackPanel IsVisible="{Binding IsWelcome}">
+          <TextBlock Classes="title" Text="Before you start" />
+          <TextBlock Classes="body" Text="This tool checks how your Fractal unit (FM9, FM3 or Axe-Fx III) stores its presets, so FracTone can support it. It takes a few minutes and saves a small report you can send us." />
+          <TextBlock Classes="body" Text="What it never does: change your settings, touch any preset except the one you choose, or keep anything it changed. Your device is put back exactly as it was, and we check that it is." />
+          <TextBlock Classes="body" Text="Please close Axe-Edit, FM3-Edit, FM9-Edit and Fractal-Bot first. They hold the connection, and this tool can't talk to your unit while they're open." />
+          <TextBlock Classes="body" Text="Keep the USB cable connected and leave the unit alone while the check runs." />
+          <CheckBox Content="I've closed the editor apps" IsChecked="{Binding EditorsClosed}" Margin="0,8,0,0" />
+        </StackPanel>
+
+        <!-- 2. Connect -->
+        <StackPanel IsVisible="{Binding IsConnect}" Spacing="8">
+          <TextBlock Classes="title" Text="Find your device" />
+          <TextBlock Classes="body" Text="Switch the unit on, connect it by USB, then press Find. This only asks the unit what it is; nothing changes." />
+          <Button Content="Find my device" Command="{Binding ConnectCommand}" />
+          <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsBusy}" />
+          <TextBlock Classes="body" FontWeight="SemiBold" Text="{Binding DeviceSummary}" IsVisible="{Binding IsConnected}" />
+          <TextBlock Classes="body" Text="{Binding ScriptedSummary}" IsVisible="{Binding IsConnected}" />
+          <TextBlock Classes="warning" Text="{Binding ConnectError}" IsVisible="{Binding ConnectError, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        </StackPanel>
+
+        <!-- 3. Safe slot -->
+        <StackPanel IsVisible="{Binding IsSafeSlot}" Spacing="8">
+          <TextBlock Classes="title" Text="Choose a preset we can borrow" />
+          <TextBlock Classes="body" Text="Pick one preset number you're happy for us to use, such as a spare or empty one. We back it up first and put it back at the end." />
+          <TextBlock Classes="note" Text="{Binding SlotHint}" />
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <TextBox Text="{Binding SlotText}" Width="120" PlaceholderText="e.g. 503" />
+            <Button Content="Look it up" Command="{Binding CheckSlotCommand}" />
+          </StackPanel>
+          <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsBusy}" />
+          <TextBlock Classes="warning" Text="{Binding SlotError}" IsVisible="{Binding SlotError, Converter={x:Static ObjectConverters.IsNotNull}}" />
+          <TextBlock Classes="body" FontWeight="SemiBold" Text="{Binding SlotSummary}" IsVisible="{Binding SlotChecked}" />
+          <CheckBox Content="Yes, you can use this preset" IsChecked="{Binding SlotConfirmed}" IsVisible="{Binding SlotChecked}" />
+        </StackPanel>
+
+        <!-- 4. Level -->
+        <StackPanel IsVisible="{Binding IsLevel}" Spacing="8">
+          <TextBlock Classes="title" Text="How thorough?" />
+          <RadioButton GroupName="level" IsChecked="{Binding IsQuick}">
+            <StackPanel>
+              <TextBlock FontWeight="SemiBold" Text="Quick check (recommended to start)" />
+              <TextBlock Classes="note" Text="Only reads from your unit. Nothing changes. About 5 minutes." />
+            </StackPanel>
+          </RadioButton>
+          <RadioButton GroupName="level" IsChecked="{Binding IsFull}" IsEnabled="{Binding CanUseFull}">
+            <StackPanel>
+              <TextBlock FontWeight="SemiBold" Text="Full check" />
+              <TextBlock Classes="note" Text="Also tries test sounds on your unit without saving them, then puts your sound back. Turn your volume down first. 15 to 30 minutes." />
+            </StackPanel>
+          </RadioButton>
+          <RadioButton GroupName="level" IsChecked="{Binding IsStoreCheck}" IsEnabled="{Binding CanUseFull}">
+            <StackPanel>
+              <TextBlock FontWeight="SemiBold" Text="Full check plus a save test (optional)" />
+              <TextBlock Classes="note" Text="Everything in the full check, plus one save into the preset you chose." />
+            </StackPanel>
+          </RadioButton>
+          <StackPanel IsVisible="{Binding IsStoreCheck}" Margin="28,0,0,0">
+            <TextBlock Classes="warning" Text="{Binding StoreWarning}" />
+            <CheckBox Content="I understand, go ahead" IsChecked="{Binding StoreAcknowledged}" />
+          </StackPanel>
+          <TextBlock Classes="note" Text="Only the quick check is available for this unit or preset." IsVisible="{Binding !CanUseFull}" />
+        </StackPanel>
+
+        <!-- 5. Run -->
+        <StackPanel IsVisible="{Binding IsRun}" Spacing="10">
+          <TextBlock Classes="title" Text="Checking your device" />
+          <TextBlock Classes="body" Text="{Binding CurrentStep}" />
+          <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressPercent}" Height="10" />
+          <TextBlock Classes="note" Text="{Binding TimeLeft}" />
+          <TextBlock Classes="note" Text="Please leave the unit alone until this finishes. If you cancel, we still put everything back first." />
+          <Button Content="Cancel" Command="{Binding CancelCommand}" HorizontalAlignment="Left" />
+        </StackPanel>
+
+        <!-- 6. Done -->
+        <StackPanel IsVisible="{Binding IsDone}" Spacing="8">
+          <TextBlock Classes="title" Text="Finished" />
+          <TextBlock Classes="body" Text="{Binding OutcomeText}" />
+          <TextBlock Classes="body" FontWeight="SemiBold" Text="{Binding LeftAsFoundText}" />
+          <TextBlock Classes="body" Text="Your report is saved here:" IsVisible="{Binding HasReport}" />
+          <SelectableTextBlock Text="{Binding ReportPath}" TextWrapping="Wrap" IsVisible="{Binding HasReport}" />
+          <TextBlock Classes="warning" Text="{Binding ReportError}" IsVisible="{Binding ReportError, Converter={x:Static ObjectConverters.IsNotNull}}" />
+          <Button Content="Open folder" Command="{Binding OpenFolderCommand}" HorizontalAlignment="Left" />
+          <TextBlock Classes="body" Margin="0,12,0,0" Text="To send it to FracTone, paste the upload code from your FracTone account page. The report holds no preset names or personal details." />
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <TextBox Text="{Binding UploadCode}" Width="260" PlaceholderText="Upload code" />
+            <Button Content="Upload report" Command="{Binding UploadCommand}" Classes="accent" />
+          </StackPanel>
+          <TextBlock Classes="body" Text="{Binding UploadStatus}" IsVisible="{Binding UploadStatus, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        </StackPanel>
+      </Panel>
+    </ScrollViewer>
+  </DockPanel>
+</Window>

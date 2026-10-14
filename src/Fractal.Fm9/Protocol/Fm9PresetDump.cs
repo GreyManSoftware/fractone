@@ -8,9 +8,9 @@ namespace Fractal.Companion.Protocol
 		private const byte PresetDumpHeaderFunction = 0x77;
 		private const byte PresetDumpDataFunction = 0x78;
 		private const byte PresetDumpFooterFunction = 0x79;
-		private const int DataFrameCount = 8;
+		// 0x2000 words in 8 data frames on the FM9 and FM3; the Axe-Fx III sends 0x4000 in 16 (FracCompat, device files).
+		private static readonly int[] DataFrameCounts = [8, 16];
 		private const int WordsPerDataFrame = 1_024;
-		private const int RawPatchLength = DataFrameCount * WordsPerDataFrame * sizeof(ushort);
 		private const int PresetNameOffset = 0x08;
 		private const int PresetNameLength = 32;
 		private readonly IReadOnlyList<FractalSysExFrame> _frames;
@@ -40,6 +40,23 @@ namespace Fractal.Companion.Protocol
 
 				return (terminatorIndex >= 0 ? value[..terminatorIndex] : value).TrimEnd();
 			}
+		}
+
+		// Another gen-3 unit's dump read as the FM9's: each frame's model byte is mapped back (Gen3Device.Normalise) so the
+		// same parser and checks apply. Write the device's own bytes back to it, never these.
+		public static Fm9PresetDump Parse(ReadOnlySpan<byte> bytes, Gen3Device device)
+		{
+			ArgumentNullException.ThrowIfNull(device);
+			List<byte> normalised = new(bytes.Length);
+			int start = 0;
+			for (int index = 0; index < bytes.Length; index++)
+				if (bytes[index] == 0xF7)
+				{
+					normalised.AddRange(device.Normalise(new FractalSysExFrame(bytes[start..(index + 1)].ToArray())).Bytes.ToArray());
+					start = index + 1;
+				}
+			normalised.AddRange(bytes[start..].ToArray());
+			return Parse([.. normalised]);
 		}
 
 		public static Fm9PresetDump Parse(ReadOnlySpan<byte> bytes)
@@ -171,7 +188,7 @@ namespace Fractal.Companion.Protocol
 
 		private static void ValidateDumpFrameOrder(IReadOnlyList<FractalSysExFrame> frames)
 		{
-			if (frames.Count != DataFrameCount + 2 ||
+			if (!DataFrameCounts.Contains(frames.Count - 2) ||
 				frames[0].Bytes.Span[5] != PresetDumpHeaderFunction ||
 				frames[^1].Bytes.Span[5] != PresetDumpFooterFunction)
 			{
@@ -191,10 +208,10 @@ namespace Fractal.Companion.Protocol
 
 		private static byte[] ReassembleRawPatch(IReadOnlyList<FractalSysExFrame> frames)
 			{
-				byte[] rawPatch = new byte[RawPatchLength];
+				byte[] rawPatch = new byte[(frames.Count - 2) * WordsPerDataFrame * sizeof(ushort)];
 				int rawPatchOffset = 0;
 
-				for (int frameIndex = 1; frameIndex <= DataFrameCount; frameIndex++)
+				for (int frameIndex = 1; frameIndex <= frames.Count - 2; frameIndex++)
 				{
 					ReadOnlySpan<byte> frame = frames[frameIndex].Bytes.Span;
 					ReadOnlySpan<byte> payload = frame[6..^2];
@@ -285,7 +302,7 @@ namespace Fractal.Companion.Protocol
 					header
 				];
 
-				for (int chunkIndex = 0; chunkIndex < DataFrameCount; chunkIndex++)
+				for (int chunkIndex = 0; chunkIndex < rawPatch.Length / (WordsPerDataFrame * sizeof(ushort)); chunkIndex++)
 				{
 					byte[] payload = new byte[2 + (WordsPerDataFrame * 3)];
 					payload[1] = 0x08;

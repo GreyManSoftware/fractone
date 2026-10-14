@@ -27,7 +27,7 @@ $forbiddenText = [ordered]@{
 	'Windows user folder'      = '[A-Za-z]:\\+Users\\+[A-Za-z]'
 	'OneDrive folder'          = 'OneDrive[\\/]'
 	'Azure resource or secret' = '(rg-fracai|rg-fractone|\.openai\.azure\.com|\.blob\.core\.windows\.net|AccountKey=|SharedAccessSignature=|/subscriptions/[0-9a-fA-F-]{36})'
-	'FracTone site deployment' = '(greymansoftware\.com|fracai-ops|fractone-ops|deploy-azure)'
+	'FracTone site deployment' = '((?<!fractone\.)greymansoftware\.com|fracai-ops|fractone-ops|deploy-azure)'
 	'private key'              = '-----BEGIN [A-Z ]*PRIVATE KEY-----'
 }
 $textExtensions = @('.cs', '.csproj', '.slnx', '.props', '.json', '.md', '.ts', '.ps1', '.py', '.yml', '.yaml', '.txt', '.xml', '.config', '.gitignore', '.editorconfig')

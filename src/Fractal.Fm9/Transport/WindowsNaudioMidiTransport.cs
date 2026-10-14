@@ -163,12 +163,13 @@ namespace Fractal.Companion.Transport
 			{
 				_pendingResponses?.Add(frame);
 				completion = _pendingResponseSignal;
+				// Any gen-3 model's frame ends a read: the probe kit reads the Axe-Fx III through this transport too.
 				completesResponse =
 					(_expectsBulkReadEnd &&
-						FractalSysExCodec.IsValidFm9Frame(frame.Bytes.Span) &&
+						IsGen3Frame(frame.Bytes.Span) &&
 						frame.Bytes.Span[5] == 0x76) ||
 					(_expectsPresetDumpEnd &&
-						FractalSysExCodec.IsValidFm9Frame(frame.Bytes.Span) &&
+						IsGen3Frame(frame.Bytes.Span) &&
 						frame.Bytes.Span[5] == 0x79);
 			}
 
@@ -177,6 +178,10 @@ namespace Fractal.Companion.Transport
 				completion?.TrySetResult();
 			}
 		}
+
+		private static bool IsGen3Frame(ReadOnlySpan<byte> bytes) =>
+			bytes.Length >= 8 && Gen3Device.FromModel(bytes[4]) is { } device &&
+			FractalSysExCodec.IsValidFm9Frame(device.Normalise(new FractalSysExFrame(bytes.ToArray())).Bytes.Span);
 
 		private void ThrowIfDisposed()
 		{

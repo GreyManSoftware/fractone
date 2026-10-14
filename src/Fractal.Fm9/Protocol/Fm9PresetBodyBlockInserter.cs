@@ -8,11 +8,13 @@ namespace Fractal.Companion.Protocol
 	// bytes, which belong to the next unit's prefix. The unit takes its place in the FM9's record order (Fm9RecordOrder:
 	// family, then instance). Rebuilding those three presets this way matched the FM9's bodies byte for byte; ordering by
 	// effect id, as this once did, gave the same result for them but misplaced e.g. a Compressor ahead of the Amp.
+	// The grid shape and the prefix's word 1 come from the body's device (Fm9PresetBody.Device); the block order is the same
+	// on all three units, and blocks sit before record 201 on each. Default records are the FM9's own, so the FM3 and
+	// Axe-Fx III take a record from the caller (WithBlockRecord) until their defaults are captured.
 	public static class Fm9PresetBodyBlockInserter
 	{
 		private const int PrefixBytes = 12;
 		private const int GridOffset = 0x104;
-		private const int GridRows = 6;
 		private const int GridCellSize = 4;
 		private const int ModifierColumns = 25;
 		private static readonly Lazy<Fm9HardwareRecordCatalog> FirstInstances = new(() =>
@@ -26,14 +28,34 @@ namespace Fractal.Companion.Protocol
 		public static byte[] WithBlock(Fm9PresetBody body, string blockType, int instance, GridPosition cell)
 		{
 			ArgumentNullException.ThrowIfNull(body);
-			cell.Validate();
+			cell.Validate(body.Device);
 			int effectId = Fm9BlockSettings.EffectIdOf(blockType, instance)
 				?? throw new NotSupportedException($"{blockType} {instance} is not a block the FM9 accepts.");
+			if (body.Device != Gen3Device.Fm9)
+				throw new NotSupportedException($"FracTone does not have the {body.Device.Name}'s default {blockType} {instance} record yet.");
 			byte[] record = DefaultRecord(blockType, instance)
 				?? throw new NotSupportedException($"FracTone does not have the FM9's default {blockType} {instance} record.");
+			return Insert(body, effectId, record, cell, $"{blockType} {instance}");
+		}
+
+		// Adds a block from a record the caller has: the record's header and parameters followed by 12 bytes (the next
+		// unit's prefix, as a decoded Fm9PresetBlockRecord's span ends), e.g. one captured from the device itself.
+		public static byte[] WithBlockRecord(Fm9PresetBody body, int effectId, ReadOnlySpan<byte> record, GridPosition cell)
+		{
+			ArgumentNullException.ThrowIfNull(body);
+			cell.Validate(body.Device);
+			if (!Fm9RecordOrder.IsBlock(effectId))
+				throw new ArgumentOutOfRangeException(nameof(effectId), $"{effectId} is not a block's effect id.");
+			if (record.Length < 46 || (BitConverter.ToUInt16(record[30..]) * BitConverter.ToUInt16(record[32..]) * 2) + 46 != record.Length)
+				throw new ArgumentException("The record's length does not match its columns and rows.", nameof(record));
+			return Insert(body, effectId, record.ToArray(), cell, $"block {effectId}");
+		}
+
+		private static byte[] Insert(Fm9PresetBody body, int effectId, byte[] record, GridPosition cell, string label)
+		{
 			if (body.GridCells.Any(existing => existing.EffectId == effectId))
-				throw new InvalidOperationException($"The preset already has {blockType} {instance}.");
-			int gridOffset = GridOffset + (((cell.Column - 1) * GridRows + (cell.Row - 1)) * GridCellSize);
+				throw new InvalidOperationException($"The preset already has {label}.");
+			int gridOffset = CellOffset(body.Device, cell);
 			if (BitConverter.ToUInt16(body.Bytes.Span[gridOffset..]) != 0)
 				throw new InvalidOperationException($"Grid row {cell.Row} column {cell.Column} is already in use.");
 
@@ -50,6 +72,8 @@ namespace Fractal.Companion.Protocol
 
 			byte[] unit = new byte[record.Length];
 			BitConverter.TryWriteBytes(unit, (ushort)effectId);
+			// Zero on the FM9 and FM3; the Axe-Fx III marks some families with 0xFFFF.
+			BitConverter.TryWriteBytes(unit.AsSpan(sizeof(ushort)), Fm9RecordOrder.PrefixWord1(body.Device, effectId));
 			record.AsSpan(0, record.Length - PrefixBytes).CopyTo(unit.AsSpan(PrefixBytes));
 			byte[] bytes = [.. body.Bytes.Span[..position], .. unit, .. body.Bytes.Span[position..]];
 			BitConverter.TryWriteBytes(bytes.AsSpan(gridOffset), (ushort)effectId);
@@ -70,30 +94,39 @@ namespace Fractal.Companion.Protocol
 			int start = record.Offset - PrefixBytes;
 			byte[] bytes = [.. body.Bytes.Span[..start], .. body.Bytes.Span[(start + record.Length)..]];
 			int shunt = Enumerable.Range(FirstShuntId, 1024).First(id => body.GridCells.All(candidate => candidate.EffectId != id));
-			BitConverter.TryWriteBytes(bytes.AsSpan(GridOffset + (((cell.Column - 1) * GridRows + (cell.Row - 1)) * GridCellSize)), (ushort)shunt);
+			BitConverter.TryWriteBytes(bytes.AsSpan(CellOffset(body.Device, new(cell.Row, cell.Column))), (ushort)shunt);
 			return bytes;
 		}
 
 		// Puts a block in a shunt's cell, keeping the shunt's cables (the inverse of WithoutBlock).
-		public static byte[] WithBlockInShunt(Fm9PresetBody body, string blockType, int instance, GridPosition cell)
+		public static byte[] WithBlockInShunt(Fm9PresetBody body, string blockType, int instance, GridPosition cell) =>
+			InShunt(body, cell, cleared => WithBlock(cleared, blockType, instance, cell));
+
+		public static byte[] WithBlockRecordInShunt(Fm9PresetBody body, int effectId, ReadOnlyMemory<byte> record, GridPosition cell) =>
+			InShunt(body, cell, cleared => WithBlockRecord(cleared, effectId, record.Span, cell));
+
+		private static byte[] InShunt(Fm9PresetBody body, GridPosition cell, Func<Fm9PresetBody, byte[]> insert)
 		{
 			ArgumentNullException.ThrowIfNull(body);
-			cell.Validate();
-			int gridOffset = GridOffset + (((cell.Column - 1) * GridRows + (cell.Row - 1)) * GridCellSize);
+			cell.Validate(body.Device);
+			int gridOffset = CellOffset(body.Device, cell);
 			if (BitConverter.ToUInt16(body.Bytes.Span[gridOffset..]) < FirstShuntId)
 				throw new InvalidOperationException($"Grid row {cell.Row} column {cell.Column} holds no shunt.");
 			byte[] cleared = body.Bytes.ToArray();
 			BitConverter.TryWriteBytes(cleared.AsSpan(gridOffset), (ushort)0);
 			ushort routes = BitConverter.ToUInt16(body.Bytes.Span[(gridOffset + sizeof(ushort))..]);
-			byte[] inserted = WithBlock(body with
+			byte[] inserted = insert(body with
 			{
 				Bytes = cleared,
 				GridCells = body.GridCells.Select(existing => existing.Row == cell.Row && existing.Column == cell.Column
 					? existing with { EffectId = null } : existing).ToArray()
-			}, blockType, instance, cell);
+			});
 			BitConverter.TryWriteBytes(inserted.AsSpan(gridOffset + sizeof(ushort)), routes);
 			return inserted;
 		}
+
+		private static int CellOffset(Gen3Device device, GridPosition cell) =>
+			GridOffset + (((cell.Column - 1) * device.GridRows + (cell.Row - 1)) * GridCellSize);
 
 		private const int FirstShuntId = 1024;
 

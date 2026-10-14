@@ -67,7 +67,7 @@ namespace Fractal.Companion.Auditioning
 				try
 				{
 					Fm9PresetDump dump = Fm9PresetDump.Parse(responseBytes);
-					Fm9PresetBody body = Fm9PresetBodyDecoder.Decode(dump);
+					Fm9PresetBody body = Fm9PresetBodyDecoder.Decode(dump, Gen3DeviceTransport.DeviceOf(_transport));
 					return new Fm9StoredPresetReadResult(visiblePresetNumber, dump, body);
 				}
 				catch (InvalidDataException exception)

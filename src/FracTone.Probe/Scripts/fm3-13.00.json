@@ -1,0 +1,356 @@
+{
+	"device": "FM3",
+	"model": 17,
+	"firmware": "13.00",
+	"template": "fm3-13.00-ride.syx",
+	"emptyTemplate": "fm3-13.00-empty.syx",
+	"ampEffectIds": [
+		58,
+		59
+	],
+	"recomputedAmpParameters": [
+		83,
+		105,
+		115
+	],
+	"steps": [
+		{
+			"id": "status-dump",
+			"level": 1,
+			"kind": "statusDump",
+			"description": "Status dump (13): the blocks in the preset showing, with bypass and channel."
+		},
+		{
+			"id": "layout-edit-buffer",
+			"level": 1,
+			"kind": "decodeLayout",
+			"source": "editBuffer",
+			"description": "Decode the edit buffer read at the start: grid and block records, with this device's grid."
+		},
+		{
+			"id": "layout-safe-slot",
+			"level": 1,
+			"kind": "decodeLayout",
+			"source": "safeSlot",
+			"description": "Decode the safe slot's backup: grid and block records."
+		},
+		{
+			"id": "switch-to-safe-slot",
+			"level": 2,
+			"kind": "switchToSafeSlot",
+			"description": "Switch to the safe slot with 01 27, confirm with 0D and check the buffer equals the slot's backup (the restore path)."
+		},
+		{
+			"id": "load-template",
+			"level": 2,
+			"kind": "loadTemplate",
+			"timeoutMs": 5000,
+			"description": "Load the from-scratch Ride template into the edit buffer, read it back and compare word for word."
+		},
+		{
+			"id": "voicing-amp",
+			"level": 2,
+			"kind": "voicingCheck",
+			"block": "Amp",
+			"effectId": 58,
+			"parameterId": 6,
+			"types": [
+				{
+					"ordinal": 21,
+					"name": "USA MK IIC+"
+				},
+				{
+					"ordinal": 10,
+					"name": "Plexi 50W Normal"
+				},
+				{
+					"ordinal": 0,
+					"name": "59 Bassguy Bright"
+				}
+			],
+			"unverified": true,
+			"description": "Amp models by the shared ordinals, recorded (type id 6 on the FM3)."
+		},
+		{
+			"id": "voicing-drive",
+			"level": 2,
+			"kind": "voicingCheck",
+			"block": "Drive",
+			"effectId": 118,
+			"parameterId": 0,
+			"types": [
+				{
+					"ordinal": 6,
+					"name": "T808 OD",
+					"expect": {
+						"6": 43987,
+						"9": 65534,
+						"11": 33095,
+						"14": 31268
+					}
+				},
+				{
+					"ordinal": 46,
+					"name": "Box o' Crunch",
+					"expect": {
+						"6": 60458,
+						"9": 65534,
+						"11": 33095,
+						"14": 31268
+					}
+				},
+				{
+					"ordinal": 0,
+					"name": "Rat Distortion",
+					"expect": {
+						"6": 5770,
+						"9": 64035,
+						"11": 32964,
+						"14": 31268
+					}
+				}
+			],
+			"words": [
+				6,
+				9,
+				11,
+				14
+			],
+			"unverified": true,
+			"description": "Drive types 6, 46 and 0 against the FM9's words (same ids; the firmware voicing is the FM9's by name)."
+		},
+		{
+			"id": "voicing-reverb",
+			"level": 2,
+			"kind": "voicingCheck",
+			"block": "Reverb",
+			"effectId": 66,
+			"parameterId": 0,
+			"types": [
+				{
+					"ordinal": 0,
+					"name": "Room: Small Room"
+				},
+				{
+					"ordinal": 5,
+					"name": "Hall: Large Hall"
+				}
+			],
+			"unverified": true,
+			"description": "Reverb: another type, then Large Hall, recorded (type id 0 on the FM3)."
+		},
+		{
+			"id": "voicing-delay-21-26",
+			"level": 2,
+			"kind": "voicingCheck",
+			"block": "Delay",
+			"effectId": 70,
+			"parameterId": 6,
+			"unverified": true,
+			"inserts": [
+				{
+					"block": "Delay 1",
+					"effectId": 70,
+					"row": 1,
+					"column": 1
+				}
+			],
+			"types": [
+				{
+					"ordinal": 21,
+					"name": "Worn Tape"
+				},
+				{
+					"ordinal": 22,
+					"name": "Pan Delay"
+				},
+				{
+					"ordinal": 23,
+					"name": "Stereo Trem Delay"
+				},
+				{
+					"ordinal": 24,
+					"name": "Wandering Delays"
+				},
+				{
+					"ordinal": 25,
+					"name": "Dual Head Tape"
+				},
+				{
+					"ordinal": 26,
+					"name": "Surround Delay"
+				}
+			],
+			"description": "FM3 Delay models 21-26 (the FM9's 23-28 by name: the FM3 has 27, no Diffused Delay or Zephyr), recorded. DELAY_MODEL is id 6."
+		},
+		{
+			"id": "voicing-pan-tremolo",
+			"level": 2,
+			"kind": "voicingCheck",
+			"block": "Pan/Tremolo",
+			"effectId": 106,
+			"parameterId": 0,
+			"unverified": true,
+			"inserts": [
+				{
+					"block": "Pan/Tremolo 1",
+					"effectId": 106,
+					"row": 1,
+					"column": 2
+				}
+			],
+			"types": [
+				{
+					"ordinal": 1,
+					"name": "Panner"
+				},
+				{
+					"ordinal": 0,
+					"name": "VCA Trem"
+				}
+			],
+			"description": "Pan/Tremolo, which has no firmware table: inserted if missing, recorded."
+		},
+		{
+			"id": "voicing-pitch",
+			"level": 2,
+			"kind": "voicingCheck",
+			"block": "Pitch",
+			"effectId": 110,
+			"parameterId": 0,
+			"unverified": true,
+			"inserts": [
+				{
+					"block": "Pitch 1",
+					"effectId": 110,
+					"row": 1,
+					"column": 3
+				}
+			],
+			"types": [
+				{
+					"ordinal": 1,
+					"name": "Quad Detune"
+				},
+				{
+					"ordinal": 0,
+					"name": "Dual Detune"
+				}
+			],
+			"description": "Pitch, which has no firmware table: inserted if missing, recorded."
+		},
+		{
+			"id": "fresh-inserts",
+			"level": 2,
+			"kind": "freshInserts",
+			"template": "empty",
+			"inserts": [
+				{
+					"block": "Amp 1",
+					"effectId": 58,
+					"row": 1,
+					"column": 1
+				},
+				{
+					"block": "Cab 1",
+					"effectId": 62,
+					"row": 1,
+					"column": 2
+				},
+				{
+					"block": "Reverb 1",
+					"effectId": 66,
+					"row": 1,
+					"column": 3
+				}
+			],
+			"description": "Empty preset, then Amp, Cab and Reverb inserted alone (the FM3 has less CPU) and recorded.",
+			"unverified": true
+		},
+		{
+			"id": "cable-codes",
+			"level": 2,
+			"kind": "cableCheck",
+			"template": "empty",
+			"inserts": [
+				{
+					"block": "Graphic EQ 1",
+					"effectId": 50,
+					"row": 1,
+					"column": 1
+				},
+				{
+					"block": "Graphic EQ 2",
+					"effectId": 51,
+					"row": 1,
+					"column": 2
+				},
+				{
+					"block": "Graphic EQ 3",
+					"effectId": 52,
+					"row": 2,
+					"column": 2
+				},
+				{
+					"block": "Graphic EQ 4",
+					"effectId": 53,
+					"row": 1,
+					"column": 3
+				},
+				{
+					"block": "Parametric EQ 1",
+					"effectId": 54,
+					"row": 2,
+					"column": 4
+				},
+				{
+					"block": "Parametric EQ 2",
+					"effectId": 55,
+					"row": 1,
+					"column": 5
+				}
+			],
+			"routes": [
+				{
+					"fromRow": 1,
+					"fromColumn": 1,
+					"toRow": 1
+				},
+				{
+					"fromRow": 1,
+					"fromColumn": 1,
+					"toRow": 2
+				},
+				{
+					"fromRow": 2,
+					"fromColumn": 2,
+					"toRow": 1
+				},
+				{
+					"fromRow": 1,
+					"fromColumn": 2,
+					"toRow": 1
+				},
+				{
+					"fromRow": 1,
+					"fromColumn": 3,
+					"toRow": 2
+				},
+				{
+					"fromRow": 2,
+					"fromColumn": 4,
+					"toRow": 1
+				}
+			],
+			"description": "Cables (01 35) with the FM3's 4-row cell numbering, read back as route masks.",
+			"unverified": true
+		},
+		{
+			"id": "store-check",
+			"level": 3,
+			"kind": "storeCheck",
+			"timeoutMs": 5000,
+			"description": "Opt-in: store the template to the safe slot with 01 26, read the slot back, then put the backup back and verify it."
+		}
+	]
+}

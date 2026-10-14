@@ -9,7 +9,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>fractone-mcp</AssemblyName>
     <RootNamespace>Fractone.Mcp</RootNamespace>
-    <Version>0.14.0</Version>
+    <Version>0.15.0</Version>
     <!-- A .NET tool, so `dnx FracTone` runs it; the McpServer package type lists it as an MCP server on NuGet. -->
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
