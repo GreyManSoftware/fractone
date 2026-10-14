@@ -218,6 +218,14 @@ namespace Fractal.Core
 			};
 		}
 
+		// The active-passage power spectrum (dB) at each frequency, averaged over a band halfBandOctaves either side: the
+		// analysis the matcher itself uses, for callers that compare recordings with other measured responses.
+		public static double[] ActiveSpectrumDecibels(MultichannelAudioBuffer audio, IReadOnlyList<double> frequencies, double halfBandOctaves)
+		{
+			Validate(audio);
+			return Analyze(audio, frequencies.ToArray(), halfBandOctaves).Powers.Select(power => 10 * Math.Log10(Math.Max(power, 1e-30))).ToArray();
+		}
+
 		// How far an isolated stem's spectrum is trusted at a frequency: fully up to 4.5 kHz, then less and less (a tenth
 		// from 9 kHz), where stem separation and the record's mastering leave a top end brighter than any amp and cab.
 		// Fits that chased it boosted 6-10 kHz by 4-9 dB, which players heard as fizz.
@@ -279,7 +287,7 @@ namespace Fractal.Core
 
 		private sealed record Profile(double RmsDecibels, double[] Powers);
 
-		private static Profile Analyze(MultichannelAudioBuffer audio, double[] frequencies)
+		private static Profile Analyze(MultichannelAudioBuffer audio, double[] frequencies, double halfBandOctaves = 1.0 / 6)
 		{
 			int size = 2048;
 			while (size < audio.SampleRate / 6 && size < 16384)
@@ -329,8 +337,8 @@ namespace Fractal.Core
 			}
 			double[] powers = frequencies.Select(frequency =>
 			{
-				int first = Math.Max(1, (int)Math.Ceiling(frequency / Math.Pow(2, 1.0 / 6) * size / audio.SampleRate));
-				int last = Math.Min(density.Length - 1, (int)Math.Floor(frequency * Math.Pow(2, 1.0 / 6) * size / audio.SampleRate));
+				int first = Math.Max(1, (int)Math.Ceiling(frequency / Math.Pow(2, halfBandOctaves) * size / audio.SampleRate));
+				int last = Math.Min(density.Length - 1, (int)Math.Floor(frequency * Math.Pow(2, halfBandOctaves) * size / audio.SampleRate));
 				double sum = 0;
 				for (int bin = first; bin <= last; bin++)
 				{

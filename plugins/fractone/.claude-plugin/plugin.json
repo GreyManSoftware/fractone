@@ -1,7 +1,7 @@
 {
   "name": "fractone",
   "displayName": "Fractone",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "Fractone: unofficial tools for Fractal Audio's FM9 (Axe-Fx III and FM3 planned). Not affiliated with Fractal Audio Systems. Read, back up, edit, audition, store and restore presets; turn knobs live; FM9-Edit favourites; preset search; tone design and tone matching.",
   "author": {
     "name": "GreyManSoftware"

@@ -124,5 +124,39 @@ namespace Fractone.Mcp.Tools
 					Preview = preview == true ? Path.ChangeExtension(outputPath, ".preview.wav") : null
 				});
 			});
+
+		[McpServerTool(Name = "rank_cabs", ReadOnly = true, Idempotent = true, OpenWorld = false)]
+		[Description("Finds the factory cabs that, each with a gentle Parametric EQ after it (broad bands, at most 3 dB), come closest to an isolated stem: one cab and an EQ instead of an IR blend. Needs one re-amp of the scene with its Cab block and any EQ after the cab bypassed (set_block, then reamp); every cab is then predicted from its measured response, so nothing else plays. Gap is the remaining weighted difference from the stem in dB (smaller is closer; predictions matched real re-amps within 0.04 dB). Many cabs land within a few tenths of each other: prefer one that suits the player's gear and era (filter such as \"4x12\") over a slightly smaller gap. Apply the winner with set_channel (cab and Parametric EQ settings as returned, on channels no scene plays) and compose_scene for an A/B scene, then reamp to confirm. Curves are from FM9 firmware 12; the FM3 and Axe-Fx III list the same cabs.")]
+		public Task<Fm9CabRanking> RankCabs(
+			[Description("The re-amp of the scene with the Cab and any EQ after it bypassed (any common audio file).")] string take,
+			[Description("The isolated stem to match (any common audio file).")] string stem,
+			[Description("Seconds into the take to start.")] double? takeStart = null,
+			[Description("Seconds into the stem to start.")] double? stemStart = null,
+			[Description("Seconds to compare, up to 60.")] double? length = null,
+			[Description("Only cabs whose name contains this, e.g. \"4x12\", \"V30\", \"Brit\".")] string? filter = null,
+			[Description("How many to return, default 10.")] int? count = null) =>
+			Fm9Context.RunSync(() =>
+			{
+				double seconds = Math.Min(length ?? 60, WetToneMatcher.MaximumDurationSeconds);
+				IReadOnlyList<Fm9CabCandidate> ranked = Fm9CabRanker.Rank(
+					AudioFiles.Read(context.Input(take), takeStart ?? 0, seconds, out _),
+					AudioFiles.Read(context.Input(stem), stemStart ?? 0, seconds, out _), Math.Clamp(count ?? 10, 1, 50), filter);
+				return new Fm9CabRanking(ranked.Select(candidate => new Fm9CabRankingEntry(candidate.Name, candidate.GapDecibels,
+					candidate.GapWithoutEqDecibels,
+					new Dictionary<string, string>
+					{
+						["Bank"] = candidate.Bank.ToString(CultureInfo.InvariantCulture),
+						["Cab Type"] = candidate.Type.ToString(CultureInfo.InvariantCulture)
+					},
+					new Dictionary<string, string>(Fractal.Application.Fm9ParametricEq.ToParameters(candidate.Eq))
+					{
+						["Type 1"] = "Shelving", ["Type 2"] = "Peaking", ["Type 3"] = "Peaking", ["Type 4"] = "Peaking", ["Type 5"] = "Shelving"
+					})).ToArray());
+			});
 	}
+
+	public sealed record Fm9CabRankingEntry(string Cab, double GapDecibels, double GapWithoutEqDecibels,
+		IReadOnlyDictionary<string, string> CabSettings, IReadOnlyDictionary<string, string> ParametricEqSettings);
+
+	public sealed record Fm9CabRanking(IReadOnlyList<Fm9CabRankingEntry> Cabs);
 }

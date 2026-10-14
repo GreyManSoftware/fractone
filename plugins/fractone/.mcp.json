@@ -2,7 +2,7 @@
   "mcpServers": {
     "fractone": {
       "command": "dnx",
-      "args": ["Fractone@0.13.0"]
+      "args": ["Fractone@0.14.0"]
     }
   }
 }

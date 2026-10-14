@@ -59,6 +59,7 @@ namespace Fractone.Mcp.Tests
 			Assert.Contains("restore_snapshot", byName.Keys);
 			Assert.All(tools, tool => Assert.False(string.IsNullOrWhiteSpace(tool.Description)));
 			Assert.Contains("tone_match", byName.Keys);
+			Assert.True(byName["rank_cabs"]!.ReadOnlyHint);
 			Assert.Contains("library_save", byName.Keys);
 			Assert.Contains("search", byName.Keys);
 		}
