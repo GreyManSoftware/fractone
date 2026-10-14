@@ -38,7 +38,7 @@ namespace Fractal.Fm9
 					"OGG Vorbis" => ReadVorbis(path, start, length, out source),
 					"Opus" => ReadOpus(path, start, length, out source),
 					"MP3" or "AAC" or "M4A (AAC)" or "M4A (ALAC)" or "FLAC" => ReadMediaFoundation(path, kind, start, length, out source),
-					_ => throw new InvalidDataException($"'{Path.GetFileName(path)}' isn't an audio file Fractone can read. Supported: {Supported}.")
+					_ => throw new InvalidDataException($"'{Path.GetFileName(path)}' isn't an audio file FracTone can read. Supported: {Supported}.")
 				};
 			}
 			catch (Exception exception) when (exception is not (InvalidDataException or PlatformNotSupportedException or ArgumentException or FileNotFoundException))

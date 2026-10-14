@@ -140,7 +140,7 @@ namespace Fractal.Companion.Catalog
 
 		// The environment variable that points at a dictionary file explicitly.
 		public const string PathVariable = "FRACTONE_EDIT_DEFINITIONS";
-		// The name before Fractone, still read.
+		// The name before FracTone, still read.
 		public const string OldPathVariable = "FM9_EDIT_DEFINITIONS";
 
 		// FM9-Edit downloads the dictionary from the FM9 and caches it per firmware (12 = the FM9's model byte, 12p0 =

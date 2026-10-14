@@ -20,7 +20,7 @@ namespace Fractal.Companion.Protocol
 		private static Fm9EffectSection Definitions => Fm9EffectDefinitions.Bundled.ForFamily("MOD")
 			?? throw new InvalidOperationException("The FM9 parameter dictionary has no modifier definitions.");
 
-		// The modifiers in use, by slot, whose target is a block setting FracAI can name.
+		// The modifiers in use, by slot, whose target is a block setting FracTone can name.
 		public static IReadOnlyList<(int Slot, ToneDesignModifier Modifier)> Read(Fm9PresetBody body)
 		{
 			ArgumentNullException.ThrowIfNull(body);

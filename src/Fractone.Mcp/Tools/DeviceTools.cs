@@ -16,7 +16,7 @@ namespace Fractone.Mcp.Tools
 	public sealed class DeviceTools(Fm9Context context)
 	{
 		[McpServerTool(Name = "status", ReadOnly = true, Idempotent = true, OpenWorld = false)]
-		[Description("The device connected and the devices Fractone supports, the FM9's firmware and the preset and scene showing, the MIDI ports, the settings in force (work folder, FM9-Edit library folder, safeguards) and the server version. Call this first.")]
+		[Description("The device connected and the devices FracTone supports, the FM9's firmware and the preset and scene showing, the MIDI ports, the settings in force (work folder, FM9-Edit library folder, safeguards) and the server version. Call this first.")]
 		public async Task<Fm9BridgeStatus> Status(CancellationToken cancellationToken = default)
 		{
 			Fm9Settings settings = context.Settings;
@@ -37,7 +37,7 @@ namespace Fractone.Mcp.Tools
 				typeof(DeviceTools).Assembly.GetName().Version?.ToString(3) ?? "0");
 		}
 
-		// What Fractone supports, device by device.
+		// What FracTone supports, device by device.
 		private static readonly IReadOnlyDictionary<string, string> Support = new Dictionary<string, string>
 		{
 			["FM9"] = "supported (firmware 12; writes refused on other firmware)",

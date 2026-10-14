@@ -60,7 +60,7 @@ namespace Fractal.Fm9
 			double[] frequencies = used.Select(index => curves.Frequencies[index]).ToArray();
 			double[] weights = frequencies.Select(WetToneMatcher.StemTrust).ToArray();
 
-			var cabs = curves.Cabs.Where(cab => nameFilter is null || cab.Name.Contains(nameFilter, StringComparison.OrdinalIgnoreCase))
+			(Cab Cab, double[] Wanted, double Raw, double Estimate)[] cabs = curves.Cabs.Where(cab => nameFilter is null || cab.Name.Contains(nameFilter, StringComparison.OrdinalIgnoreCase))
 				.Select(cab =>
 				{
 					double[] wanted = used.Select(index => need[index] - cab.Decibels[index]).ToArray();

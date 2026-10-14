@@ -1,6 +1,6 @@
 # Fails if the tree (and its git history, when there is one) carries anything that must not be public: FM9-Edit's
 # dictionary (Fractal's data, which also lists the user's own preset names), a player's amp-level table, personal email
-# addresses, user-folder paths, Azure details or the FracAI deployment. Run by CI on every push and before any release.
+# addresses, user-folder paths, Azure details or the FracTone site deployment. Run by CI on every push and before any release.
 param(
 	[string] $Root = (Resolve-Path "$PSScriptRoot/..").Path,
 	[switch] $AllowAmpLevels
@@ -26,8 +26,8 @@ $forbiddenText = [ordered]@{
 	'personal email address'   = '[A-Za-z0-9._%+-]+@(gmail|googlemail|outlook|hotmail|live|yahoo|icloud|me|proton|protonmail)\.(com|co\.uk|me)'
 	'Windows user folder'      = '[A-Za-z]:\\+Users\\+[A-Za-z]'
 	'OneDrive folder'          = 'OneDrive[\\/]'
-	'Azure resource or secret' = '(rg-fracai|\.openai\.azure\.com|\.blob\.core\.windows\.net|AccountKey=|SharedAccessSignature=|/subscriptions/[0-9a-fA-F-]{36})'
-	'FracAI deployment'        = '(greymansoftware\.com|fracai-ops|deploy-azure)'
+	'Azure resource or secret' = '(rg-fracai|rg-fractone|\.openai\.azure\.com|\.blob\.core\.windows\.net|AccountKey=|SharedAccessSignature=|/subscriptions/[0-9a-fA-F-]{36})'
+	'FracTone site deployment' = '(greymansoftware\.com|fracai-ops|fractone-ops|deploy-azure)'
 	'private key'              = '-----BEGIN [A-Z ]*PRIVATE KEY-----'
 }
 $textExtensions = @('.cs', '.csproj', '.slnx', '.props', '.json', '.md', '.ts', '.ps1', '.py', '.yml', '.yaml', '.txt', '.xml', '.config', '.gitignore', '.editorconfig')

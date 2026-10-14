@@ -20,7 +20,7 @@ namespace Fractal.Fm9
 
 	public sealed record Fm9SettingInfo(string Name, string Kind, double? Minimum, double? Maximum, IReadOnlyList<string> Choices);
 
-	// Offline preset edits on .syx files, as FracAI's designer makes them: only what is asked changes, a new model or type
+	// Offline preset edits on .syx files, as FracTone's designer makes them: only what is asked changes, a new model or type
 	// loads the voicing the FM9 would load, and every block keeps its cell and cables. Every edit writes a new file (never
 	// the input) and reads it back before reporting.
 	public static class Fm9Presets

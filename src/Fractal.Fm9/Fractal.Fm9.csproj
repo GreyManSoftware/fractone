@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!-- The FM9 itself: preset format, FM9-Edit dictionary and catalogues, MIDI transport and the verified store path.
-       A plain library so the MCP bridge and FracAI's Companion tooling share one copy. The namespaces and resource
+       A plain library so the MCP bridge and FracTone's Companion tooling share one copy. The namespaces and resource
        names keep their Companion origin for now, so this move changes no behaviour. -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>

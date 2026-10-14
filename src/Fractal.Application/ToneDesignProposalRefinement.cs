@@ -128,7 +128,7 @@ namespace Fractal.Application
 				Original target: {request.Context.TargetSummary}
 				Device: {request.Context.DeviceProfile.DisplayName}; Input {request.Context.InputBlockInstance}; Output {request.Context.OutputBlockInstance}.
 				Guitar and output: {request.Context.PickupConfiguration}; {request.Context.OutputDevice}.
-				Return the complete revised preset. Change whatever the request needs (amp, drive or cab models, settings, effects, modifiers, channels, scenes); keep everything else at its original value. If the player asks about this preset, its gear or its sound, answer briefly in the summary and say what changed. Anything else is outside FracAI: return the preset unchanged and say so in the summary.
+				Return the complete revised preset. Change whatever the request needs (amp, drive or cab models, settings, effects, modifiers, channels, scenes); keep everything else at its original value. If the player asks about this preset, its gear or its sound, answer briefly in the summary and say what changed. Anything else is outside FracTone: return the preset unchanged and say so in the summary.
 				Current preset JSON:
 				{proposalJson}
 				""";

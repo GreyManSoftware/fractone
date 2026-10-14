@@ -58,7 +58,7 @@ namespace Fractal.Companion.Protocol
 			ArgumentNullException.ThrowIfNull(dump);
 			if (dump.FormatVersion is < OldestFormatVersion or > SupportedFormatVersion)
 				throw new NotSupportedException(
-					$"This preset uses FM9 preset format 0x{dump.FormatVersion:X4}, which FracAI cannot read yet.");
+					$"This preset uses FM9 preset format 0x{dump.FormatVersion:X4}, which FracTone cannot read yet.");
 			Fm9PresetBody body = Fm9PresetBodyDecoder.Decode(dump);
 			Dictionary<int, Fm9PresetBlockRecord?> records = [];
 			foreach (Fm9PresetBlockRecord record in body.BlockRecords.Where(record => record.Offset >= EffectIdBytesBeforeRecord))
@@ -78,7 +78,7 @@ namespace Fractal.Companion.Protocol
 				Fm9PresetBlockRecord? record = records.GetValueOrDefault(effect);
 				// Older firmware wrote some records narrower: later firmware only appended columns (every choice in the shared
 				// columns of a 256-preset backup held a valid ordinal), so a narrower record is edited in the columns it has,
-				// provided it holds every setting FracAI's curated code addresses.
+				// provided it holds every setting FracTone's curated code addresses.
 				bool editable = record is not null && Fm9BlockSettings.HasFamily(type) &&
 					Fm9BlockSettings.RecordShape(type) is { } shape &&
 					record.ParameterColumns <= shape.Columns && record.ParameterColumns > CuratedMaximumId(type) &&
@@ -116,7 +116,7 @@ namespace Fractal.Companion.Protocol
 			}
 		}
 
-		// Every setting FracAI edits on one channel of an editable block, as proposal parameters (invariant text).
+		// Every setting FracTone edits on one channel of an editable block, as proposal parameters (invariant text).
 		public IReadOnlyDictionary<string, string> GetParameters(Fm9UploadedBlock block, int channel) =>
 			ReadParameters(Body, block, channel);
 

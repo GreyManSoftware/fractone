@@ -41,7 +41,7 @@ namespace Fractal.Companion.Catalog
 		}
 	}
 
-	// Every setting FracAI can edit on each FM9 block, from FM9-Edit's parameter dictionary. Settings the designer already
+	// Every setting FracTone can edit on each FM9 block, from FM9-Edit's parameter dictionary. Settings the designer already
 	// curates (the Ride template's names, the Amp model and output EQ, the Cab's bank, type and cuts) keep their own names
 	// and handling; this adds the rest. Names come from the community catalogue's display labels, made unique per block.
 	public static class Fm9BlockSettings

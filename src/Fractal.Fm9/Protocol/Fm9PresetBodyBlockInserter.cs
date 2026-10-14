@@ -30,7 +30,7 @@ namespace Fractal.Companion.Protocol
 			int effectId = Fm9BlockSettings.EffectIdOf(blockType, instance)
 				?? throw new NotSupportedException($"{blockType} {instance} is not a block the FM9 accepts.");
 			byte[] record = DefaultRecord(blockType, instance)
-				?? throw new NotSupportedException($"FracAI does not have the FM9's default {blockType} {instance} record.");
+				?? throw new NotSupportedException($"FracTone does not have the FM9's default {blockType} {instance} record.");
 			if (body.GridCells.Any(existing => existing.EffectId == effectId))
 				throw new InvalidOperationException($"The preset already has {blockType} {instance}.");
 			int gridOffset = GridOffset + (((cell.Column - 1) * GridRows + (cell.Row - 1)) * GridCellSize);

@@ -1,4 +1,4 @@
-# Fractone
+# FracTone
 
 **Unofficial tools for Fractal Audio's FM9** (Axe-Fx III and FM3 planned). Not affiliated with Fractal Audio Systems.
 
@@ -15,7 +15,7 @@ past bot checks, CAPTCHAs, sign-in walls or DRM, and never records ads: it waits
 the most private option (or stops), and otherwise stops and says why, with a screenshot.
 
 - Install and use: [plugins/fractone/README.md](plugins/fractone/README.md)
-- Tools and settings: `dnx Fractone --help`
+- Tools and settings: `dnx FracTone --help`
 
 ## What is here
 

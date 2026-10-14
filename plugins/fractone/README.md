@@ -1,4 +1,4 @@
-# Fractone
+# FracTone
 
 **Unofficial tools for Fractal Audio's FM9** (Axe-Fx III and FM3 planned). Not affiliated with Fractal Audio Systems.
 
@@ -9,7 +9,7 @@ any MCP client:
 - save, list and apply FM9-Edit block-library favourites;
 - search every preset for a model or cab and the scenes that play it;
 - turn knobs live, switch channels, bypass and scenes, as FM9-Edit does, with diff, undo and snapshots;
-- design a preset from a description of a tone, with the same checks as the FracAI tone designer;
+- design a preset from a description of a tone, with the same checks as the FracTone tone designer;
 - match a preset's tone to a recording with a fitted Parametric EQ, the target captured from what the PC plays or from a
   web page's media if need be;
 - separate the guitar from a full mix (an optional add-on, installed on first use; NVIDIA GPU, Apple silicon or CPU);
@@ -50,14 +50,14 @@ pi install npm:fractone
 Pi has no permission prompts, so the package's extension asks you before any call that changes what the FM9 holds or
 plays (storing, auditioning, selecting a preset).
 
-**Any other MCP client:** run `dnx Fractone` as a stdio server.
+**Any other MCP client:** run `dnx FracTone` as a stdio server.
 
 ## Set up (optional)
 
 Everything works with defaults. To choose folders and safeguards:
 
 ```
-dnx Fractone setup --careful --writable 500-505
+dnx FracTone setup --careful --writable 500-505
 ```
 
 | Safeguard | What it does | Default |
@@ -74,7 +74,7 @@ every store reports what it replaced, checks the FM9's copy before storing, and 
 ## Agents in containers
 
 Docker on Windows cannot reach USB MIDI, so the server always runs on the PC. An agent in a container can use it over
-HTTP: start `dnx Fractone --http` on the PC and point the agent at `http://host.docker.internal:39009/mcp` with header
+HTTP: start `dnx FracTone --http` on the PC and point the agent at `http://host.docker.internal:39009/mcp` with header
 `Authorization: Bearer <token>`. The token is in `%APPDATA%\fractone\http-token`. Share the work folder with the
 container so both sides see the same files.
 

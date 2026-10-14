@@ -10,15 +10,15 @@
     <AssemblyName>fractone-mcp</AssemblyName>
     <RootNamespace>Fractone.Mcp</RootNamespace>
     <Version>0.14.0</Version>
-    <!-- A .NET tool, so `dnx Fractone` runs it; the McpServer package type lists it as an MCP server on NuGet. -->
+    <!-- A .NET tool, so `dnx FracTone` runs it; the McpServer package type lists it as an MCP server on NuGet. -->
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>fractone-mcp</ToolCommandName>
-    <PackageId>Fractone</PackageId>
+    <PackageId>FracTone</PackageId>
     <PackageType>McpServer</PackageType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Description>Fractone: unofficial tools for Fractal Audio&apos;s FM9 (Axe-Fx III and FM3 planned). Not affiliated with Fractal Audio Systems. An MCP server for presets, live control, FM9-Edit favourites, preset search, tone design and tone matching.</Description>
+    <Description>FracTone: unofficial tools for Fractal Audio&apos;s FM9 (Axe-Fx III and FM3 planned). Not affiliated with Fractal Audio Systems. An MCP server for presets, live control, FM9-Edit favourites, preset search, tone design and tone matching.</Description>
   </PropertyGroup>
 
   <ItemGroup>

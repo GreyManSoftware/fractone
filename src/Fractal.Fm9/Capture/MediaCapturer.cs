@@ -185,7 +185,7 @@ namespace Fractal.Fm9
 					await owner.Wait(TimeSpan.FromSeconds(1), cancellationToken);
 					page = await Inspect(cancellationToken);
 					if (_status is 403 or 429 || page.GetProperty("botCheck").GetBoolean())
-						return await Stopped("bot-check", page, $"The site is checking for a human or refused the visit{(_status is int code and >= 400 ? $" (HTTP {code})" : "")}. Fractone doesn't get past these checks. Play it in your own browser and use capture_playback instead, if you have the right to.", cancellationToken);
+						return await Stopped("bot-check", page, $"The site is checking for a human or refused the visit{(_status is int code and >= 400 ? $" (HTTP {code})" : "")}. FracTone doesn't get past these checks. Play it in your own browser and use capture_playback instead, if you have the right to.", cancellationToken);
 					if (page.GetProperty("consent").GetBoolean())
 					{
 						if (await Evaluate<string?>("window.__fractone.decline()", cancellationToken) is { } clicked)
@@ -195,7 +195,7 @@ namespace Fractal.Fm9
 							continue;
 						}
 						if (attempt >= 5)
-							return await Stopped("consent", page, "A consent dialog has no decline option Fractone can find, and it won't accept one. Play it in your own browser and use capture_playback instead.", cancellationToken);
+							return await Stopped("consent", page, "A consent dialog has no decline option FracTone can find, and it won't accept one. Play it in your own browser and use capture_playback instead.", cancellationToken);
 						continue;
 					}
 					// Ready twice running: consent dialogs often appear a moment after the player.
@@ -213,10 +213,10 @@ namespace Fractal.Fm9
 				}
 				if (page.GetProperty("media").ValueKind != JsonValueKind.Object)
 					return page.GetProperty("signIn").GetBoolean()
-						? await Stopped("sign-in", page, "The page wants a sign-in, a subscription or an age check before it plays. Fractone doesn't sign in. Play it in your own browser and use capture_playback instead.", cancellationToken)
+						? await Stopped("sign-in", page, "The page wants a sign-in, a subscription or an age check before it plays. FracTone doesn't sign in. Play it in your own browser and use capture_playback instead.", cancellationToken)
 						: await Stopped("no-media", page, "No playable video or audio element appeared on the page.", cancellationToken);
 				if (page.GetProperty("media").GetProperty("encrypted").GetBoolean())
-					return await Stopped("drm", page, "The media is DRM-protected, so it can't be captured from the page, and Fractone doesn't get round DRM. If you have the right to use it, play it in your own browser and use capture_playback.", cancellationToken);
+					return await Stopped("drm", page, "The media is DRM-protected, so it can't be captured from the page, and FracTone doesn't get round DRM. If you have the right to use it, play it in your own browser and use capture_playback.", cancellationToken);
 				double duration = page.GetProperty("media").GetProperty("duration").ValueKind == JsonValueKind.Number ? page.GetProperty("media").GetProperty("duration").GetDouble() : double.NaN;
 				if (double.IsFinite(duration) && start >= duration)
 					throw new ArgumentOutOfRangeException(nameof(start), $"The media is {duration:0.#} s long; the start is past its end.");

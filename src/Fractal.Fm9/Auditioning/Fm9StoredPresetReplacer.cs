@@ -47,7 +47,7 @@ namespace Fractal.Companion.Auditioning
 		public Fm9StoredPresetReplacer(IFractalMidiTransport transport, int displayedPresetNumber = 500, int midiChannel = DefaultMidiChannel,
 			int? stagingPresetNumber = null)
 		{
-			// Which slot may serve as staging is the caller's policy (FracAI's probes keep to scratch slots 500-505).
+			// Which slot may serve as staging is the caller's policy (FracTone's probes keep to scratch slots 500-505).
 			if (stagingPresetNumber is < 0 or > 511)
 				throw new ArgumentOutOfRangeException(nameof(stagingPresetNumber), "FM9 presets are 0 through 511.");
 			_stagingPresetNumber = stagingPresetNumber;

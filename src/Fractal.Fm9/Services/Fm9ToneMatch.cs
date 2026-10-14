@@ -35,7 +35,7 @@ namespace Fractal.Fm9
 		Fm9EditResult? Edit,
 		string? Preview);
 
-	// FracAI's Parametric EQ match for one take: a recording of the preset played in a scene, against the target recording.
+	// FracTone's Parametric EQ match for one take: a recording of the preset played in a scene, against the target recording.
 	// The fit starts from the EQ that scene played, the bands go into a Parametric EQ channel with a level that keeps the
 	// take's loudness, and optionally a new scene plays it.
 	public static class Fm9ToneMatch

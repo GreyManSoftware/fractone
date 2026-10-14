@@ -222,9 +222,9 @@ namespace Fractal.Application
 		// The preset's name (as on the FM9, see Fm9PresetName): suggested from the request, kept from an upload, renameable.
 		public string? PresetName { get; init; }
 		// An uploaded preset this proposal edits in place: only changed settings are written, and its layout, routing and
-		// every block FracAI does not model are kept exactly. Null for presets built on FracAI's own template.
+		// every block FracTone does not model are kept exactly. Null for presets built on FracTone's own template.
 		public byte[]? BasePreset { get; init; }
-		// Blocks of the uploaded preset that FracAI shows in the chain but does not edit.
+		// Blocks of the uploaded preset that FracTone shows in the chain but does not edit.
 		public IReadOnlyList<ToneDesignPreservedBlock> PreservedBlocks { get; init; } = [];
 		// Grid cells of the uploaded preset that hold a shunt (the signal passes straight through).
 		public IReadOnlyList<ToneDesignGridCell> Shunts { get; init; } = [];

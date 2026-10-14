@@ -1,4 +1,4 @@
-// Pi extension for Fractone: starts the fractone MCP server and asks the user before any call that changes the FM9.
+// Pi extension for FracTone: starts the fractone MCP server and asks the user before any call that changes the FM9.
 // Pi has no permission prompts of its own, so this is the gate; the server's own safeguards (settings file) still apply.
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
@@ -12,7 +12,7 @@ export default function (pi: ExtensionAPI) {
 	// A same-named server in the user's mcp.json takes precedence (e.g. one pointing at a local build).
 	pi.registerMcpServer(SERVER, {
 		command: "dnx",
-		args: ["Fractone@0.14.0"],
+		args: ["FracTone@0.14.0"],
 		exposure: "direct",
 		timeout: 600,
 		description: "Fractal Audio FM9: presets, favourites, search, tone design and tone matching",

@@ -7,7 +7,7 @@ release.
 
 - Use only scratch slots (for example 500-505), and back them up first with `backup`.
 - Close FM9-Edit or disconnect it from the FM9 if MIDI calls fail.
-- Run `dnx Fractone setup --careful --writable 500-505`.
+- Run `dnx FracTone setup --careful --writable 500-505`.
 
 ## Tests
 

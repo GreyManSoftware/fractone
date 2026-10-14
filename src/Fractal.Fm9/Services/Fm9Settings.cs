@@ -61,7 +61,7 @@ namespace Fractal.Fm9
 
 		public static string DefaultPath => Path.Combine(Folder, "settings.json");
 
-		// Before the Fractone name the settings lived in %APPDATA%\fm9-tools; they move on first use. Returns what moved.
+		// Before the FracTone name the settings lived in %APPDATA%\fm9-tools; they move on first use. Returns what moved.
 		public static IReadOnlyList<string> MigrateFromOldFolder()
 		{
 			string old = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "fm9-tools");
@@ -90,7 +90,7 @@ namespace Fractal.Fm9
 			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "fractone", "browser");
 
 		public static string DefaultWorkFolder =>
-			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Fractone");
+			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "FracTone");
 
 		public static string DefaultLibraryFolder =>
 			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Fractal Audio", "FM9-Edit", "blocks");

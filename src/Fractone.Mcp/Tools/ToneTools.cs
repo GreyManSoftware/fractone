@@ -16,7 +16,7 @@ namespace Fractone.Mcp.Tools
 		public Task<string> Guide() => Fm9Context.RunSync(Fm9ToneDesigner.Guide);
 
 		[McpServerTool(Name = "build_preset", ReadOnly = false, Destructive = false, OpenWorld = false)]
-		[Description("Builds an FM9 preset from a tone-design proposal you wrote: runs FracAI's repairs and checks (no AI service or key involved) and exports a .syx. If corrections come back, fix the proposal and build again; adjustments are what the checks changed.")]
+		[Description("Builds an FM9 preset from a tone-design proposal you wrote: runs FracTone's repairs and checks (no AI service or key involved) and exports a .syx. If corrections come back, fix the proposal and build again; adjustments are what the checks changed.")]
 		public Task<Fm9BuildResult> Build(
 			[Description("The proposal JSON, or the path of a .json file holding it.")] string proposal,
 			[Description("Preset name; default the proposal's presetName.")] string? name = null,
@@ -95,7 +95,7 @@ namespace Fractone.Mcp.Tools
 		}
 
 		[McpServerTool(Name = "tone_match", ReadOnly = false, Destructive = false, OpenWorld = false)]
-		[Description("FracAI's Parametric EQ match: compares a take of the preset played in one scene with the target recording, fits the EQ, writes the bands into a Parametric EQ 1 channel no scene plays (levelled to keep the take's loudness) and, if asked, a new scene that copies the recorded one but plays it. Writes a new .syx and optionally a preview WAV of the matched take.")]
+		[Description("FracTone's Parametric EQ match: compares a take of the preset played in one scene with the target recording, fits the EQ, writes the bands into a Parametric EQ 1 channel no scene plays (levelled to keep the take's loudness) and, if asked, a new scene that copies the recorded one but plays it. Writes a new .syx and optionally a preview WAV of the matched take.")]
 		public Task<Fm9ToneMatchResult> Match(
 			[Description("The preset the take was played through.")] string file,
 			[Description("Scene the take was recorded in (1-8).")] int recordedScene,

@@ -35,7 +35,7 @@ List<string> arguments = [.. args];
 try
 {
 	string settingsPath = Take(arguments, "--settings") ?? Fm9Settings.DefaultPath;
-	// Settings from before the Fractone name move once; stderr keeps stdout free for MCP.
+	// Settings from before the FracTone name move once; stderr keeps stdout free for MCP.
 	if (settingsPath == Fm9Settings.DefaultPath && Fm9Settings.MigrateFromOldFolder() is { Count: > 0 } moved)
 		Console.Error.WriteLine($"fractone-mcp: moved {string.Join(" and ", moved)} from %APPDATA%\\fm9-tools to {Fm9Settings.Folder}.");
 	switch (arguments.FirstOrDefault())
@@ -212,7 +212,7 @@ namespace Fractone.Mcp
 		{
 			options.ServerInfo = new() { Name = "fractone", Version = typeof(Fm9Context).Assembly.GetName().Version?.ToString(3) ?? "0" };
 			options.ServerInstructions =
-				"Fractone: unofficial tools for a Fractal Audio FM9 on this computer (not affiliated with Fractal Audio Systems). Presets travel as .syx file paths (relative paths are in the work " +
+				"FracTone: unofficial tools for a Fractal Audio FM9 on this computer (not affiliated with Fractal Audio Systems). Presets travel as .syx file paths (relative paths are in the work " +
 				"folder); offline edits always write a new file. Writes to the FM9 report what they replaced. Call status first.";
 		}
 

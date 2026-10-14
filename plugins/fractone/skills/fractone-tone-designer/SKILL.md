@@ -6,7 +6,7 @@ description: Design a new Fractal Audio FM9 preset from a description of a guita
 # FM9 tone designer
 
 You write the preset as a JSON proposal, and `build_preset` checks and builds it. The build runs the same repairs
-and quality checks as the FracAI site and needs no AI service or API key.
+and quality checks as the FracTone site and needs no AI service or API key.
 
 ## Steps
 
