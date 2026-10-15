@@ -30,6 +30,7 @@ namespace FracTone.Probe.Gui.ViewModels
 
 		private readonly IProbeService _probe;
 		private readonly IReportUploader _uploader;
+		private readonly UploadCodeStore _codes;
 		private readonly IFolderOpener _folders;
 		private readonly Action<Action> _dispatch;
 		private readonly Func<DateTimeOffset> _now;
@@ -39,6 +40,7 @@ namespace FracTone.Probe.Gui.ViewModels
 
 		private WizardPage _page;
 		private bool _editorsClosed;
+		private bool _disclaimerAccepted;
 		private bool _busy;
 		private ProbeIdentity? _identity;
 		private string? _connectError;
@@ -57,13 +59,18 @@ namespace FracTone.Probe.Gui.ViewModels
 		private ProbeReportFiles? _report;
 		private string? _reportError;
 		private string _uploadCode = "";
+		private bool _hasSavedCode;
+		private string? _codeStatus;
+		private ReportUploadPreview? _uploadPreview;
 		private string? _uploadStatus;
 
-		public WizardViewModel(IProbeService probe, IReportUploader uploader, IFolderOpener folders,
+		public WizardViewModel(IProbeService probe, IReportUploader uploader, UploadCodeStore codes, IFolderOpener folders,
 			Action<Action>? dispatch = null, Func<DateTimeOffset>? now = null)
 		{
 			_probe = probe;
 			_uploader = uploader;
+			_codes = codes;
+			_hasSavedCode = codes.Load() is not null;
 			_folders = folders;
 			_dispatch = dispatch ?? (action => action());
 			_now = now ?? (() => DateTimeOffset.UtcNow);
@@ -72,9 +79,13 @@ namespace FracTone.Probe.Gui.ViewModels
 			ConnectCommand = new Command(ConnectAsync, () => !_busy && _page == WizardPage.Connect);
 			CheckSlotCommand = new Command(CheckSlotAsync, () => !_busy && _page == WizardPage.SafeSlot && _slotText.Trim().Length > 0);
 			CancelCommand = new Command(Cancel, () => _page == WizardPage.Run && _cancel is not null && !_cancelling);
-			UploadCommand = new Command(UploadAsync, () => !_busy && _report is not null && _uploadCode.Trim().Length > 0);
+			SaveCodeCommand = new Command(SaveCode, () => !_busy && _uploadCode.Trim().Length > 0);
+			ReviewUploadCommand = new Command(ReviewUpload, () => !_busy && _report is not null && _hasSavedCode && _uploadPreview is null);
+			UploadCommand = new Command(UploadAsync, () => !_busy && _uploadPreview is not null);
+			DontUploadCommand = new Command(DontUpload, () => !_busy && _uploadPreview is not null);
 			OpenFolderCommand = new Command(() => _folders.Open(Path.GetDirectoryName(_report!.Zip)!), () => _report is not null);
-			_commands = [NextCommand, BackCommand, ConnectCommand, CheckSlotCommand, CancelCommand, UploadCommand, OpenFolderCommand];
+			_commands = [NextCommand, BackCommand, ConnectCommand, CheckSlotCommand, CancelCommand, SaveCodeCommand, ReviewUploadCommand,
+				UploadCommand, DontUploadCommand, OpenFolderCommand];
 		}
 
 		public Command NextCommand { get; }
@@ -82,7 +93,10 @@ namespace FracTone.Probe.Gui.ViewModels
 		public Command ConnectCommand { get; }
 		public Command CheckSlotCommand { get; }
 		public Command CancelCommand { get; }
+		public Command SaveCodeCommand { get; }
+		public Command ReviewUploadCommand { get; }
 		public Command UploadCommand { get; }
+		public Command DontUploadCommand { get; }
 		public Command OpenFolderCommand { get; }
 
 		// The run in progress, so closing the window can cancel it and wait for the restore.
@@ -121,6 +135,15 @@ namespace FracTone.Probe.Gui.ViewModels
 		{
 			get => _editorsClosed;
 			set => Set(ref _editorsClosed, value);
+		}
+
+		// Also page 1: the disclaimer, which must be ticked before anything touches the device.
+		public string DisclaimerText => ProbeDisclaimer.Notice;
+
+		public bool DisclaimerAccepted
+		{
+			get => _disclaimerAccepted;
+			set => Set(ref _disclaimerAccepted, value);
 		}
 
 		// Page 2: connect.
@@ -337,11 +360,39 @@ namespace FracTone.Probe.Gui.ViewModels
 			private set => Set(ref _reportError, value);
 		}
 
+		// Typed once and saved encrypted for this Windows user (UploadCodeStore); the box is cleared once it's saved.
 		public string UploadCode
 		{
 			get => _uploadCode;
 			set => Set(ref _uploadCode, value ?? "");
 		}
+
+		public bool HasSavedCode
+		{
+			get => _hasSavedCode;
+			private set => Set(ref _hasSavedCode, value);
+		}
+
+		public string? CodeStatus
+		{
+			get => _codeStatus;
+			private set => Set(ref _codeStatus, value);
+		}
+
+		// What an upload would send, shown for the user's yes before anything leaves the PC.
+		public ReportUploadPreview? UploadPreview
+		{
+			get => _uploadPreview;
+			private set
+			{
+				if (!Set(ref _uploadPreview, value)) return;
+				Changed(nameof(UploadPreviewText));
+				Changed(nameof(IsConfirmingUpload));
+			}
+		}
+
+		public bool IsConfirmingUpload => _uploadPreview is not null;
+		public string? UploadPreviewText => _uploadPreview?.Describe().TrimEnd();
 
 		public string? UploadStatus
 		{
@@ -368,7 +419,7 @@ namespace FracTone.Probe.Gui.ViewModels
 
 		private bool CanGoNext() => !_busy && _page switch
 		{
-			WizardPage.Welcome => _editorsClosed,
+			WizardPage.Welcome => _editorsClosed && _disclaimerAccepted,
 			WizardPage.Connect => _identity is not null,
 			WizardPage.SafeSlot => _checkedSlot is not null && _slotConfirmed,
 			WizardPage.Level => _level == CheckLevel.Quick || (CanUseFull && (_level == CheckLevel.Full || _storeAcknowledged)),
@@ -482,24 +533,85 @@ namespace FracTone.Probe.Gui.ViewModels
 			_cancel?.Cancel();
 		}
 
+		private void SaveCode()
+		{
+			string code = _uploadCode.Trim();
+			if (!HttpReportUploader.IsWellFormedCode(code))
+			{
+				CodeStatus = "That isn't an upload code. Codes start with ftu_ and come from your FracTone account page.";
+				return;
+			}
+			try
+			{
+				_codes.Save(code);
+			}
+			catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or System.Security.Cryptography.CryptographicException)
+			{
+				CodeStatus = $"The code couldn't be saved: {exception.Message}";
+				return;
+			}
+			UploadCode = "";
+			HasSavedCode = true;
+			CodeStatus = "Upload code saved for this Windows user. You only need to do this once.";
+		}
+
+		private void ReviewUpload()
+		{
+			UploadStatus = null;
+			try
+			{
+				UploadPreview = ReportUploadPreview.Read(_report!.Zip);
+			}
+			catch (Exception exception) when (exception is IOException or InvalidDataException or UnauthorizedAccessException)
+			{
+				UploadStatus = $"The report can't be read, so it wasn't sent: {exception.Message}";
+			}
+		}
+
+		private void DontUpload()
+		{
+			UploadPreview = null;
+			UploadStatus = "Not sent. Your report is still saved, so you can send it later.";
+		}
+
 		private async Task UploadAsync()
 		{
+			string zip = _uploadPreview!.ZipPath;
+			UploadPreview = null;
+			string? code = _codes.Load();
+			if (code is null)
+			{
+				HasSavedCode = false;
+				UploadStatus = NeedsNewCode("Your saved upload code can't be read on this PC.");
+				return;
+			}
 			IsBusy = true;
 			UploadStatus = "Uploading...";
 			try
 			{
-				ReportUploadResult result = await _uploader.UploadAsync(_report!.Zip, _uploadCode.Trim(), CancellationToken.None);
-				UploadStatus = result.Accepted ? $"Sent. Thank you! {result.Message}".TrimEnd() : result.Message;
+				ReportUploadResult result = await _uploader.UploadAsync(zip, code, CancellationToken.None);
+				UploadStatus = result switch
+				{
+					{ Accepted: true } => result.Message,
+					{ CodeProblem: true } => NeedsNewCode("The site didn't accept your upload code: it may have been revoked or replaced."),
+					_ => $"{result.Message} Your report is still saved, so you can try again later."
+				};
+				// A refused code stays saved until a new one replaces it, but the box comes back so it can be pasted.
+				if (result.CodeProblem) HasSavedCode = false;
 			}
 			catch (Exception exception)
 			{
-				UploadStatus = $"The upload didn't go through: {exception.Message} Your report is still saved.";
+				UploadStatus = $"The upload didn't go through: {exception.Message} Your report is still saved, so you can try again later.";
 			}
 			finally
 			{
 				IsBusy = false;
 			}
 		}
+
+		// The uploader's own wording names the command line; the window says where to paste instead.
+		private static string NeedsNewCode(string reason) =>
+			$"{reason} Make a new one on your FracTone account page, paste it above and save it, then upload again. Your report is still saved.";
 
 		// Engine progress; callbacks may come off the UI thread, so they're dispatched.
 		void IProgress<ProbeProgress>.Report(ProbeProgress value) => _dispatch(() =>

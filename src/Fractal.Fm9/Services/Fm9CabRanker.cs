@@ -65,6 +65,16 @@ namespace Fractal.Fm9
 		private const int DeviceSampleRate = 48_000;
 		private static readonly Lazy<Curves> Bundled = new(Load);
 
+		// How many cabs are fitted at once. A quarter of the cores leaves the PC usable while a ranking runs; tests lower it
+		// so a suite running beside others stays light.
+		public static int MaxParallelism
+		{
+			get => _maxParallelism;
+			set => _maxParallelism = value >= 1 ? value : throw new ArgumentOutOfRangeException(nameof(value), "At least one cab is fitted at a time.");
+		}
+
+		private static int _maxParallelism = Math.Max(1, Environment.ProcessorCount / 4);
+
 		// The frequencies the bundled curves are measured at (60 Hz to 10 kHz, twelve per octave).
 		public static IReadOnlyList<double> Frequencies => Bundled.Value.Frequencies;
 
@@ -96,7 +106,13 @@ namespace Fractal.Fm9
 		// Ranks from the difference (dB) the cab and EQ must make, stem minus no-cab take, at the first need.Length of
 		// Frequencies. Factory cabs only by default: DynaCab placements are an option until players' ears say mixing helps.
 		public static IReadOnlyList<Fm9CabCandidate> Rank(IReadOnlyList<double> need, int count = 10, string? nameFilter = null,
-			double maximumEqDecibels = DefaultMaximumEqDecibels, Fm9CabSource include = Fm9CabSource.Factory)
+			double maximumEqDecibels = DefaultMaximumEqDecibels, Fm9CabSource include = Fm9CabSource.Factory) =>
+			Rank(need, count, nameFilter, maximumEqDecibels, include, roster: null);
+
+		// Ranks only the cabs the roster admits (bank, type, DynaCab placement). Each fit is costly, so tests rank a target
+		// among a few decoys; every caller in the product ranks the whole roster.
+		internal static IReadOnlyList<Fm9CabCandidate> Rank(IReadOnlyList<double> need, int count, string? nameFilter,
+			double maximumEqDecibels, Fm9CabSource include, Func<int, int, Fm9DynaCabPlacement?, bool>? roster)
 		{
 			ArgumentNullException.ThrowIfNull(need);
 			Curves curves = Bundled.Value;
@@ -109,6 +125,7 @@ namespace Fractal.Fm9
 			(Cab Cab, double[] Wanted, double Raw, double Estimate)[] cabs = curves.Cabs
 				.Where(cab => include == Fm9CabSource.Both || (cab.DynaCab is null) == (include == Fm9CabSource.Factory))
 				.Where(cab => nameFilter is null || cab.Name.Contains(nameFilter, StringComparison.OrdinalIgnoreCase))
+				.Where(cab => roster is null || roster(cab.Bank, cab.Type, cab.DynaCab))
 				.Select(cab =>
 				{
 					double[] wanted = used.Select(index => need[index] - cab.Decibels[index]).ToArray();
@@ -119,7 +136,7 @@ namespace Fractal.Fm9
 			IReadOnlyList<ParametricEqBand> flat = Fm9ParametricEq.Limits.Select((limit, band) =>
 				new ParametricEqBand(limit.Shape, Fm9ParametricEq.DefaultFrequencies[band], Fm9ParametricEq.DefaultQ, 0)).ToArray();
 			return cabs.OrderBy(cab => cab.Estimate).Take(Math.Max(FittedCandidates, count))
-				.AsParallel().WithDegreeOfParallelism(Math.Max(1, Environment.ProcessorCount / 4))
+				.AsParallel().WithDegreeOfParallelism(MaxParallelism)
 				.Select(cab =>
 				{
 					IReadOnlyList<ParametricEqBand> eq = ParametricEqFitter.Fit(frequencies, cab.Wanted, GentleLimits, flat,
@@ -133,10 +150,14 @@ namespace Fractal.Fm9
 
 		// Factory and DynaCab ranked together (include Both), so DynaCab wins only on a smaller gap; without DynaCab allowed
 		// only the factory cabs are ranked.
-		public static Fm9CabPick Pick(IReadOnlyList<double> need, bool allowDynaCab, double maximumEqDecibels = DefaultMaximumEqDecibels)
+		public static Fm9CabPick Pick(IReadOnlyList<double> need, bool allowDynaCab, double maximumEqDecibels = DefaultMaximumEqDecibels) =>
+			Pick(need, allowDynaCab, maximumEqDecibels, roster: null);
+
+		internal static Fm9CabPick Pick(IReadOnlyList<double> need, bool allowDynaCab, double maximumEqDecibels,
+			Func<int, int, Fm9DynaCabPlacement?, bool>? roster)
 		{
 			IReadOnlyList<Fm9CabCandidate> ranked = Rank(need, FittedCandidates, null, maximumEqDecibels,
-				allowDynaCab ? Fm9CabSource.Both : Fm9CabSource.Factory);
+				allowDynaCab ? Fm9CabSource.Both : Fm9CabSource.Factory, roster);
 			return new(ranked.FirstOrDefault(candidate => candidate.DynaCab is null),
 				ranked.FirstOrDefault(candidate => candidate.DynaCab is not null), ranked[0]);
 		}

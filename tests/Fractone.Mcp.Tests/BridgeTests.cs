@@ -1,4 +1,6 @@
 using System.Text.Json;
+using Fractal.Application;
+using Fractal.Core;
 using Fractal.Fm9;
 using Fractone.Mcp.Tools;
 using ModelContextProtocol.Client;
@@ -6,22 +8,26 @@ using ModelContextProtocol.Protocol;
 
 namespace Fractone.Mcp.Tests
 {
-	// Starts the real fractone-mcp over stdio, as Claude Code does, with its own settings file and work folder.
-	public sealed class BridgeTests : IAsyncLifetime
+	// The real fractone-mcp over stdio, as Claude Code starts it, with its own settings file and work folder. Starting it
+	// takes seconds, so each test class shares one server (IClassFixture); tests that write give their outputs their own
+	// names so they never meet in the shared work folder.
+	public sealed class BridgeServer : IAsyncLifetime
 	{
-		private readonly string _root = Directory.CreateTempSubdirectory("fractone-mcp-tests-").FullName;
-		private McpClient _client = null!;
 		private readonly List<string> _errors = [];
 
-		private string Work => Path.Combine(_root, "work");
+		public string Root { get; } = Directory.CreateTempSubdirectory("fractone-mcp-tests-").FullName;
+
+		public string Work => Path.Combine(Root, "work");
+
+		public McpClient Client { get; private set; } = null!;
 
 		public async Task InitializeAsync()
 		{
-			string settings = Path.Combine(_root, "settings.json");
-			new Fm9Settings { WorkFolder = Work, LibraryFolder = Path.Combine(_root, "library") }.Save(settings);
+			string settings = Path.Combine(Root, "settings.json");
+			new Fm9Settings { WorkFolder = Work, LibraryFolder = Path.Combine(Root, "library") }.Save(settings);
 			Directory.CreateDirectory(Work);
 			File.Copy(Path.Combine(AppContext.BaseDirectory, "Presets", "metallica-eight-scenes.syx"), Path.Combine(Work, "metallica.syx"));
-			_client = await McpClient.CreateAsync(new StdioClientTransport(new StdioClientTransportOptions
+			Client = await McpClient.CreateAsync(new StdioClientTransport(new StdioClientTransportOptions
 			{
 				Name = "fm9",
 				Command = "dotnet",
@@ -32,9 +38,28 @@ namespace Fractone.Mcp.Tests
 
 		public async Task DisposeAsync()
 		{
-			await _client.DisposeAsync();
-			try { Directory.Delete(_root, recursive: true); } catch (IOException) { }
+			await Client.DisposeAsync();
+			try { Directory.Delete(Root, recursive: true); } catch (IOException) { }
 		}
+
+		public async Task<JsonElement> Call(string tool, Dictionary<string, object?> arguments)
+		{
+			CallToolResult result = await Client.CallToolAsync(tool, arguments);
+			string errors;
+			lock (_errors) errors = string.Join(Environment.NewLine, _errors);
+			Assert.True(result.IsError != true, Text(result) + Environment.NewLine + errors);
+			return JsonDocument.Parse(Text(result)).RootElement.Clone();
+		}
+
+		public static string Text(CallToolResult result) =>
+			string.Concat(result.Content.OfType<TextContentBlock>().Select(block => block.Text));
+	}
+
+	public sealed class BridgeTests(BridgeServer server) : IClassFixture<BridgeServer>
+	{
+		private readonly McpClient _client = server.Client;
+
+		private string Work => server.Work;
 
 		[DictionaryFact]
 		public async Task EveryToolSaysWhetherItChangesAnything()
@@ -77,6 +102,7 @@ namespace Fractone.Mcp.Tests
 		[DictionaryFact]
 		public async Task AnEditWritesANewFileInTheWorkFolder()
 		{
+			// The one write on this server left to name its own output (names are stamped to the second), so it can't collide.
 			JsonElement result = await Call("set_channel", new()
 			{
 				["file"] = "metallica.syx", ["block"] = "Amp", ["channel"] = "B",
@@ -135,27 +161,6 @@ namespace Fractone.Mcp.Tests
 		}
 
 		[DictionaryFact]
-		public async Task SearchingBeforeAnIndexExistsSaysHowToBuildOne()
-		{
-			CallToolResult result = await _client.CallToolAsync("search", new Dictionary<string, object?> { ["model"] = "IIC++" });
-
-			Assert.True(result.IsError);
-			Assert.Contains("index_build", Text(result), StringComparison.Ordinal);
-		}
-
-		[DictionaryFact]
-		public async Task AnIndexBuiltFromFilesAnswersSearches()
-		{
-			await Call("index_build", new() { ["sources"] = new[] { "metallica.syx" } });
-			string model = Fm9Presets.Describe(Path.Combine(Work, "metallica.syx")).Blocks.Single(block => block.Block == "Amp 1")
-				.Channels.First(channel => channel.Scenes.Count > 0).Model!;
-
-			JsonElement hits = await Call("search", new() { ["model"] = model });
-
-			Assert.True(hits.GetArrayLength() > 0);
-		}
-
-		[DictionaryFact]
 		public async Task FavouritesAreSavedToTheLibraryFolderAndListed()
 		{
 			await Call("library_save", new() { ["file"] = "metallica.syx", ["block"] = "Amp", ["name"] = "Test amps" });
@@ -163,19 +168,21 @@ namespace Fractone.Mcp.Tests
 			JsonElement listed = await Call("library_list", new() { ["blockType"] = "Amp" });
 
 			Assert.Equal("Test amps", listed[0].GetProperty("name").GetString());
-			Assert.StartsWith(Path.Combine(_root, "library", "Amplifier"), listed[0].GetProperty("path").GetString(), StringComparison.OrdinalIgnoreCase);
+			Assert.StartsWith(Path.Combine(server.Root, "library", "Amplifier"), listed[0].GetProperty("path").GetString(), StringComparison.OrdinalIgnoreCase);
 		}
 
 		[DictionaryFact]
 		public async Task ARankedDynaCabIsPlayedBySettingItsCabSettingsOnAChannel()
 		{
+			// Which cab ranks first is Fm9CabRankerTests' concern; this checks a ranking entry's settings play on the FM9.
 			Fm9DynaCabPlacement placement = new("4x12 RECTO STRAIGHT", "Ribbon", 2, 1);
-			Fm9CabRankingEntry best = ToneTools.Ranking(
-				Fm9CabRanker.Rank(Fm9CabRanker.Curve(placement), count: 1, include: ToneTools.CabSource("both"))).Cabs[0];
+			IReadOnlyList<ParametricEqBand> flat = Fm9ParametricEq.Limits.Select((limit, band) =>
+				new ParametricEqBand(limit.Shape, Fm9ParametricEq.DefaultFrequencies[band], Fm9ParametricEq.DefaultQ, 0)).ToArray();
+			Fm9CabRankingEntry best = ToneTools.Ranking([new Fm9CabCandidate(-1, -1, "DynaCab", 0, 0, flat, placement)]).Cabs[0];
 
 			JsonElement result = await Call("set_channel", new()
 			{
-				["file"] = "metallica.syx", ["block"] = "Cab", ["channel"] = "D", ["settings"] = best.CabSettings
+				["file"] = "metallica.syx", ["block"] = "Cab", ["channel"] = "D", ["settings"] = best.CabSettings, ["output"] = "dynacab.syx"
 			});
 
 			IReadOnlyDictionary<string, string> channel = Fm9Presets.GetChannel(result.GetProperty("output").GetString()!, new("Cab", 1), "D");
@@ -183,6 +190,33 @@ namespace Fractone.Mcp.Tests
 			Assert.Equal(5, best.ParametricEqSettings.Keys.Count(key => key.StartsWith("Type ", StringComparison.Ordinal)));
 		}
 
+		private Task<JsonElement> Call(string tool, Dictionary<string, object?> arguments) => server.Call(tool, arguments);
+
+		private static string Text(CallToolResult result) => BridgeServer.Text(result);
+	}
+
+	// Search answers from the index, so these two need a server whose work folder has none until the second builds it.
+	public sealed class IndexBridgeTests(BridgeServer server) : IClassFixture<BridgeServer>
+	{
+		[DictionaryFact]
+		public async Task SearchingSaysHowToBuildAnIndexUntilOneBuiltFromFilesAnswersIt()
+		{
+			CallToolResult before = await server.Client.CallToolAsync("search", new Dictionary<string, object?> { ["model"] = "IIC++" });
+			Assert.True(before.IsError);
+			Assert.Contains("index_build", BridgeServer.Text(before), StringComparison.Ordinal);
+
+			await server.Call("index_build", new() { ["sources"] = new[] { "metallica.syx" } });
+			string model = Fm9Presets.Describe(Path.Combine(server.Work, "metallica.syx")).Blocks.Single(block => block.Block == "Amp 1")
+				.Channels.First(channel => channel.Scenes.Count > 0).Model!;
+
+			JsonElement hits = await server.Call("search", new() { ["model"] = model });
+
+			Assert.True(hits.GetArrayLength() > 0);
+		}
+	}
+
+	public sealed class ToneToolsTests
+	{
 		[Fact]
 		public void RankCabsTakesFactoryDynaCabOrBoth()
 		{
@@ -191,16 +225,6 @@ namespace Fractone.Mcp.Tests
 			Assert.Equal(Fm9CabSource.Both, ToneTools.CabSource("both"));
 			Assert.Throws<ArgumentException>(() => ToneTools.CabSource("user"));
 		}
-
-		private async Task<JsonElement> Call(string tool, Dictionary<string, object?> arguments)
-		{
-			CallToolResult result = await _client.CallToolAsync(tool, arguments);
-			Assert.True(result.IsError != true, Text(result) + Environment.NewLine + string.Join(Environment.NewLine, _errors));
-			return JsonDocument.Parse(Text(result)).RootElement.Clone();
-		}
-
-		private static string Text(CallToolResult result) =>
-			string.Concat(result.Content.OfType<TextContentBlock>().Select(block => block.Text));
 	}
 
 	public sealed class ConfirmationTests

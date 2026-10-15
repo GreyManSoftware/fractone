@@ -30,4 +30,9 @@
     <None Include="..\..\Presets\gen3-*.syx" LinkBase="Presets" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- One cap for every suite: -m limits projects, not the threads inside one. -->
+    <Content Include="..\xunit.runner.json" Link="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

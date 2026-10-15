@@ -1,6 +1,6 @@
 ---
 name: fractone-library
-description: Save, list and apply FM9-Edit block-library favourites (an amp, cab, drive or any block's settings) with the fm9 MCP tools. Use when the user says "save this amp to my favourites", asks which favourites they have, or wants a saved block put into a preset.
+description: Save, list and apply FM9-Edit block favourites (amp, cab, drive or any block) with the FracTone tools. Use for "save this amp to my favourites" or putting a saved block into a preset.
 ---
 
 # FM9-Edit favourites
@@ -16,6 +16,7 @@ tools read and write that exact format, so favourites saved here appear in FM9-E
   - Use the name the user gives; FM9-Edit lists favourites by it.
 - **Apply.** `library_apply` writes a favourite into a block of the same type in a preset, into a new file. An
   all-channel favourite replaces every channel, or just one when asked. Scenes and cables are untouched. Then
-  `audition` it, and `store_preset` if the user wants to keep it.
+  `audition` it, and `store_preset` if the user wants to keep it (at their own risk; see the fractone-operations
+  skill on backups before storing).
 
 FM9-Edit may need its library view refreshed, or a restart, to show a favourite saved while it was open.

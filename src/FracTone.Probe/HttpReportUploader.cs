@@ -46,7 +46,7 @@ namespace FracTone.Probe
 		public async Task<ReportUploadResult> UploadAsync(string zipPath, string uploadCode, CancellationToken cancellationToken)
 		{
 			if (!IsWellFormedCode(uploadCode))
-				return new ReportUploadResult(false, "No valid upload code is saved. Make one on your FracTone account page, then run: fractone-probe login --code ftu_...");
+				return new ReportUploadResult(false, "No valid upload code is saved. Make one on your FracTone account page, then run: fractone-probe login --code ftu_...", CodeProblem: true);
 			FileInfo file = new(zipPath);
 			if (!file.Exists)
 				return new ReportUploadResult(false, $"There is no report at {zipPath}.");
@@ -131,7 +131,7 @@ namespace FracTone.Probe
 						$"Uploaded: report {id ?? "(no id)"} for the {device}, firmware {firmware}, outcome {outcome}. Thank you.", id));
 				case HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden:
 					return new Attempt(new ReportUploadResult(false,
-						"The site didn't accept your upload code: it may have been revoked or replaced. Make a new one on your FracTone account page, then run: fractone-probe login --code ftu_..."));
+						"The site didn't accept your upload code: it may have been revoked or replaced. Make a new one on your FracTone account page, then run: fractone-probe login --code ftu_...", CodeProblem: true));
 				case HttpStatusCode.BadRequest:
 					return new Attempt(new ReportUploadResult(false, "The site refused the file as not a valid probe report." + detail));
 				case HttpStatusCode.RequestEntityTooLarge:

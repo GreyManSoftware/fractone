@@ -122,7 +122,8 @@ static async Task ServeStdioAsync(string settingsPath)
 	builder.Logging.AddConsole(options => options.LogToStandardErrorThreshold = LogLevel.Trace);
 	builder.Logging.SetMinimumLevel(LogLevel.Warning);
 	builder.Services.AddSingleton(new Fm9Context(settingsPath));
-	builder.Services.AddMcpServer(Server.Configure).WithStdioServerTransport().WithToolsFromAssembly(typeof(Fm9Context).Assembly);
+	builder.Services.AddMcpServer(Server.Configure).WithStdioServerTransport().WithToolsFromAssembly(typeof(Fm9Context).Assembly)
+		.WithPrompts(Skill.Prompts()).WithResources(Skill.Resources());
 	await builder.Build().RunAsync();
 }
 
@@ -134,7 +135,8 @@ static async Task ServeHttpAsync(string settingsPath, int port)
 	// Loopback only: an agent in a container reaches it through host.docker.internal; nothing on the network can.
 	builder.WebHost.ConfigureKestrel(kestrel => kestrel.Listen(System.Net.IPAddress.Loopback, port));
 	builder.Services.AddSingleton(new Fm9Context(settingsPath));
-	builder.Services.AddMcpServer(Server.Configure).WithHttpTransport().WithToolsFromAssembly(typeof(Fm9Context).Assembly);
+	builder.Services.AddMcpServer(Server.Configure).WithHttpTransport().WithToolsFromAssembly(typeof(Fm9Context).Assembly)
+		.WithPrompts(Skill.Prompts()).WithResources(Skill.Resources());
 	WebApplication app = builder.Build();
 	app.Use(async (http, next) =>
 	{
@@ -213,7 +215,9 @@ namespace Fractone.Mcp
 			options.ServerInfo = new() { Name = "fractone", Version = typeof(Fm9Context).Assembly.GetName().Version?.ToString(3) ?? "0" };
 			options.ServerInstructions =
 				"FracTone: unofficial tools for a Fractal Audio FM9 on this computer (not affiliated with Fractal Audio Systems). Presets travel as .syx file paths (relative paths are in the work " +
-				"folder); offline edits always write a new file. Writes to the FM9 report what they replaced. Call status first.";
+				"folder); offline edits always write a new file. Writes to the FM9 report what they replaced. Call status first. " +
+				$"Each kind of task has a skill, served as a prompt and as a resource ({Skill.UriPrefix}<name>): read the relevant one first. " +
+				"Provided as-is at the user's own risk (https://fractone.greymansoftware.com/disclaimer): suggest a backup before the first store.";
 		}
 
 		// The generic host defaults its content root to the working folder and watches it, recursively, for appsettings

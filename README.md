@@ -9,6 +9,12 @@ preset, design presets from a description of a tone, and match a preset to a rec
 **Unofficial.** Not made, endorsed or supported by Fractal Audio Systems. FM9, FM9-Edit and Fractal Audio are their
 trademarks. Writing presets to hardware carries risk; switch on the safeguards and keep backups.
 
+**Use at your own risk.** FracTone and its tools are free and provided as-is, with no warranty. We're not responsible
+for damage to your devices, lost or changed presets, data loss or any other harm. Back up your presets (FM9-Edit,
+FM3-Edit, Axe-Edit or Fractal-Bot) before loading or storing anything. FM3 and Axe-Fx III presets are an unverified
+beta. This is plain-language guidance, not legal advice; the MIT licence's warranty disclaimer is what applies to the
+code. Full text: [fractone.greymansoftware.com/disclaimer](https://fractone.greymansoftware.com/disclaimer).
+
 **Capturing media from web pages.** `capture_media` records a page's own video or audio in a headless browser.
 Only capture media you have the right to use, and you are responsible for following each site's terms. It never gets
 past bot checks, CAPTCHAs, sign-in walls or DRM, and never records ads: it waits ads out, declines consent dialogs with
@@ -24,7 +30,7 @@ the most private option (or stops), and otherwise stops and says why, with a scr
 | `src/Fractone.Mcp` | The MCP server (`fractone-mcp`): tools over stdio, or local HTTP with a token |
 | `src/Fractal.Fm9` | The FM9 itself: preset format, MIDI, the verified store, FM9-Edit favourites, preset index, recording, tone match |
 | `src/Fractal.Application`, `src/Fractal.Core`, `src/Fractal.Ai` | The tone-design model, its repairs and checks, and the audio analysis behind tone matching |
-| `plugins/fractone` | The skills, as a Claude Code plugin and a Pi package |
+| `plugins/fractone` | The skills, as a Claude Code plugin and a Pi package; the server embeds the same files as prompts and resources |
 | `tests` | Unit and end-to-end tests |
 
 ## Data this project does not ship
@@ -50,4 +56,6 @@ CI also sets `AVALONIA_TELEMETRY_OPTOUT=1`, the opt-out Avalonia documents.
 
 ## Licence
 
-MIT, except third-party data listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+MIT, except third-party data listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The licence's "as is" warranty
+disclaimer is authoritative; the [disclaimer](https://fractone.greymansoftware.com/disclaimer) above says the same in plain
+words.

@@ -54,7 +54,7 @@ namespace Fractal.Application
 			if (DeviceProfile is not null)
 			{
 				context.Add($"""
-					Device profile output eligibility: {DeviceProfile.IsOutputEligible}
+					Device profile output eligibility: {DescribeOutputEligibility(DeviceProfile)}
 					Verified firmware profiles: {string.Join(", ", DeviceProfile.VerifiedFirmwareProfiles)}
 					Device profile validation status: templates={DeviceProfile.TemplateState}; parameter mappings={DeviceProfile.ParameterMappingState}; connection={DeviceProfile.ConnectionState}.
 					Device profile constraint: {DeviceProfile.ValidationRequirement}
@@ -65,6 +65,13 @@ namespace Fractal.Application
 
 			return string.Join(Environment.NewLine, context);
 		}
+
+		// A beta device is unverified but has a declared exporter: a bare "False" here made the model refuse every beta
+		// request with an empty preset, which no correction round could fix (live job 4899bdbc, 2026-10-15).
+		private static string DescribeOutputEligibility(FractalDeviceProfile profile) =>
+			profile.IsOutputEligible ? "True"
+			: profile.IsBeta ? "Beta: a declared beta exporter translates the FM9 firmware-12 Ride contract to this device, so build the full proposal in that contract"
+			: "False";
 
 		public void ValidateFinalUserPrompt(string finalUserPrompt)
 		{
@@ -176,6 +183,10 @@ namespace Fractal.Application
 		public string Provider { get; }
 
 		public TimeSpan? RetryAfter { get; init; }
+
+		// The server's own checks the last reply failed (no provider or user text beyond the reply's parse error), kept
+		// on the failed job so an operator can see why without reproducing it.
+		public IReadOnlyList<string> Issues { get; init; } = [];
 	}
 
 	public sealed record ToneDesignChatResponse(ToneDesignProposal Proposal);

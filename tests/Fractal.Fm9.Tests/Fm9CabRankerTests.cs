@@ -5,6 +5,36 @@ namespace Fractal.Fm9.Tests
 {
 	public sealed class Fm9CabRankerTests
 	{
+		// Every cab costs an EQ fit (about a second), so the ranking tests rank their targets among near neighbours: each
+		// target factory cab with the types either side of it (often the same cab, another mic), and the 1960TV with Dynamic 1
+		// at each position, with a Condenser, and a Recto with Dynamic 1. One Heavy test ranks the whole roster.
+		private static readonly (int Bank, int Type)[] FactoryTargets = [(3, 38), (1, 965), (0, 329)];
+
+		private static bool Roster(int bank, int type, Fm9DynaCabPlacement? dynaCab) => dynaCab is null
+			? FactoryTargets.Any(target => target.Bank == bank && Math.Abs(target.Type - type) <= 1)
+			: dynaCab.Type == "4x12 1960TV" && (dynaCab.Mic == "Dynamic 1" || (dynaCab.Mic, dynaCab.Position) == ("Condenser", 4)) ||
+				(dynaCab.Type, dynaCab.Mic, dynaCab.Position) == ("4x12 RECTO STRAIGHT", "Dynamic 1", 4);
+
+		// Factory against DynaCab needs only one factory family: the Legacy 4x12 and its neighbours.
+		private static bool MixedRoster(int bank, int type, Fm9DynaCabPlacement? dynaCab) =>
+			Roster(bank, type, dynaCab) && (dynaCab is not null || (bank == 3 && Math.Abs(type - 38) <= 1));
+
+		private static IReadOnlyList<Fm9CabCandidate> Rank(IReadOnlyList<double> need, int count = 10, string? nameFilter = null,
+			Fm9CabSource include = Fm9CabSource.Factory) =>
+			Fm9CabRanker.Rank(need, count, nameFilter, Fm9CabRanker.DefaultMaximumEqDecibels, include,
+				include == Fm9CabSource.Both ? MixedRoster : Roster);
+
+		private static Fm9CabPick Pick(IReadOnlyList<double> need, bool allowDynaCab) =>
+			Fm9CabRanker.Pick(need, allowDynaCab, Fm9CabRanker.DefaultMaximumEqDecibels, MixedRoster);
+
+		// The difference a stem asks for: that cab's measured curve plus a broad 2 dB bump at 1.2 kHz.
+		private static double[] NeedWithBump(IReadOnlyList<double> curve)
+		{
+			ParametricEqBand bump = new(ParametricEqShape.Peaking, 1200, 1, 2);
+			double[] eq = ParametricEqResponse.Decibels([bump], Fm9CabRanker.Frequencies, 48_000);
+			return curve.Select((value, index) => value + eq[index]).ToArray();
+		}
+
 		[Theory]
 		// A Legacy 4x12 (the cab in the author's Ride blend), a Factory 2 4x12 and a Factory 1 1x12.
 		[InlineData(3, 38)]
@@ -12,12 +42,7 @@ namespace Fractal.Fm9.Tests
 		[InlineData(0, 329)]
 		public void TheCabATargetWasMadeWithRanksFirstWithTheGentleEqThatShapedIt(int bank, int type)
 		{
-			// The difference a stem asks for: that cab's measured curve plus a broad 2 dB bump at 1.2 kHz.
-			ParametricEqBand bump = new(ParametricEqShape.Peaking, 1200, 1, 2);
-			double[] eq = ParametricEqResponse.Decibels([bump], Fm9CabRanker.Frequencies, 48_000);
-			double[] need = Fm9CabRanker.Curve(bank, type).Select((value, index) => value + eq[index]).ToArray();
-
-			Fm9CabCandidate best = Fm9CabRanker.Rank(need, count: 3)[0];
+			Fm9CabCandidate best = Rank(NeedWithBump(Fm9CabRanker.Curve(bank, type)), count: 3)[0];
 
 			Assert.Equal((bank, type), (best.Bank, best.Type));
 			Assert.True(best.GapDecibels < 0.3, $"gap {best.GapDecibels}");
@@ -30,10 +55,23 @@ namespace Fractal.Fm9.Tests
 		{
 			double[] need = [.. Fm9CabRanker.Curve(1, 965)];
 
-			IReadOnlyList<Fm9CabCandidate> ranked = Fm9CabRanker.Rank(need, count: 5, nameFilter: "1x12");
+			IReadOnlyList<Fm9CabCandidate> ranked = Rank(need, count: 5, nameFilter: "1x12");
 
+			Assert.NotEmpty(ranked);
 			Assert.All(ranked, candidate => Assert.Contains("1x12", candidate.Name, StringComparison.OrdinalIgnoreCase));
-			Assert.Throws<ArgumentException>(() => Fm9CabRanker.Rank(need, nameFilter: "no such cab"));
+		}
+
+		[Theory]
+		[InlineData(Fm9CabSource.Factory)]
+		[InlineData(Fm9CabSource.DynaCab)]
+		public void AFilterNothingMatchesIsRefused(Fm9CabSource include) =>
+			Assert.Throws<ArgumentException>(() => Fm9CabRanker.Rank([.. Fm9CabRanker.Curve(1, 965)], nameFilter: "no such cab", include: include));
+
+		[Fact]
+		public void TheRankerFitsAtLeastOneCabAtATime()
+		{
+			Assert.Throws<ArgumentOutOfRangeException>(() => Fm9CabRanker.MaxParallelism = 0);
+			Assert.Equal(2, Fm9CabRanker.MaxParallelism);
 		}
 
 		[Fact]
@@ -78,7 +116,7 @@ namespace Fractal.Fm9.Tests
 		{
 			double[] need = [.. Fm9CabRanker.Curve(Plexi)];
 
-			Fm9CabCandidate best = Fm9CabRanker.Rank(need, count: 3, include: Fm9CabSource.Both)[0];
+			Fm9CabCandidate best = Rank(need, count: 3, include: Fm9CabSource.Both)[0];
 
 			Assert.Equal(Plexi, best.DynaCab);
 			Assert.True(best.GapDecibels < 0.3, $"gap {best.GapDecibels}");
@@ -96,23 +134,34 @@ namespace Fractal.Fm9.Tests
 		{
 			double[] need = [.. Fm9CabRanker.Curve(Plexi)];
 
-			IReadOnlyList<Fm9CabCandidate> factory = Fm9CabRanker.Rank(need, count: 5);
-			IReadOnlyList<Fm9CabCandidate> dynaCab = Fm9CabRanker.Rank(need, count: 5, include: Fm9CabSource.DynaCab);
-			IReadOnlyList<Fm9CabCandidate> both = Fm9CabRanker.Rank(Fm9CabRanker.Curve(3, 38), count: 1, include: Fm9CabSource.Both);
+			IReadOnlyList<Fm9CabCandidate> factory = Rank(need, count: 5);
+			IReadOnlyList<Fm9CabCandidate> dynaCab = Rank(need, count: 5, include: Fm9CabSource.DynaCab);
 
+			Assert.Equal(5, factory.Count);
 			Assert.All(factory, candidate => Assert.Null(candidate.DynaCab));
 			Assert.All(factory, candidate => Assert.Equal("LEGACY", candidate.CabSettings["Mode"]));
+			Assert.Equal(5, dynaCab.Count);
 			Assert.All(dynaCab, candidate => Assert.NotNull(candidate.DynaCab));
-			Assert.Equal((3, 38), (both[0].Bank, both[0].Type));
-			Assert.Throws<ArgumentException>(() => Fm9CabRanker.Rank(need, nameFilter: "no such cab", include: Fm9CabSource.DynaCab));
+		}
+
+		[Fact]
+		[Trait("Category", "Heavy")]
+		public void AFactoryCabRanksFirstAmongEveryMeasuredCabAndPlacement()
+		{
+			// The whole roster, factory and DynaCab together, as the product ranks it: the cheap estimate must keep the
+			// target among the cabs it fits.
+			Fm9CabCandidate best = Fm9CabRanker.Rank(NeedWithBump(Fm9CabRanker.Curve(3, 38)), count: 1, include: Fm9CabSource.Both)[0];
+
+			Assert.Equal((3, 38), (best.Bank, best.Type));
+			Assert.True(best.GapDecibels < 0.3, $"gap {best.GapDecibels}");
 		}
 	
 		[Fact]
 		public void TheToneMatchPicksADynaCabOnlyWhenItBeatsTheBestFactoryCab()
 		{
-			Fm9CabPick dyna = Fm9CabRanker.Pick([.. Fm9CabRanker.Curve(Plexi)], allowDynaCab: true);
-			Fm9CabPick factoryOnly = Fm9CabRanker.Pick([.. Fm9CabRanker.Curve(Plexi)], allowDynaCab: false);
-			Fm9CabPick factoryWins = Fm9CabRanker.Pick([.. Fm9CabRanker.Curve(3, 38)], allowDynaCab: true);
+			Fm9CabPick dyna = Pick([.. Fm9CabRanker.Curve(Plexi)], allowDynaCab: true);
+			Fm9CabPick factoryOnly = Pick([.. Fm9CabRanker.Curve(Plexi)], allowDynaCab: false);
+			Fm9CabPick factoryWins = Pick([.. Fm9CabRanker.Curve(3, 38)], allowDynaCab: true);
 
 			Assert.True(dyna.ChoosesDynaCab);
 			Assert.Equal(Plexi, dyna.Chosen.DynaCab);

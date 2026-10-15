@@ -1,12 +1,15 @@
 ---
 name: fractone-operations
-description: Read, back up, edit, audition, store and restore presets on a Fractal Audio FM9 through the fm9 MCP tools. Use when the user asks what a preset contains, wants a preset changed (models, settings, channels, scenes, blocks, name), wants to hear or load a preset, or wants presets backed up, stored or restored.
+description: Read, back up, edit, audition, store and restore FM9 presets with the FracTone tools. Use when the user asks what a preset contains or wants one changed, loaded, stored or restored.
 ---
 
 # FM9 preset operations
 
 The fm9 tools reach a Fractal Audio FM9 connected to this computer by USB. Presets travel as `.syx` file paths. A
 relative path means a file in the user's work folder (`status` shows where that is).
+
+FracTone is free and provided as-is, at the user's own risk (https://fractone.greymansoftware.com/disclaimer). Before
+the first store in a session, remind the user of that once and suggest a backup (`backup`, FM9-Edit or Fractal-Bot).
 
 ## Start here
 

@@ -299,7 +299,7 @@ namespace Fractal.Fm9
 
 		private async Task RestoreBufferAsync(IFractalMidiTransport transport, Fm9PresetDump dump, CancellationToken token)
 		{
-			await new Fm9EditBufferRestoreSender(transport).RestoreAcknowledgedAsync(dump.ForEditBufferImport(), token);
+			await new Fm9EditBufferRestoreSender(transport, Wait).RestoreAcknowledgedAsync(dump.ForEditBufferImport(), token);
 			await Wait(TimeSpan.FromMilliseconds(300), token);
 		}
 

@@ -22,14 +22,9 @@ namespace FracTone.Probe.Tests
 			return File.ReadAllBytes(ProbeReportWriter.Write(run, folder, includeUserPresets).Zip);
 		}
 
-		private static async Task<ProbeRun> Fm9Run(Action<SimulatedGen3>? setUp = null)
-		{
-			SimulatedGen3 fm9 = ProbeEngineTests.Unit(Gen3Device.Fm9, "metallica-eight-scenes.syx", (12, 0));
-			IReadOnlyList<byte[]> readback = SimulatedGen3.Load("fm9-synthetic-ride-fm9-readback.syx");
-			fm9.OnLoad = frames => ProbeFrames.Parse(Gen3Device.Fm9, frames).PresetName == ProbeFrames.Parse(Gen3Device.Fm9, readback).PresetName ? readback : frames;
-			setUp?.Invoke(fm9);
-			return await ProbeEngineTests.Run(fm9, 2);
-		}
+		private static async Task<ProbeRun> Fm9Run() => (await SharedProbeRuns.Fm9).Run;
+
+		private static async Task<ProbeRun> Fm9WithDrive46DriftedRun() => (await SharedProbeRuns.Fm9WithDrive46Drifted).Run;
 
 		[Fact]
 		public async Task AnFm9LevelTwoReportIsSummarisedAndEveryEvidenceStepMatchesItsScript()
@@ -61,13 +56,7 @@ namespace FracTone.Probe.Tests
 		[Fact]
 		public async Task AVoicingThatDiffersIsShownWithTheWordsAndWhatTheScriptWanted()
 		{
-			ProbeRun run = await Fm9Run(fm9 =>
-			{
-				Func<int, int, IReadOnlyDictionary<int, int>?> voicing = fm9.Voicing;
-				fm9.Voicing = (effect, ordinal) => effect == 118 && ordinal == 46
-					? new Dictionary<int, int>(voicing(effect, ordinal)!) { [6] = 45675 }
-					: voicing(effect, ordinal);
-			});
+			ProbeRun run = await Fm9WithDrive46DriftedRun();
 
 			ProbeReportAnalysis analysis = ProbeReportAnalyzer.Analyse(Zip(run));
 
@@ -80,9 +69,7 @@ namespace FracTone.Probe.Tests
 		[Fact]
 		public async Task AnFm3ReportMarksItsCarriedOverExpectationsAndConfirmsThem()
 		{
-			SimulatedGen3 fm3 = ProbeEngineTests.Unit(Gen3Device.Fm3, "gen3-fm3-13.00-ride.syx", (13, 0));
-
-			ProbeReportAnalysis analysis = ProbeReportAnalyzer.Analyse(Zip(await ProbeEngineTests.Run(fm3, 2)));
+			ProbeReportAnalysis analysis = ProbeReportAnalyzer.Analyse(Zip((await SharedProbeRuns.Fm3).Run));
 
 			Assert.Equal(("FM3", "FM3 13.00"), (analysis.Device, analysis.ExpectationsFrom));
 			ProbeCableObservation cable = analysis.Cables.Single(observation => observation.Route == "r2c2>r1c3");
@@ -92,7 +79,8 @@ namespace FracTone.Probe.Tests
 		[Fact]
 		public async Task ACableThatLandsInTheWrongPlaceDiffers()
 		{
-			ProbeRun run = await Fm9Run();
+			// This test edits its run, so it runs its own rather than the shared one.
+			ProbeRun run = await ProbeEngineTests.Run(SharedProbeRuns.Fm9WithItsReadback(), 2);
 			ProbeStepResult cables = run.Steps.Single(step => step.Id == "cable-codes");
 			Dictionary<string, string> data = new(cables.Data)
 			{
@@ -146,15 +134,8 @@ namespace FracTone.Probe.Tests
 		public async Task TheAggregateGroupsByDeviceAndFirmwareAndShowsDisagreeingUnitsAsVariants()
 		{
 			ProbeReportAnalysis first = ProbeReportAnalyzer.Analyse(Zip(await Fm9Run()));
-			ProbeReportAnalysis second = ProbeReportAnalyzer.Analyse(Zip(await Fm9Run(fm9 =>
-			{
-				Func<int, int, IReadOnlyDictionary<int, int>?> voicing = fm9.Voicing;
-				fm9.Voicing = (effect, ordinal) => effect == 118 && ordinal == 46
-					? new Dictionary<int, int>(voicing(effect, ordinal)!) { [6] = 45675 }
-					: voicing(effect, ordinal);
-			})));
-			ProbeReportAnalysis fm3 = ProbeReportAnalyzer.Analyse(Zip(await ProbeEngineTests.Run(
-				ProbeEngineTests.Unit(Gen3Device.Fm3, "gen3-fm3-13.00-ride.syx", (13, 0)), 2)));
+			ProbeReportAnalysis second = ProbeReportAnalyzer.Analyse(Zip(await Fm9WithDrive46DriftedRun()));
+			ProbeReportAnalysis fm3 = ProbeReportAnalyzer.Analyse(Zip((await SharedProbeRuns.Fm3).Run));
 			DateTimeOffset now = new(2026, 10, 15, 12, 0, 0, TimeSpan.Zero);
 
 			ProbeAggregate aggregate = ProbeReportAggregator.Build(

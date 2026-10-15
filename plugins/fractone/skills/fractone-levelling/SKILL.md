@@ -1,6 +1,6 @@
 ---
 name: fractone-levelling
-description: Level an FM9 preset so its scenes play at the loudness the player wants (all equal, matching one scene, or leads louder) and the preset as a whole sits at the right level on the output meters, from a re-amped DI or from measurements while the player plays, using the FracTone tools. Use when the user wants scenes or presets levelled, balanced or matched in volume.
+description: Level an FM9 preset's scenes (equal, matched or leads louder) and its overall output level with the FracTone tools. Use when the user wants scenes or presets levelled or balanced in volume.
 ---
 
 # Preset and scene levelling
@@ -46,7 +46,8 @@ If the user has a DI recording, call `reamp` with `level: true`, naming every sc
 
 ## Keeping it
 
-Levels are live edits: `undo` takes them back, and `store_edit_buffer` stores them, through the user's safeguards.
+Levels are live edits: `undo` takes them back, and `store_edit_buffer` stores them, through the user's safeguards and
+at their own risk (see the fractone-operations skill on backups before storing).
 
 ## Notes
 

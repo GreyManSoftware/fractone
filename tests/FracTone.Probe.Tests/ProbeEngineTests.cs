@@ -10,13 +10,7 @@ namespace FracTone.Probe.Tests
 		[Fact]
 		public async Task AnFm9LevelTwoRunLoadsTheTemplateChecksTheReadbackAndLeavesTheDeviceAsFound()
 		{
-			SimulatedGen3 fm9 = Unit(Gen3Device.Fm9, "metallica-eight-scenes.syx", (12, 0));
-			fm9.Scene = 3;
-			// The FM9's own readback of this template (505, 2026-10-13): three Amp words recomputed, nothing else changed.
-			IReadOnlyList<byte[]> readback = SimulatedGen3.Load("fm9-synthetic-ride-fm9-readback.syx");
-			fm9.OnLoad = frames => ProbeFrames.Parse(Gen3Device.Fm9, frames).PresetName == ProbeFrames.Parse(Gen3Device.Fm9, readback).PresetName ? readback : frames;
-
-			ProbeRun run = await Run(fm9, 2);
+			(SimulatedGen3 fm9, ProbeRun run, _) = await SharedProbeRuns.Fm9;
 
 			Assert.Equal(ProbeOutcome.Completed, run.Outcome);
 			Assert.Equal(("FM9", "12.00", true), (run.Device, run.Firmware, run.FirmwareScripted));
@@ -31,17 +25,15 @@ namespace FracTone.Probe.Tests
 		}
 
 		[Theory]
-		[InlineData(0x11, 13, 0, "gen3-fm3-13.00-ride.syx")]
-		[InlineData(0x10, 32, 6, "gen3-axe3-32.06-ride.syx")]
-		public async Task AnFm3OrAxeFx3IsIdentifiedByItsModelByteAndProbedInItsOwnFrames(byte model, byte major, byte minor, string preset)
+		[InlineData(0x11, "13.00")]
+		[InlineData(0x10, "32.06")]
+		public async Task AnFm3OrAxeFx3IsIdentifiedByItsModelByteAndProbedInItsOwnFrames(byte model, string firmware)
 		{
 			Gen3Device device = Gen3Device.FromModel(model)!;
-			SimulatedGen3 unit = Unit(device, preset, (major, minor));
-
-			ProbeRun run = await Run(unit, 2);
+			(SimulatedGen3 unit, ProbeRun run, _) = await SharedProbeRuns.Clean(device);
 
 			Assert.Equal(ProbeOutcome.Completed, run.Outcome);
-			Assert.Equal(device.Name, run.Device);
+			Assert.Equal((device.Name, firmware), (run.Device, run.Firmware));
 			Assert.Equal("Read back exactly as sent.", run.Steps.Single(step => step.Id == "load-template").Message);
 			Assert.True(run.Restore!.LeftAsFound);
 			Assert.Equal(Found, unit.Preset);
@@ -314,14 +306,6 @@ namespace FracTone.Probe.Tests
 			axe.Check(ProbeFrames.StoredPresetName(Gen3Device.AxeFx3, 1023));
 			Assert.Throws<ProbeRefusedException>(() => axe.Check(ProbeFrames.StoredPresetName(Gen3Device.AxeFx3, 503)));
 			Assert.Throws<ProbeRefusedException>(() => fm9.Check(ProbeFrames.StoredPresetName(Gen3Device.Fm9, 7)));
-		}
-
-		[Fact]
-		public async Task AnFm9RunRecordsNoVariantAnd512Presets()
-		{
-			ProbeRun run = await Run(Unit(Gen3Device.Fm9, "metallica-eight-scenes.syx", (12, 0)), 1);
-
-			Assert.Equal(((ProbeDeviceVariant?)null, (int?)512), (run.DeviceVariant, run.PresetSlots));
 		}
 
 		private static Task<ProbeRun> RunOnSlot(SimulatedGen3 unit, int slot) =>

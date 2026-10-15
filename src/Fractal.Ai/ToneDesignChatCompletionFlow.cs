@@ -102,7 +102,10 @@ namespace Fractal.Ai
 									ToneDesignProviderErrorKind.InvalidResponse,
 									provider,
 									$"The corrected {provider} tone-design proposal still fails quality evaluation: " +
-									string.Join(" ", evaluation.Corrections));
+									string.Join(" ", evaluation.Corrections))
+								{
+									Issues = evaluation.Corrections
+								};
 							}
 
 							proposal = await RequestCorrectionAsync(

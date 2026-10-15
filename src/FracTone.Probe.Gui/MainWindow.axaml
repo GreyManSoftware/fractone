@@ -24,7 +24,9 @@
           <TextBlock Classes="body" Text="What it never does: change your settings, touch any preset except the one you choose, or keep anything it changed. Your device is put back exactly as it was, and we check that it is." />
           <TextBlock Classes="body" Text="Please close Axe-Edit, FM3-Edit, FM9-Edit and Fractal-Bot first. They hold the connection, and this tool can't talk to your unit while they're open." />
           <TextBlock Classes="body" Text="Keep the USB cable connected and leave the unit alone while the check runs." />
-          <CheckBox Content="I've closed the editor apps" IsChecked="{Binding EditorsClosed}" Margin="0,8,0,0" />
+          <TextBlock Classes="body" Text="{Binding DisclaimerText}" />
+          <CheckBox Content="I understand and accept the disclaimer" IsChecked="{Binding DisclaimerAccepted}" Margin="0,8,0,0" />
+          <CheckBox Content="I've closed the editor apps" IsChecked="{Binding EditorsClosed}" />
         </StackPanel>
 
         <!-- 2. Connect -->
@@ -100,12 +102,31 @@
           <SelectableTextBlock Text="{Binding ReportPath}" TextWrapping="Wrap" IsVisible="{Binding HasReport}" />
           <TextBlock Classes="warning" Text="{Binding ReportError}" IsVisible="{Binding ReportError, Converter={x:Static ObjectConverters.IsNotNull}}" />
           <Button Content="Open folder" Command="{Binding OpenFolderCommand}" HorizontalAlignment="Left" />
-          <TextBlock Classes="body" Margin="0,12,0,0" Text="To send it to FracTone, paste the upload code from your FracTone account page. The report holds no preset names or personal details." />
-          <StackPanel Orientation="Horizontal" Spacing="8">
-            <TextBox Text="{Binding UploadCode}" Width="260" PlaceholderText="Upload code" />
-            <Button Content="Upload report" Command="{Binding UploadCommand}" Classes="accent" />
+          <TextBlock Classes="title" Margin="0,12,0,0" Text="Send it to FracTone" IsVisible="{Binding HasReport}" />
+          <StackPanel Spacing="8" IsVisible="{Binding HasReport}">
+            <StackPanel Spacing="8" IsVisible="{Binding !HasSavedCode}">
+              <TextBlock Classes="body" Text="Paste the upload code from your FracTone account page (Account, then Generate an upload code). It's saved, encrypted, for this Windows user, so you only do this once." />
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBox Text="{Binding UploadCode}" Width="300" PlaceholderText="ftu_..." PasswordChar="&#x2022;" />
+                <Button Content="Save code" Command="{Binding SaveCodeCommand}" />
+              </StackPanel>
+            </StackPanel>
+            <TextBlock Classes="note" Text="{Binding CodeStatus}" IsVisible="{Binding CodeStatus, Converter={x:Static ObjectConverters.IsNotNull}}" />
+            <Button Content="Upload report..." Command="{Binding ReviewUploadCommand}" Classes="accent" HorizontalAlignment="Left"
+                    IsVisible="{Binding HasSavedCode}" />
+            <Border IsVisible="{Binding IsConfirmingUpload}" BorderThickness="1" BorderBrush="Gray" Padding="12" CornerRadius="4">
+              <StackPanel Spacing="8">
+                <SelectableTextBlock Text="{Binding UploadPreviewText}" TextWrapping="Wrap" />
+                <TextBlock Classes="body" Text="Send this report now?" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <Button Content="Send it" Command="{Binding UploadCommand}" Classes="accent" />
+                  <Button Content="Don't send" Command="{Binding DontUploadCommand}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+            <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsBusy}" />
+            <TextBlock Classes="body" Text="{Binding UploadStatus}" IsVisible="{Binding UploadStatus, Converter={x:Static ObjectConverters.IsNotNull}}" />
           </StackPanel>
-          <TextBlock Classes="body" Text="{Binding UploadStatus}" IsVisible="{Binding UploadStatus, Converter={x:Static ObjectConverters.IsNotNull}}" />
         </StackPanel>
       </Panel>
     </ScrollViewer>

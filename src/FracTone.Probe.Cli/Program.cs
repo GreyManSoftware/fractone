@@ -19,6 +19,7 @@ namespace FracTone.Probe.Cli
 		public bool Upload { get; init; }
 		public bool Yes { get; init; }
 		public Uri? Site { get; init; }
+		public bool AcceptDisclaimer { get; init; }
 	}
 
 	internal static class Program
@@ -38,6 +39,7 @@ namespace FracTone.Probe.Cli
 			"  --upload          offer to upload the report at the end (shows what will be sent and asks y/N)\n" +
 			"  --yes             with --upload, upload without asking\n" +
 			"  --site url        the FracTone site to upload to (default https://fractone.greymansoftware.com)\n" +
+			"  --accept-disclaimer  accept the disclaimer without the y/N question (asked once per user otherwise)\n" +
 			UploadCommands.Usage;
 
 		public static async Task<int> Main(string[] args)
@@ -57,6 +59,9 @@ namespace FracTone.Probe.Cli
 			}
 			if (options.DryRun)
 				return DryRun(options, Console.Out);
+			// Only a real run touches the device, so only it needs the disclaimer accepted.
+			if (!new ProbeDisclaimer().Confirm(options.AcceptDisclaimer, Console.In, Console.Out))
+				return 5;
 			return await RunAsync(options);
 		}
 
@@ -64,7 +69,7 @@ namespace FracTone.Probe.Cli
 		{
 			int? slot = null;
 			int level = 1;
-			bool dryRun = false, includeUserPresets = false, upload = false, yes = false;
+			bool dryRun = false, includeUserPresets = false, upload = false, yes = false, acceptDisclaimer = false;
 			Uri? site = null;
 			string output = Directory.GetCurrentDirectory();
 			string? port = null, firmware = null;
@@ -104,6 +109,9 @@ namespace FracTone.Probe.Cli
 					case "--yes" or "-y":
 						yes = true;
 						break;
+					case "--accept-disclaimer":
+						acceptDisclaimer = true;
+						break;
 					case "--site":
 						site = UploadCommands.ParseSite(Value());
 						break;
@@ -115,7 +123,7 @@ namespace FracTone.Probe.Cli
 			}
 			if (slot is null)
 				throw new ArgumentException("--slot is required: name one preset slot that is safe to use.");
-			return new CliOptions(slot.Value, level, dryRun, output, port, device, firmware, includeUserPresets) { Upload = upload, Yes = yes, Site = site };
+			return new CliOptions(slot.Value, level, dryRun, output, port, device, firmware, includeUserPresets) { Upload = upload, Yes = yes, Site = site, AcceptDisclaimer = acceptDisclaimer };
 		}
 
 		internal static int DryRun(CliOptions options, TextWriter output)

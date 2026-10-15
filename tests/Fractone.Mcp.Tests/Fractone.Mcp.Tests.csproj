@@ -25,7 +25,13 @@
 
   <ItemGroup>
     <None Include="..\..\Presets\metallica-eight-scenes.syx" Link="Presets\metallica-eight-scenes.syx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="$(MSBuildThisFileDirectory)../../plugins/fractone/skills/**/SKILL.md" Link="skills/%(RecursiveDir)SKILL.md" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Fixtures\ride-proposal.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- One cap for every suite: -m limits projects, not the threads inside one. -->
+    <Content Include="..\xunit.runner.json" Link="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

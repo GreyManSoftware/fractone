@@ -1,6 +1,6 @@
 ---
 name: fractone-tone-match
-description: Match an FM9 preset's tone to a target recording by fitting a Parametric EQ, using the FracTone tools (record or re-amp a take, fit, add a scene, audition). Use when the user wants a preset to sound more like a specific recording.
+description: Match an FM9 preset to a target recording: pick a factory cab and fit a gentle Parametric EQ with the FracTone tools. Use when the user wants a preset to sound like a specific recording.
 ---
 
 # FM9 tone matching
@@ -8,6 +8,7 @@ description: Match an FM9 preset's tone to a target recording by fitting a Param
 The match compares a **take**, the user playing the part through the preset and recorded from the FM9, with a
 **target**, the recording to sound like. It fits the FM9's Parametric EQ to close the difference, writes the bands into
 a spare EQ channel, and can add a scene that plays it, so the original scenes stay as they were.
+Storing the result is at the user's own risk, as with any store (see the fractone-operations skill on backups).
 
 ## Work only on the scene you were asked about
 

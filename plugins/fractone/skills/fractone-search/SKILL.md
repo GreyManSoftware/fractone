@@ -1,6 +1,6 @@
 ---
 name: fractone-search
-description: Search all of a user's FM9 presets for amps, cabs, drives or other blocks and the scenes that use them, with the fm9 MCP tools. Use for questions like "which presets use cab 1234", "where do I use the IIC++", or "find my presets with a Plexi on channel B".
+description: Search a user's FM9 presets for amps, cabs, drives or other blocks and the scenes using them, with the FracTone tools. Use for "which presets use the IIC++" or similar questions.
 ---
 
 # FM9 preset search

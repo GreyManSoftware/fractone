@@ -22,4 +22,9 @@
     <ProjectReference Include="..\..\src\FracTone.Probe.Gui\FracTone.Probe.Gui.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- One cap for every suite: -m limits projects, not the threads inside one. -->
+    <Content Include="..\xunit.runner.json" Link="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

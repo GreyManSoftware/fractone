@@ -12,8 +12,9 @@ namespace Fractal.Fm9.Tests
 		public void AMatchWritesTheFittedBandsIntoAFreeEqChannelAndANewScene()
 		{
 			string input = Fixtures.Path("fm9-uploaded-usb-input.syx");
-			// The take is bright noise; the target is the same noise darkened, so the fit must cut the top end.
-			float[] noise = Noise(48_000 * 8, seed: 7);
+			// The take is two seconds of bright noise (plenty for a spectrum); the target is the same noise darkened, so the fit
+			// must cut the top end.
+			float[] noise = Noise(48_000 * 2, seed: 7);
 			string wet = Wave("wet.wav", noise);
 			string target = Wave("target.wav", LowPass(noise, 0.15f));
 			Fm9PresetSummary before = Fm9Presets.Describe(input);

@@ -16,7 +16,9 @@ namespace FracTone.Probe.Gui
 			if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 			{
 				EngineProbeService probe = new(ReportFolder());
-				WizardViewModel wizard = new(probe, new PendingReportUploader(), new ShellFolderOpener(),
+				// One client for the app; the uploader enforces its own per-attempt timeout.
+				HttpReportUploader uploader = new(new HttpClient { Timeout = Timeout.InfiniteTimeSpan });
+				WizardViewModel wizard = new(probe, uploader, new UploadCodeStore(), new ShellFolderOpener(),
 					dispatch: action => Dispatcher.UIThread.Post(action));
 				desktop.MainWindow = new MainWindow { DataContext = wizard };
 				desktop.Exit += (_, _) => probe.Dispose();

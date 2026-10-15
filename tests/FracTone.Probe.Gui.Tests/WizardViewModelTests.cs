@@ -1,12 +1,24 @@
+using System.IO.Compression;
 using Fractal.Companion.Protocol;
 using FracTone.Probe.Gui.Services;
 using FracTone.Probe.Gui.ViewModels;
 
 namespace FracTone.Probe.Gui.Tests
 {
-	public sealed class WizardViewModelTests
+	public sealed class WizardViewModelTests : IDisposable
 	{
+		private const string Code = "ftu_TestCode0123456789abcdefABCDEF";
 		private static readonly ProbeIdentity Fm9 = new(Gen3Device.Fm9, "12.00", Scripted: true, Presets: 512);
+		// Holds the saved upload code and any report zip a test writes; the real user's code is never touched.
+		private readonly string _folder = Path.Combine(Path.GetTempPath(), "fractone-gui-tests-" + Guid.NewGuid().ToString("N"));
+
+		public WizardViewModelTests() => Directory.CreateDirectory(_folder);
+
+		public void Dispose()
+		{
+			if (Directory.Exists(_folder))
+				Directory.Delete(_folder, recursive: true);
+		}
 
 		[Fact]
 		public async Task TheWizardWalksFromBeforeYouStartToDoneInOrder()
@@ -30,15 +42,21 @@ namespace FracTone.Probe.Gui.Tests
 			Assert.Equal(probe.Zip, wizard.ReportPath);
 		}
 
-		[Fact]
-		public async Task NextStaysOffUntilTheEditorsAreConfirmedClosed()
+		[Theory]
+		[InlineData(false, false)]
+		[InlineData(true, false)]
+		[InlineData(false, true)]
+		public async Task NextStaysOffUntilTheEditorsAreClosedAndTheDisclaimerIsAccepted(bool editorsClosed, bool disclaimerAccepted)
 		{
 			WizardViewModel wizard = New(new FakeProbe());
+			Assert.Contains("at your own risk", wizard.DisclaimerText, StringComparison.Ordinal);
+			wizard.EditorsClosed = editorsClosed;
+			wizard.DisclaimerAccepted = disclaimerAccepted;
 
 			Assert.False(wizard.NextCommand.CanExecute());
 			await wizard.NextCommand.ExecuteAsync();
 			Assert.Equal(WizardPage.Welcome, wizard.Page);
-			wizard.EditorsClosed = true;
+			wizard.EditorsClosed = wizard.DisclaimerAccepted = true;
 			Assert.True(wizard.NextCommand.CanExecute());
 		}
 
@@ -47,7 +65,7 @@ namespace FracTone.Probe.Gui.Tests
 		{
 			FakeProbe probe = new() { ConnectFailure = new ProbeStopException("No Fractal device answered.") };
 			WizardViewModel wizard = New(probe);
-			wizard.EditorsClosed = true;
+			wizard.EditorsClosed = wizard.DisclaimerAccepted = true;
 			await wizard.NextCommand.ExecuteAsync();
 
 			await wizard.ConnectCommand.ExecuteAsync();
@@ -209,46 +227,128 @@ namespace FracTone.Probe.Gui.Tests
 		}
 
 		[Fact]
-		public async Task UploadStaysOffUntilAReportExistsAndACodeIsEntered()
+		public async Task UploadStaysOffUntilAReportExistsAndACodeIsSaved()
 		{
-			FakeProbe probe = new();
-			FakeUploader uploader = new();
-			WizardViewModel wizard = New(probe, uploader);
-			wizard.UploadCode = "ABC-123";
-			Assert.False(wizard.UploadCommand.CanExecute());
+			FakeProbe probe = new() { Folder = _folder };
+			WizardViewModel wizard = New(probe);
+			Assert.False(wizard.HasSavedCode);
+			Assert.False(wizard.ReviewUploadCommand.CanExecute());
 			Assert.False(wizard.OpenFolderCommand.CanExecute());
 
 			await ToLevel(wizard);
 			Task run = wizard.NextCommand.ExecuteAsync();
-			Assert.False(wizard.UploadCommand.CanExecute());
 			probe.Finish(Run(ProbeOutcome.Completed, leftAsFound: true));
 			await run;
-			Assert.True(wizard.UploadCommand.CanExecute());
-			wizard.UploadCode = " ";
-			Assert.False(wizard.UploadCommand.CanExecute());
+			Assert.False(wizard.ReviewUploadCommand.CanExecute());
+			Assert.False(wizard.SaveCodeCommand.CanExecute());
 
-			wizard.UploadCode = " ABC-123 ";
-			await wizard.UploadCommand.ExecuteAsync();
-			Assert.Equal((probe.Zip, "ABC-123"), uploader.Sent);
-			Assert.Equal("Not yet.", wizard.UploadStatus);
+			wizard.UploadCode = $" {Code} ";
+			await wizard.SaveCodeCommand.ExecuteAsync();
+
+			Assert.True(wizard.HasSavedCode);
+			Assert.Equal("", wizard.UploadCode);
+			Assert.Equal(Code, Store().Load());
+			Assert.True(wizard.ReviewUploadCommand.CanExecute());
 		}
 
 		[Fact]
-		public async Task ThePlaceholderUploaderSaysUploadsComeNext()
+		public async Task SomethingThatIsNotAnUploadCodeIsNotSaved()
 		{
-			ReportUploadResult result = await new PendingReportUploader().UploadAsync("report.zip", "code", CancellationToken.None);
+			WizardViewModel wizard = New(new FakeProbe());
 
-			Assert.False(result.Accepted);
-			Assert.Contains("next version", result.Message, StringComparison.Ordinal);
+			wizard.UploadCode = "abc_123456789";
+			await wizard.SaveCodeCommand.ExecuteAsync();
+
+			Assert.False(wizard.HasSavedCode);
+			Assert.Null(Store().Load());
+			Assert.StartsWith("That isn't an upload code", wizard.CodeStatus, StringComparison.Ordinal);
 		}
 
-		private static WizardViewModel New(FakeProbe probe, FakeUploader? uploader = null) =>
-			new(probe, uploader ?? new FakeUploader(), new FakeFolders(), now: () => new DateTimeOffset(2026, 10, 14, 12, 0, 0, TimeSpan.Zero));
+		[Fact]
+		public void ACodeSavedEarlierIsUsedWithoutAskingAgain()
+		{
+			Store().Save(Code);
 
-		private static async Task<WizardViewModel> ToSafeSlot(FakeProbe probe)
+			WizardViewModel wizard = New(new FakeProbe());
+
+			Assert.True(wizard.HasSavedCode);
+		}
+
+		[Fact]
+		public async Task TheUploadShowsWhatWillBeSentAndSendsNothingUntilTheUserSaysYes()
+		{
+			Store().Save(Code);
+			FakeUploader uploader = new();
+			(WizardViewModel wizard, FakeProbe probe) = await ToDone(uploader);
+
+			await wizard.ReviewUploadCommand.ExecuteAsync();
+
+			Assert.True(wizard.IsConfirmingUpload);
+			Assert.Contains("run.json", wizard.UploadPreviewText, StringComparison.Ordinal);
+			Assert.Contains("Anonymised: yes", wizard.UploadPreviewText, StringComparison.Ordinal);
+			Assert.Null(uploader.Sent);
+			await wizard.DontUploadCommand.ExecuteAsync();
+			Assert.False(wizard.IsConfirmingUpload);
+			Assert.Null(uploader.Sent);
+			Assert.StartsWith("Not sent", wizard.UploadStatus, StringComparison.Ordinal);
+
+			await wizard.ReviewUploadCommand.ExecuteAsync();
+			await wizard.UploadCommand.ExecuteAsync();
+
+			Assert.Equal((Path.GetFullPath(probe.Zip), Code), uploader.Sent);
+			Assert.Equal("Uploaded: report r42. Thank you.", wizard.UploadStatus);
+			Assert.False(wizard.IsConfirmingUpload);
+		}
+
+		[Theory]
+		[InlineData("refused", "The site didn't accept your upload code", false)]
+		[InlineData("failed", "The site had a problem (HTTP 503). Your report is still saved", true)]
+		[InlineData("threw", "The upload didn't go through: Network down. Your report is still saved", true)]
+		public async Task AFailedUploadIsExplainedInPlainWordsAndAsksForANewCodeOnlyWhenTheCodeWasRefused(string outcome, string expected, bool codeStillUsable)
+		{
+			Store().Save(Code);
+			FakeUploader uploader = new()
+			{
+				Result = outcome switch
+				{
+					"refused" => new ReportUploadResult(false, "run: fractone-probe login --code ftu_...", CodeProblem: true),
+					"failed" => new ReportUploadResult(false, "The site had a problem (HTTP 503)."),
+					_ => null
+				},
+				Failure = outcome == "threw" ? new HttpRequestException("Network down.") : null
+			};
+			(WizardViewModel wizard, _) = await ToDone(uploader);
+
+			await wizard.ReviewUploadCommand.ExecuteAsync();
+			await wizard.UploadCommand.ExecuteAsync();
+
+			Assert.StartsWith(expected, wizard.UploadStatus, StringComparison.Ordinal);
+			Assert.DoesNotContain("fractone-probe", wizard.UploadStatus, StringComparison.Ordinal);
+			Assert.DoesNotContain(Code, wizard.UploadStatus, StringComparison.Ordinal);
+			Assert.Equal(codeStillUsable, wizard.HasSavedCode);
+			Assert.False(wizard.IsBusy);
+		}
+
+		private UploadCodeStore Store() => new(Path.Combine(_folder, "store"));
+
+		private WizardViewModel New(FakeProbe probe, FakeUploader? uploader = null) =>
+			new(probe, uploader ?? new FakeUploader(), Store(), new FakeFolders(), now: () => new DateTimeOffset(2026, 10, 14, 12, 0, 0, TimeSpan.Zero));
+
+		private async Task<(WizardViewModel Wizard, FakeProbe Probe)> ToDone(FakeUploader uploader)
+		{
+			FakeProbe probe = new() { Folder = _folder };
+			WizardViewModel wizard = New(probe, uploader);
+			await ToLevel(wizard);
+			Task run = wizard.NextCommand.ExecuteAsync();
+			probe.Finish(Run(ProbeOutcome.Completed, leftAsFound: true));
+			await run;
+			return (wizard, probe);
+		}
+
+		private async Task<WizardViewModel> ToSafeSlot(FakeProbe probe)
 		{
 			WizardViewModel wizard = New(probe);
-			wizard.EditorsClosed = true;
+			wizard.EditorsClosed = wizard.DisclaimerAccepted = true;
 			await wizard.NextCommand.ExecuteAsync();
 			await wizard.ConnectCommand.ExecuteAsync();
 			await wizard.NextCommand.ExecuteAsync();
@@ -258,7 +358,7 @@ namespace FracTone.Probe.Gui.Tests
 
 		private static async Task ToLevel(WizardViewModel wizard)
 		{
-			wizard.EditorsClosed = true;
+			wizard.EditorsClosed = wizard.DisclaimerAccepted = true;
 			await wizard.NextCommand.ExecuteAsync();
 			await wizard.ConnectCommand.ExecuteAsync();
 			await wizard.NextCommand.ExecuteAsync();
@@ -285,8 +385,10 @@ namespace FracTone.Probe.Gui.Tests
 			public List<int> SlotsRead { get; } = [];
 			public ProbeOptions? Options { get; private set; }
 			public CancellationToken Token { get; private set; }
-			public string Zip { get; } = Path.Combine("reports", "fractone-probe-FM9.zip");
-			public string Backups { get; } = Path.Combine("reports", "fractone-probe-FM9-backups");
+			// Set when a test needs the report zip to exist (the upload preview reads it).
+			public string? Folder { get; init; }
+			public string Zip => Path.Combine(Folder ?? "reports", "fractone-probe-FM9.zip");
+			public string Backups => Path.Combine(Folder ?? "reports", "fractone-probe-FM9-backups");
 
 			public Task<ProbeIdentity> ConnectAsync(CancellationToken cancellationToken) =>
 				ConnectFailure is null ? Task.FromResult(Identity) : Task.FromException<ProbeIdentity>(ConnectFailure);
@@ -304,7 +406,16 @@ namespace FracTone.Probe.Gui.Tests
 				return _run.Task;
 			}
 
-			public ProbeReportFiles WriteReport(ProbeRun run) => new(Zip, Backups, ["run.json"]);
+			public ProbeReportFiles WriteReport(ProbeRun run)
+			{
+				if (Folder is not null)
+				{
+					using ZipArchive zip = ZipFile.Open(Zip, ZipArchiveMode.Create);
+					using StreamWriter json = new(zip.CreateEntry("run.json").Open());
+					json.Write("{\"userPresetsIncluded\":false}");
+				}
+				return new ProbeReportFiles(Zip, Backups, ["run.json"]);
+			}
 
 			public void Finish(ProbeRun run) => _run.SetResult(run);
 		}
@@ -312,11 +423,13 @@ namespace FracTone.Probe.Gui.Tests
 		private sealed class FakeUploader : IReportUploader
 		{
 			public (string Zip, string Code)? Sent { get; private set; }
+			public ReportUploadResult? Result { get; init; } = new(true, "Uploaded: report r42. Thank you.", "r42");
+			public Exception? Failure { get; init; }
 
 			public Task<ReportUploadResult> UploadAsync(string zipPath, string uploadCode, CancellationToken cancellationToken)
 			{
 				Sent = (zipPath, uploadCode);
-				return Task.FromResult(new ReportUploadResult(false, "Not yet."));
+				return Failure is null ? Task.FromResult(Result!) : Task.FromException<ReportUploadResult>(Failure);
 			}
 		}
 

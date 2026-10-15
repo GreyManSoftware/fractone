@@ -65,7 +65,7 @@ namespace Fractal.Companion.Auditioning
 
 		public int DisplayedPresetNumber { get; }
 
-		// How the replacer waits for the FM9 between steps; tests replace it so they need not sleep.
+		// How the replacer waits for the FM9 between steps, read retries and frames; tests replace it so they need not sleep.
 		public Func<TimeSpan, CancellationToken, Task> Wait { get; init; } = Task.Delay;
 
 		// Whether the stored copy is read back and compared after the Store. The import is always checked before storing,
@@ -96,14 +96,14 @@ namespace Fractal.Companion.Auditioning
 			await SelectTargetAsync(operations, cancellationToken);
 			_ = await new Fm9TargetVerifier(_transport).VerifyAsync(DisplayedPresetNumber, RequiredSceneNumber, cancellationToken);
 			await LoadEditBufferAsync(dump.ForEditBufferImport(), cancellationToken);
-			Fm9StoredPresetReadResult loaded = await new Fm9StoredPresetReader(_transport).ReadAsync(0x3FFF, cancellationToken);
+			Fm9StoredPresetReadResult loaded = await new Fm9StoredPresetReader(_transport, delayAsync: Wait).ReadAsync(0x3FFF, cancellationToken);
 			// The FM9 can drop a dump that arrives while it is still loading the preset just selected (505, 2026-10-13: the
 			// buffer kept the stored preset), so check the buffer holds what was sent and send it once more if not.
 			if (!Holds(dump, loaded.Dump))
 			{
 				await Wait(TimeSpan.FromSeconds(1), cancellationToken);
 				await LoadEditBufferAsync(dump.ForEditBufferImport(), cancellationToken);
-				loaded = await new Fm9StoredPresetReader(_transport).ReadAsync(0x3FFF, cancellationToken);
+				loaded = await new Fm9StoredPresetReader(_transport, delayAsync: Wait).ReadAsync(0x3FFF, cancellationToken);
 				if (Holds(dump, loaded.Dump))
 					operations.Add("The FM9 dropped the first load; the second was taken.");
 				else if (string.Equals(loaded.Dump.PresetName, dump.PresetName, StringComparison.Ordinal))
@@ -142,7 +142,7 @@ namespace Fractal.Companion.Auditioning
 		{
 			try
 			{
-				return (await new Fm9StoredPresetReader(_transport).ReadAsync(presetNumber, cancellationToken)).Dump;
+				return (await new Fm9StoredPresetReader(_transport, delayAsync: Wait).ReadAsync(presetNumber, cancellationToken)).Dump;
 			}
 			catch (Fm9EmptyPresetSlotException)
 			{
@@ -229,7 +229,7 @@ namespace Fractal.Companion.Auditioning
 					"recorded to confirm the Store leaves it unchanged.");
 			}
 
-			Fm9StoredPresetReader reader = new(_transport);
+			Fm9StoredPresetReader reader = new(_transport, delayAsync: Wait);
 			// A never-used slot holds no preset, so there is nothing to back up or restore; that fact is recorded instead.
 			Fm9StoredPresetReadResult? original;
 			try
@@ -485,7 +485,7 @@ namespace Fractal.Companion.Auditioning
 		// The acknowledged frame-by-frame load Copilot's preset authors used. Sending the preset-import preparation command
 		// first made the FM9 display #0 instead of the selected preset, which blocks the target check before Store.
 		private Task LoadEditBufferAsync(Fm9PresetDump dump, CancellationToken cancellationToken) =>
-			new Fm9EditBufferRestoreSender(_transport).RestoreAcknowledgedAsync(dump, cancellationToken);
+			new Fm9EditBufferRestoreSender(_transport, Wait).RestoreAcknowledgedAsync(dump, cancellationToken);
 
 		private static void ValidatePaths(
 			string repairedPath,

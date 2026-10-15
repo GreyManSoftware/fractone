@@ -96,13 +96,14 @@ namespace FracTone.Probe.Tests
 		}
 
 		[Theory]
-		[InlineData(HttpStatusCode.Unauthorized, "revoked")]
-		[InlineData(HttpStatusCode.BadRequest, "not a valid probe report")]
-		[InlineData(HttpStatusCode.RequestEntityTooLarge, "20 MB")]
-		[InlineData(HttpStatusCode.UnsupportedMediaType, "file type")]
-		[InlineData(HttpStatusCode.Conflict, "200")]
-		[InlineData(HttpStatusCode.NotFound, "unexpected HTTP 404")]
-		public async Task A_refusal_is_final_and_explained_without_the_code(HttpStatusCode status, string expected)
+		[InlineData(HttpStatusCode.Unauthorized, "revoked", true)]
+		[InlineData(HttpStatusCode.Forbidden, "revoked", true)]
+		[InlineData(HttpStatusCode.BadRequest, "not a valid probe report", false)]
+		[InlineData(HttpStatusCode.RequestEntityTooLarge, "20 MB", false)]
+		[InlineData(HttpStatusCode.UnsupportedMediaType, "file type", false)]
+		[InlineData(HttpStatusCode.Conflict, "200", false)]
+		[InlineData(HttpStatusCode.NotFound, "unexpected HTTP 404", false)]
+		public async Task A_refusal_is_final_and_explained_without_the_code(HttpStatusCode status, string expected, bool codeProblem)
 		{
 			FakeHandler handler = new(Reply(status, "{\"error\":\"refused by the site\"}"));
 
@@ -110,6 +111,7 @@ namespace FracTone.Probe.Tests
 
 			Assert.False(result.Accepted);
 			Assert.Contains(expected, result.Message);
+			Assert.Equal(codeProblem, result.CodeProblem);
 			Assert.DoesNotContain(Code, result.Message);
 			Assert.Single(handler.Requests);
 			Assert.Empty(waits);
@@ -246,13 +248,14 @@ namespace FracTone.Probe.Tests
 		[InlineData("")]
 		[InlineData("abc_123456789")]
 		[InlineData("ftu_has space")]
-		public async Task A_malformed_code_is_not_sent(string code)
+		public async Task A_malformed_code_is_not_sent_and_is_flagged_as_a_code_problem(string code)
 		{
 			FakeHandler handler = new(Reply(HttpStatusCode.Created, CreatedJson));
 
 			ReportUploadResult result = await Uploader(handler).UploadAsync(Report(), code, CancellationToken.None);
 
 			Assert.False(result.Accepted);
+			Assert.True(result.CodeProblem);
 			Assert.Empty(handler.Requests);
 		}
 

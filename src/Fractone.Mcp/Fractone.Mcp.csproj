@@ -9,7 +9,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>fractone-mcp</AssemblyName>
     <RootNamespace>Fractone.Mcp</RootNamespace>
-    <Version>0.16.0</Version>
+    <Version>0.16.1</Version>
     <!-- A .NET tool, so `dnx FracTone` runs it; the McpServer package type lists it as an MCP server on NuGet. -->
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
@@ -39,6 +39,11 @@
   <ItemGroup>
     <None Include=".mcp/server.json" Pack="true" PackagePath="/.mcp/" />
     <None Include="../../plugins/fractone/README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+  <!-- The plugin's skills, served as prompts and resources (Skills.cs). Embedded from the plugin folder so there is one copy. -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\plugins\fractone\skills\**\SKILL.md" LogicalName="Fractone.Mcp.skills/%(RecursiveDir)SKILL.md" />
   </ItemGroup>
 
   <!-- The Ride baseline the tone designer exports into (the same template the site downloads). -->

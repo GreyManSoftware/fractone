@@ -7,9 +7,7 @@ namespace FracTone.Probe.Tests
 		[Fact]
 		public async Task TheDriveVoicingCheckComparesTheWordsMeasuredOnTheFm9()
 		{
-			SimulatedGen3 fm9 = ProbeEngineTests.Unit(Gen3Device.Fm9, "metallica-eight-scenes.syx", (12, 0));
-
-			ProbeRun run = await ProbeEngineTests.Run(fm9, 2);
+			(SimulatedGen3 fm9, ProbeRun run, _) = await SharedProbeRuns.Fm9;
 
 			ProbeStepResult drive = run.Steps.Single(step => step.Id == "voicing-drive");
 			Assert.Equal(ProbeStepStatus.Passed, drive.Status);
@@ -25,13 +23,7 @@ namespace FracTone.Probe.Tests
 		[Fact]
 		public async Task AVoicingThatDiffersFailsItsStepWhileTheRunGoesOnAndRestores()
 		{
-			SimulatedGen3 fm9 = ProbeEngineTests.Unit(Gen3Device.Fm9, "metallica-eight-scenes.syx", (12, 0));
-			Func<int, int, IReadOnlyDictionary<int, int>?> voicing = fm9.Voicing;
-			fm9.Voicing = (effect, ordinal) => effect == 118 && ordinal == 46
-				? new Dictionary<int, int>(voicing(effect, ordinal)!) { [6] = 45675 }
-				: voicing(effect, ordinal);
-
-			ProbeRun run = await ProbeEngineTests.Run(fm9, 2);
+			(SimulatedGen3 fm9, ProbeRun run, _) = await SharedProbeRuns.Fm9WithDrive46Drifted;
 
 			ProbeStepResult drive = run.Steps.Single(step => step.Id == "voicing-drive");
 			Assert.Equal(ProbeStepStatus.Failed, drive.Status);
@@ -62,9 +54,7 @@ namespace FracTone.Probe.Tests
 		[Fact]
 		public async Task FreshInsertsGoOneAtATimeOnTheEmptyPresetAndRecordEachRecord()
 		{
-			SimulatedGen3 fm9 = ProbeEngineTests.Unit(Gen3Device.Fm9, "metallica-eight-scenes.syx", (12, 0));
-
-			ProbeRun run = await ProbeEngineTests.Run(fm9, 2);
+			(SimulatedGen3 fm9, ProbeRun run, _) = await SharedProbeRuns.Fm9;
 
 			ProbeStepResult fresh = run.Steps.Single(step => step.Id == "fresh-inserts");
 			Assert.Equal(ProbeStepStatus.Passed, fresh.Status);
@@ -82,9 +72,7 @@ namespace FracTone.Probe.Tests
 		[Fact]
 		public async Task TheFm3NumbersCellsByItsFourRowsAndFlagsItsChecksUnverified()
 		{
-			SimulatedGen3 fm3 = ProbeEngineTests.Unit(Gen3Device.Fm3, "gen3-fm3-13.00-ride.syx", (13, 0));
-
-			ProbeRun run = await ProbeEngineTests.Run(fm3, 2);
+			(SimulatedGen3 fm3, ProbeRun run, _) = await SharedProbeRuns.Fm3;
 
 			Assert.Equal(ProbeOutcome.Completed, run.Outcome);
 			ProbeStepResult cables = run.Steps.Single(step => step.Id == "cable-codes");

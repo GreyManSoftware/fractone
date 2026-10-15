@@ -119,9 +119,7 @@ namespace FracTone.Probe.Tests
 		[Fact]
 		public async Task TheReportIsOneAnonymisedZipWithTheBackupsKeptBesideIt()
 		{
-			SimulatedGen3 fm9 = ProbeEngineTests.Unit(Gen3Device.Fm9, "metallica-eight-scenes.syx", (12, 0));
-			IReadOnlyList<byte[]> userBuffer = fm9.EditBuffer;
-			ProbeRun run = await ProbeEngineTests.Run(fm9, 2);
+			(_, ProbeRun run, IReadOnlyList<byte[]> userBuffer) = await SharedProbeRuns.Fm9;
 			string folder = Directory.CreateTempSubdirectory("fractone-probe-tests-").FullName;
 			try
 			{
@@ -200,6 +198,39 @@ namespace FracTone.Probe.Tests
 			Assert.Throws<ArgumentException>(() => Program.Parse(["--slot", "3", "--level", "4"]));
 			CliOptions options = Program.Parse(["--slot", "503", "--level", "3", "--out", "x", "--device-port", "Axe-Fx III"]);
 			Assert.Equal((503, 3, "x", "Axe-Fx III"), (options.Slot, options.Level, options.Out, options.DevicePort));
+			Assert.False(options.AcceptDisclaimer);
+			Assert.True(Program.Parse(["--slot", "503", "--accept-disclaimer"]).AcceptDisclaimer);
+		}
+
+		// A real run prints the notice every time; the first one needs --accept-disclaimer or a y, then it's remembered.
+		[Theory]
+		[InlineData(false, "", false)]
+		[InlineData(false, "n", false)]
+		[InlineData(false, "y", true)]
+		[InlineData(true, "", true)]
+		public void TheDisclaimerIsShownAndAcceptedOncePerUser(bool flag, string answer, bool accepted)
+		{
+			string folder = Directory.CreateTempSubdirectory("fractone-probe-tests-").FullName;
+			try
+			{
+				ProbeDisclaimer disclaimer = new(folder);
+				StringWriter output = new();
+
+				Assert.Equal(accepted, disclaimer.Confirm(flag, new StringReader(answer + "\n"), output));
+
+				Assert.Contains("at your own risk", output.ToString(), StringComparison.Ordinal);
+				Assert.Contains(ProbeDisclaimer.Url, output.ToString(), StringComparison.Ordinal);
+				Assert.Equal(accepted, new ProbeDisclaimer(folder).IsAccepted);
+				if (!accepted) return;
+				StringWriter again = new();
+				Assert.True(new ProbeDisclaimer(folder).Confirm(false, new StringReader(""), again));
+				Assert.Contains("at your own risk", again.ToString(), StringComparison.Ordinal);
+				Assert.DoesNotContain("[y/N]", again.ToString(), StringComparison.Ordinal);
+			}
+			finally
+			{
+				Directory.Delete(folder, true);
+			}
 		}
 
 		private const string UserNameFragment = "Secret";

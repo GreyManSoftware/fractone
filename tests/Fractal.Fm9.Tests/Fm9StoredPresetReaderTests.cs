@@ -24,6 +24,33 @@ namespace Fractal.Fm9.Tests
 		private static IReadOnlyList<FractalSysExFrame> CutShort(IReadOnlyList<FractalSysExFrame> frames) => [.. frames.Take(3)];
 
 		[Fact]
+		public async Task AStoredPresetIsRequestedByItsNumberAndParsedWithItsGrid()
+		{
+			FakeFm9 fm9 = Unit();
+			Fm9PresetDump stored = Fm9PresetDump.Parse(File.ReadAllBytes(Fixtures.Path("fm9-uploaded-shunts.syx")));
+			fm9.Slots[502] = stored;
+
+			Fm9StoredPresetReadResult result = await Reader(fm9).ReadAsync(502, CancellationToken.None);
+
+			Assert.Equal(502, result.VisiblePresetNumber);
+			Assert.True(result.Dump.HasSameRawPatch(stored));
+			Assert.Equal(stored.PresetName, result.Dump.PresetName);
+			Assert.Contains(result.Body.GridCells, cell => cell.EffectId is not null);
+		}
+
+		[Theory]
+		[InlineData(-1)]
+		[InlineData(16_384)]
+		public async Task APresetNumberOutsideTheFourteenBitRangeIsRefused(int visiblePresetNumber)
+		{
+			FakeFm9 fm9 = Unit();
+
+			await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => Reader(fm9).ReadAsync(visiblePresetNumber, CancellationToken.None));
+
+			Assert.Equal(0, fm9.Reads);
+		}
+
+		[Fact]
 		public async Task FramesTheFm9SendsInTheMiddleOfADumpAreIgnored()
 		{
 			FakeFm9 fm9 = Unit();
@@ -74,6 +101,24 @@ namespace Fractal.Fm9.Tests
 			Assert.Contains("edit buffer", error.Message, StringComparison.Ordinal);
 			Assert.Contains("header, 2 data frame(s), no footer; 1 other frame(s) (0x10) dropped", error.Message, StringComparison.Ordinal);
 			Assert.Contains("try again", error.Message, StringComparison.Ordinal);
+		}
+
+		[Fact]
+		public async Task ACallerMayAskForFewerAttemptsAndAShorterFirstPause()
+		{
+			FakeFm9 fm9 = Unit();
+			fm9.OnRead = (_, frames) => CutShort(frames);
+			Fm9StoredPresetReader reader = new(fm9, maximumAttempts: 2, retryDelay: TimeSpan.FromMilliseconds(100), delayAsync: (delay, _) =>
+			{
+				_waits.Add(delay);
+				return Task.CompletedTask;
+			});
+
+			InvalidDataException error = await Assert.ThrowsAsync<InvalidDataException>(() => reader.ReadAsync(0x3FFF, CancellationToken.None));
+
+			Assert.Equal(2, fm9.Reads);
+			Assert.Equal([TimeSpan.FromMilliseconds(100)], _waits);
+			Assert.Contains("after 2 attempts", error.Message, StringComparison.Ordinal);
 		}
 
 		[Fact]

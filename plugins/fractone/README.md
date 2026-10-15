@@ -18,6 +18,12 @@ any MCP client:
 **Unofficial.** Not made, endorsed or supported by Fractal Audio Systems. FM9 and FM9-Edit are their trademarks.
 Writing presets to hardware carries risk; keep backups (see the safeguards below).
 
+**Use at your own risk.** FracTone and its tools are free and provided as-is, with no warranty. We're not responsible
+for damage to your devices, lost or changed presets, data loss or any other harm. Back up your presets (FM9-Edit,
+FM3-Edit, Axe-Edit or Fractal-Bot) before loading or storing anything. FM3 and Axe-Fx III presets are an unverified
+beta. This is plain-language guidance, not legal advice; the MIT licence's warranty disclaimer is what applies to the
+code. Full text: [fractone.greymansoftware.com/disclaimer](https://fractone.greymansoftware.com/disclaimer).
+
 **Capturing media from web pages.** `capture_media` records a page's own video or audio in a headless browser.
 Only capture media you have the right to use, and you are responsible for following each site's terms. It never gets
 past bot checks, CAPTCHAs, sign-in walls or DRM, and never records ads: it waits ads out, declines consent dialogs with
@@ -51,6 +57,10 @@ Pi has no permission prompts, so the package's extension asks you before any cal
 plays (storing, auditioning, selecting a preset).
 
 **Any other MCP client:** run `dnx FracTone` as a stdio server.
+
+**Skills without the plugin.** With the server alone (Claude Desktop chat, Cursor, VS Code), each skill comes as a
+prompt with its name (`fractone-tone-designer` and so on) and as a resource, `fractone://skills/<name>`. For Claude
+Desktop or claude.ai, the GitHub release also has one zip per skill to upload under Customize, Skills.
 
 ## Set up (optional)
 

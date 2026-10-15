@@ -1,6 +1,6 @@
 ---
 name: fractone-tone-designer
-description: Design a new Fractal Audio FM9 preset from a description of a guitar tone (an artist, song, album, era or sound), using the fm9 MCP tools to check and build it. Use when the user asks for a preset or tone to be created, not just edited.
+description: Design a new FM9 preset from a tone description (artist, song, album, era or sound) and build it with the FracTone tools. Use when the user wants a preset created, not just edited.
 ---
 
 # FM9 tone designer
@@ -29,7 +29,8 @@ and quality checks as the FracTone site and needs no AI service or API key.
    - If `passed` is false, fix every item in `corrections` and build again.
    - `adjustments` lists what the checks changed (clamped values, levels, routes). Mention the ones that matter.
 7. **Present it.** Describe the result from its summary: each scene with its amp channel, drive, cab and effects.
-   Offer `audition` to hear it and `store_preset` to keep it (see the fractone-operations skill).
+   Offer `audition` to hear it and `store_preset` to keep it (see the fractone-operations skill: storing is at the
+   user's own risk, so suggest a backup first).
 
 ## Changing a design
 

@@ -17,6 +17,10 @@ namespace Fractal.Ai
 
 		internal TimeSpan AttemptTimeout =>
 			TimeSpan.FromSeconds(AttemptTimeoutSeconds);
+
+		// The clock the timeouts run on; tests fire them without waiting whole seconds. Internal, so configuration
+		// binding never sees it.
+		internal TimeProvider TimeProvider { get; set; } = TimeProvider.System;
 	}
 
 	internal static class ToneDesignProviderExecution
@@ -29,9 +33,9 @@ namespace Fractal.Ai
 		{
 			long started = Stopwatch.GetTimestamp();
 			using Activity? activity = ToneDesignTelemetry.StartProviderActivity(provider);
+			using CancellationTokenSource limit = new(options.EndToEndTimeout, options.TimeProvider);
 			using CancellationTokenSource timeoutSource =
-				CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-			timeoutSource.CancelAfter(options.EndToEndTimeout);
+				CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, limit.Token);
 
 			try
 			{
@@ -117,9 +121,9 @@ namespace Fractal.Ai
 			CancellationToken overallToken,
 			Func<CancellationToken, Task<T>> operation)
 		{
+			using CancellationTokenSource limit = new(options.AttemptTimeout, options.TimeProvider);
 			using CancellationTokenSource attemptSource =
-				CancellationTokenSource.CreateLinkedTokenSource(overallToken);
-			attemptSource.CancelAfter(options.AttemptTimeout);
+				CancellationTokenSource.CreateLinkedTokenSource(overallToken, limit.Token);
 
 			try
 			{
@@ -165,7 +169,10 @@ namespace Fractal.Ai
 				ToneDesignProviderErrorKind.InvalidResponse,
 				provider,
 				$"{provider} returned an invalid tone-design response.",
-				exception);
+				exception)
+			{
+				Issues = [exception.Message]
+			};
 		}
 
 		private static ToneDesignProviderException CreateStatusException(

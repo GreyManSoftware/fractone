@@ -99,18 +99,18 @@ namespace FracTone.Probe.Tests
 			throw new InvalidOperationException($"Unexpected frame sent without a reply: {ProbeFrames.Hex(bytes)}");
 		}
 
-		public async Task<IReadOnlyList<FractalSysExFrame>> RequestAsync(FractalSysExFrame request, CancellationToken cancellationToken)
+		public Task<IReadOnlyList<FractalSysExFrame>> RequestAsync(FractalSysExFrame request, CancellationToken cancellationToken)
 		{
 			byte[] bytes = Accept(request);
 			if ((Silent?.Invoke(bytes) ?? false) && SilentCount > 0)
 			{
 				SilentCount--;
-				await Task.Delay(Timeout.Infinite, cancellationToken);
+				return Task.FromException<IReadOnlyList<FractalSysExFrame>>(Unanswered());
 			}
 			// A unit ignores another model's frames.
 			if (bytes[4] != Model && !AnswersAnyModel)
 			{
-				await Task.Delay(Timeout.Infinite, cancellationToken);
+				return Task.FromException<IReadOnlyList<FractalSysExFrame>>(Unanswered());
 			}
 			IReadOnlyList<byte[]> reply = bytes[5] switch
 			{
@@ -124,8 +124,12 @@ namespace FracTone.Probe.Tests
 				0x1F => BulkRead(bytes[6] | (bytes[7] << 7)),
 				_ => throw new InvalidOperationException($"Unexpected request {ProbeFrames.Hex(bytes)}")
 			};
-			return [.. reply.Select(frame => new FractalSysExFrame(frame))];
+			return Task.FromResult<IReadOnlyList<FractalSysExFrame>>([.. reply.Select(frame => new FractalSysExFrame(frame))]);
 		}
+
+		// What a real transport throws when nothing answers before its timeout; throwing at once spares each test the
+		// real-time wait for the probe's query timeout (the probe treats both alike).
+		private static TimeoutException Unanswered() => new("The simulated unit did not answer.");
 
 		private byte[] Accept(FractalSysExFrame frame)
 		{
