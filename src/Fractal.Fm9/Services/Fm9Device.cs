@@ -34,6 +34,9 @@ namespace Fractal.Fm9
 		// How the device waits for the FM9 between steps; tests replace it so they need not sleep.
 		public Func<TimeSpan, CancellationToken, Task> Wait { get; init; } = Task.Delay;
 
+		// Every preset read backs off with Wait between retries (a dump spoilt while the FM9 was busy).
+		private Fm9StoredPresetReader Reader(IFractalMidiTransport transport) => new(transport, delayAsync: Wait);
+
 		private string StateFolder => Path.Combine(_settings.WorkFolder, ".state");
 		// What the FM9 held straight after these tools last loaded its edit buffer.
 		private string LastLoadPath => Path.Combine(StateFolder, "last-load.syx");
@@ -46,7 +49,7 @@ namespace Fractal.Fm9
 			CheckSlot(slot);
 			return _connection.RunAsync(async (transport, token) =>
 			{
-				Fm9StoredPresetReadResult read = await new Fm9StoredPresetReader(transport).ReadAsync(slot, token);
+				Fm9StoredPresetReadResult read = await Reader(transport).ReadAsync(slot, token);
 				string path = output is null ? DefaultReadPath(slot, read.Dump.PresetName) : _settings.Resolve(output);
 				Fm9Files.WriteAtomically(path, read.Dump.ToArray());
 				return new Fm9ReadResult(slot, path, Fm9Presets.Describe(Fm9UploadedPreset.Read(read.Dump)));
@@ -56,7 +59,7 @@ namespace Fractal.Fm9
 		public Task<Fm9ReadResult> ReadEditBufferAsync(string? output, CancellationToken cancellationToken) =>
 			_connection.RunAsync(async (transport, token) =>
 			{
-				Fm9StoredPresetReadResult read = await new Fm9StoredPresetReader(transport).ReadAsync(EditBuffer, token);
+				Fm9StoredPresetReadResult read = await Reader(transport).ReadAsync(EditBuffer, token);
 				string path = output is null
 					? Path.Combine(_settings.WorkFolder, "reads", $"edit buffer {Stamp()} {FileName(read.Dump.PresetName)}.syx")
 					: _settings.Resolve(output);
@@ -73,7 +76,7 @@ namespace Fractal.Fm9
 			string target = folder is null ? Path.Combine(_settings.BackupFolder, $"full {Stamp()}") : _settings.Resolve(folder);
 			return _connection.RunAsync(async (transport, token) =>
 			{
-				Fm9StoredPresetReader reader = new(transport);
+				Fm9StoredPresetReader reader = Reader(transport);
 				List<string> files = [];
 				List<int> empty = [];
 				List<string> failed = [];
@@ -119,7 +122,7 @@ namespace Fractal.Fm9
 			CheckSlot(slot);
 			return _connection.RunAsync<Fm9PresetDump?>(async (transport, token) =>
 			{
-				try { return (await new Fm9StoredPresetReader(transport).ReadAsync(slot, token)).Dump; }
+				try { return (await Reader(transport).ReadAsync(slot, token)).Dump; }
 				catch (Fm9EmptyPresetSlotException) { return null; }
 			}, cancellationToken);
 		}
@@ -133,7 +136,7 @@ namespace Fractal.Fm9
 			CheckSlot(slot);
 			return _connection.RunAsync(async (transport, token) =>
 			{
-				try { return (await new Fm9StoredPresetReader(transport).ReadAsync(slot, token)).Dump.PresetName; }
+				try { return (await Reader(transport).ReadAsync(slot, token)).Dump.PresetName; }
 				catch (Fm9EmptyPresetSlotException) { return "(empty slot)"; }
 			}, cancellationToken);
 		}
@@ -250,7 +253,7 @@ namespace Fractal.Fm9
 		private async Task CheckBufferAsync(IFractalMidiTransport transport, Fm9Status status, CancellationToken token, Fm9PresetDump? captured = null)
 		{
 			if (!_settings.Safeguards.RefuseLoadIfBufferChanged) return;
-			Fm9StoredPresetReader reader = new(transport);
+			Fm9StoredPresetReader reader = Reader(transport);
 			Fm9PresetDump buffer = (await reader.ReadAsync(EditBuffer, token)).Dump;
 			// Storing the edit buffer itself: its edits are what is being kept, provided nothing changed since it was read.
 			if (captured is not null && SameBody(buffer, captured)) return;

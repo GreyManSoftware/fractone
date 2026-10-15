@@ -26,6 +26,8 @@ namespace Fractal.Ai
 			}
 
 			ValidateExportBoundary(request);
+			ToneDesignDeviceConstraints device = ToneDesignDeviceConstraints.For(request.DeviceProfile?.Id);
+			ToneDesignResponseSchema? schema = ToneDesignProposalJsonContract.ForRequest(device, request.AllowDynaCab);
 
 			return ToneDesignProviderExecution.ExecuteAsync(
 				provider,
@@ -42,14 +44,15 @@ namespace Fractal.Ai
 					List<ToneDesignChatMessage> messages =
 					[
 						new("system", ToneDesignSafetyPrompt.System + Environment.NewLine + ToneDesignModelGrounding.CreatePrompt() +
-							Environment.NewLine + (request.Effects?.DescribeForPrompt() ?? NoEffects)),
+							Environment.NewLine + (request.Effects?.DescribeForPrompt() ?? NoEffects) + DeviceSection(device) +
+							DynaCabSection(request, device)),
 						new("user", evidenceContext.Prompt)
 					];
 
 					request.Progress?.Report(new ToneDesignProgressUpdate(
 						ToneDesignProgressStage.InitialGeneration,
 						$"Requesting the initial structured proposal from {provider}."));
-					string proposal = await sendAsync(messages, null, operationToken);
+					string proposal = await sendAsync(messages, schema, operationToken);
 
 					for (int correctionAttempt = 0; ;)
 					{
@@ -64,13 +67,15 @@ namespace Fractal.Ai
 								parsed = ToneDesignProposalRefinementPolicy.RestoreProvenance(refinement.OriginalProposal, parsed!);
 							List<string> adjustments = [];
 							parsed = ToneDesignOfflineBuild.Repair(parsed!, request.Effects, evidenceContext.CitationBindings, adjustments);
+							parsed = KeepDynaCabAllowed(parsed, request.AllowDynaCab, adjustments);
 							ToneDesignProposalQualityEvaluation evaluation =
 								ToneDesignProposalQualityEvaluator.Evaluate(
 									parsed!,
 									request.Sections,
 									evidenceContext.CitationBindings,
 									requireGroundedSelections: true,
-									isDeviceSetting: request.Effects is { } catalog ? catalog.IsSetting : null);
+									isDeviceSetting: request.Effects is { } catalog ? catalog.IsSetting : null,
+									device: device);
 							if (!evaluation.RequiresCorrection)
 							{
 								request.Progress?.Report(new ToneDesignProgressUpdate(
@@ -78,6 +83,8 @@ namespace Fractal.Ai
 									"Validating the proposal and preparing bounded export."));
 								parsed = await WithDetailedSettingsAsync(parsed!, request, evidenceContext, adjustments, sendAsync, operationToken);
 								parsed = ToneDesignProposalQualityEvaluator.LevelAmps(parsed, request.Effects, adjustments);
+								// The detailed-settings step sees every Cab setting, Mode included; it must not switch the cab mode.
+								parsed = KeepDynaCabAllowed(parsed, request.AllowDynaCab, adjustments);
 								// Keep within the parser's 16-caution limit so the stored proposal still re-parses.
 								IEnumerable<string> serverCautions = adjustments.Count == 0
 									? [ToneDesignModelGrounding.DefaultsCaution]
@@ -105,6 +112,7 @@ namespace Fractal.Ai
 								++correctionAttempt,
 								resilience.MaximumCorrectionAttempts,
 								request,
+								schema,
 								sendAsync,
 								operationToken);
 							continue;
@@ -124,6 +132,7 @@ namespace Fractal.Ai
 							++correctionAttempt,
 							resilience.MaximumCorrectionAttempts,
 							request,
+							schema,
 							sendAsync,
 							operationToken);
 					}
@@ -167,7 +176,7 @@ namespace Fractal.Ai
 						detailAdjustments);
 					return ToneDesignProposalQualityEvaluator.Evaluate(
 						detailed, request.Sections, evidenceContext.CitationBindings, requireGroundedSelections: true,
-						isDeviceSetting: catalog.IsSetting).RequiresCorrection ? null : (detailed, detailAdjustments);
+						isDeviceSetting: catalog.IsSetting, device: ToneDesignDeviceConstraints.For(request.DeviceProfile?.Id)).RequiresCorrection ? null : (detailed, detailAdjustments);
 				}
 
 				// One bad change must not cost the others: when the whole set fails, keep each change that passes
@@ -219,6 +228,7 @@ namespace Fractal.Ai
 			int attempt,
 			int maximumAttempts,
 			ToneDesignChatRequest request,
+			ToneDesignResponseSchema? schema,
 			Func<IReadOnlyList<ToneDesignChatMessage>, ToneDesignResponseSchema?, CancellationToken, Task<string>> sendAsync,
 			CancellationToken cancellationToken)
 		{
@@ -227,7 +237,7 @@ namespace Fractal.Ai
 				$"Requesting bounded contract-correction attempt {attempt} of {maximumAttempts}."));
 			messages.Add(new ToneDesignChatMessage("assistant", proposal));
 			messages.Add(new ToneDesignChatMessage("user", correctionPrompt));
-			return await sendAsync(messages, null, cancellationToken);
+			return await sendAsync(messages, schema, cancellationToken);
 		}
 
 		private static bool TryParseProposal(
@@ -252,9 +262,36 @@ namespace Fractal.Ai
 			}
 		}
 
+		// Only when the player ticked "Allow DynaCab": otherwise the system prompt is exactly what it was before DynaCab.
+		private static string DynaCabSection(ToneDesignChatRequest request, ToneDesignDeviceConstraints device) =>
+			request.AllowDynaCab ? Environment.NewLine + ToneDesignDynaCab.DescribeForPrompt(device.Device) : string.Empty;
+
+		// Without the player's permission a Cab never plays DynaCab, whichever step asked for it; the factory cab stays.
+		internal static ToneDesignProposal KeepDynaCabAllowed(ToneDesignProposal proposal, bool allowDynaCab, List<string> adjustments)
+		{
+			// Legacy-mode settings that share these names (Mute2 mutes a legacy IR slot too) are left alone.
+			if (allowDynaCab || !proposal.Blocks.Any(block => ToneDesignDynaCab.IsCab(block) &&
+				block.GetAuthoredChannels().Any(channel => ToneDesignDynaCab.IsDynaCab(block.GetParameters(channel)))))
+				return proposal;
+			adjustments.Add("kept the factory cab (DynaCab is not allowed for this preset)");
+			return proposal with
+			{
+				Blocks = proposal.Blocks.Select(block => !ToneDesignDynaCab.IsCab(block) ? block : block.MapChannels(channel =>
+					ToneDesignDynaCab.IsDynaCab(channel.Parameters)
+						? channel with { Parameters = ToneDesignDynaCab.WithoutDynaCab(channel.Parameters) }
+						: channel)).ToArray()
+			};
+		}
+
+		// Empty for the FM9, so its system prompt is exactly what it was before other devices.
+		private static string DeviceSection(ToneDesignDeviceConstraints device) =>
+			device.DescribeForPrompt() is { Length: > 0 } section ? Environment.NewLine + section : string.Empty;
+
+		// The FM9's verified Ride boundary, or a gen-3 unit offered as a labelled beta (written in the same contract and
+		// translated by its exporter); nothing else reaches a paid call.
 		private static void ValidateExportBoundary(ToneDesignChatRequest request)
 		{
-			if (request.DeviceProfile is not null &&
+			if (request.DeviceProfile is not null && !request.DeviceProfile.IsBeta &&
 				(request.DeviceProfile.Id != FractalDeviceId.Fm9 ||
 					!request.DeviceProfile.IsOutputEligible ||
 					!request.DeviceProfile.VerifiedFirmwareProfiles.Contains(

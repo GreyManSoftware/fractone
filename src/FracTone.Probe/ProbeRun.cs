@@ -37,6 +37,16 @@ namespace FracTone.Probe
 		Crashed
 	}
 
+	// Which Axe-Fx III answered: all three send model 0x10, so the probe asks for preset 1023's name (FracCompat's brief,
+	// unverified on hardware). Unknown when the reply was neither, and the run then keeps to presets 0-511.
+	[JsonConverter(typeof(JsonStringEnumConverter<ProbeDeviceVariant>))]
+	public enum ProbeDeviceVariant
+	{
+		Unknown,
+		MkI,
+		MkIIOrTurbo
+	}
+
 	public sealed record ProbeStepResult(
 		string Id,
 		string Kind,
@@ -73,6 +83,12 @@ namespace FracTone.Probe
 		public string? Device { get; set; }
 		public string? Model { get; set; }
 		public string? Firmware { get; set; }
+		// Axe-Fx III only (null on units with one variant). The 0D check has never met a real Mk I or Mk II, so
+		// DeviceVariantVerified stays false until runs on both confirm its replies.
+		public ProbeDeviceVariant? DeviceVariant { get; set; }
+		public bool? DeviceVariantVerified { get; set; }
+		// The presets this run treats as existing: the safe slot must be below it.
+		public int? PresetSlots { get; set; }
 		// False when the firmware has no script of its own: only read-only steps ran, and their results are unverified.
 		public bool? FirmwareScripted { get; set; }
 		public string? Script { get; set; }

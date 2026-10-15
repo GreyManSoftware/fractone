@@ -8,7 +8,13 @@ namespace Fractal.Application
 		string PickupConfiguration,
 		string OutputDevice,
 		int InputBlockInstance,
-		int OutputBlockInstance);
+		int OutputBlockInstance)
+	{
+		// The player allowed DynaCab (multi-mic cabs) for this job; saved with it like the pickups. Left out of the stored
+		// JSON when false, so every context saved before the option serialises exactly as it did.
+		[System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault)]
+		public bool AllowDynaCab { get; init; }
+	}
 
 	public sealed record ToneDesignProposalRefinementRequest(
 		string Instruction,
@@ -213,6 +219,7 @@ namespace Fractal.Application
 					MaximumUserPromptCharacters = request.MaximumProviderPromptCharacters,
 					Progress = progress,
 					UsageObserver = request.UsageObserver,
+					AllowDynaCab = request.Context.AllowDynaCab,
 					Refinement = new ToneDesignRefinementContext(request.OriginalProposal, request.Instruction)
 				},
 				cancellationToken);

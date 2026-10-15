@@ -45,6 +45,8 @@ namespace FracTone.Probe.Tests
 		public int DropWrites { get; set; }
 		// Inserts take a block's record from this preset when it has one (else a blank 20 x 4 record).
 		public IReadOnlyList<byte[]>? Donor { get; set; }
+		// How many presets the unit holds, for 0D asked by number: an Axe-Fx III Mk I has 512 and answers 64 0D 0E past them.
+		public int? PresetCount { get; set; }
 		private Gen3Device Device => Gen3Device.FromModel(Model)!;
 		private int _selectedCell = -1;
 
@@ -114,6 +116,7 @@ namespace FracTone.Probe.Tests
 			{
 				0x08 => [Frame(0x08, [Firmware.Major, Firmware.Minor])],
 				0x13 => [Frame(0x13, [37, 0, 0x10, 58, 0, 0x10, 62, 0, 0x10])],
+				0x0D when bytes[6] != 0x7F || bytes[7] != 0x7F => StoredName(bytes[6] | (bytes[7] << 7)),
 				0x0D => [Frame(0x0D, [(byte)(Preset & 0x7F), (byte)(Preset >> 7), .. Name()])],
 				0x0C => [Frame(0x0C, [(byte)(Scene - 1)])],
 				0x03 => (bytes[6] << 7 | bytes[7]) == ProbeFrames.EditBuffer ? EditBuffer : Slots[bytes[6] << 7 | bytes[7]],
@@ -237,6 +240,16 @@ namespace FracTone.Probe.Tests
 			for (int index = 0; index < 5; index++)
 				value |= bytes[start + index] << (index * 7);
 			return value;
+		}
+
+		private IReadOnlyList<byte[]> StoredName(int preset)
+		{
+			if (preset >= (PresetCount ?? Device.Presets))
+				return [Frame(0x64, [0x0D, 0x0E])];
+			byte[] name = new byte[32];
+			if (Slots.TryGetValue(preset, out IReadOnlyList<byte[]>? frames))
+				Encoding.ASCII.GetBytes(ProbeFrames.Parse(Device, frames).PresetName).CopyTo(name, 0);
+			return [Frame(0x0D, [(byte)(preset & 0x7F), (byte)(preset >> 7), .. name])];
 		}
 
 		private byte[] Name()

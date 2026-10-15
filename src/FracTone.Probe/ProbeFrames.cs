@@ -14,6 +14,10 @@ namespace FracTone.Probe
 
 		public static byte[] CurrentPreset(Gen3Device device) => Native(device, FractalSysExCodec.CreateCurrentPresetNameRequest());
 
+		// 0D with a number in place of 7F 7F: the name stored in that preset. Sent only for the Axe-Fx III's Mk I/Mk II check
+		// (preset 1023); the number goes low septet first, as the reply carries it (unverified on a III).
+		public static byte[] StoredPresetName(Gen3Device device, int preset) => Build(device.Model, 0x0D, [Low(device, preset), High(preset)]);
+
 		public static byte[] CurrentScene(Gen3Device device) => Native(device, FractalSysExCodec.CreateCurrentSceneRequest());
 
 		public static byte[] SelectScene(Gen3Device device, int scene) => Native(device, FractalSysExCodec.CreateSceneSelection(scene));

@@ -126,7 +126,7 @@ namespace Fractone.Mcp.Tools
 			});
 
 		[McpServerTool(Name = "rank_cabs", ReadOnly = true, Idempotent = true, OpenWorld = false)]
-		[Description("Finds the factory cabs that, each with a gentle Parametric EQ after it (broad bands, at most 3 dB), come closest to an isolated stem: one cab and an EQ instead of an IR blend. Needs one re-amp of the scene with its Cab block and any EQ after the cab bypassed (set_block, then reamp); every cab is then predicted from its measured response, so nothing else plays. Gap is the remaining weighted difference from the stem in dB (smaller is closer; predictions matched real re-amps within 0.04 dB). Many cabs land within a few tenths of each other: prefer one that suits the player's gear and era (filter such as \"4x12\") over a slightly smaller gap. Apply the winner with set_channel (cab and Parametric EQ settings as returned, on channels no scene plays) and compose_scene for an A/B scene, then reamp to confirm. Curves are from FM9 firmware 12; the FM3 and Axe-Fx III list the same cabs.")]
+		[Description("Finds the factory cabs (or, with include, measured DynaCab placements) that, each with a gentle Parametric EQ after it (broad bands, at most 3 dB), come closest to an isolated stem: one cab and an EQ instead of an IR blend. Needs one re-amp of the scene with its Cab block and any EQ after the cab bypassed (set_block, then reamp); every cab is then predicted from its measured response, so nothing else plays. Gap is the remaining weighted difference from the stem in dB (smaller is closer; predictions matched real re-amps within 0.04 dB). The gap is a shortlist, not a verdict: it rewards low-mid body a stem carries from bleed and mastering, so let the player choose by ear. Many cabs land within a few tenths of each other: prefer the family of the player's own IR or rig and era (filter such as \"4x12\" or \"1960\") over a slightly smaller gap. Apply a choice with set_channel (cabSettings and parametricEqSettings as returned, on channels no scene plays; cabSettings set the Cab Mode, so a DynaCab placement plays as DynaCab) and compose_scene for an A/B scene, then reamp to confirm. Curves are from FM9 firmware 12; the FM3 and Axe-Fx III list the same cabs.")]
 		public Task<Fm9CabRanking> RankCabs(
 			[Description("The re-amp of the scene with the Cab and any EQ after it bypassed (any common audio file).")] string take,
 			[Description("The isolated stem to match (any common audio file).")] string stem,
@@ -134,25 +134,33 @@ namespace Fractone.Mcp.Tools
 			[Description("Seconds into the stem to start.")] double? stemStart = null,
 			[Description("Seconds to compare, up to 60.")] double? length = null,
 			[Description("Only cabs whose name contains this, e.g. \"4x12\", \"V30\", \"Brit\".")] string? filter = null,
-			[Description("How many to return, default 10.")] int? count = null) =>
+			[Description("How many to return, default 10.")] int? count = null,
+			[Description("\"factory\" (default) ranks the factory cabs, \"dynacab\" the measured DynaCab placements (45 types, 4 mics, positions 2/4/6 at 1 cm), \"both\" all of them.")] string? include = null) =>
 			Fm9Context.RunSync(() =>
 			{
 				double seconds = Math.Min(length ?? 60, WetToneMatcher.MaximumDurationSeconds);
 				IReadOnlyList<Fm9CabCandidate> ranked = Fm9CabRanker.Rank(
 					AudioFiles.Read(context.Input(take), takeStart ?? 0, seconds, out _),
-					AudioFiles.Read(context.Input(stem), stemStart ?? 0, seconds, out _), Math.Clamp(count ?? 10, 1, 50), filter);
-				return new Fm9CabRanking(ranked.Select(candidate => new Fm9CabRankingEntry(candidate.Name, candidate.GapDecibels,
-					candidate.GapWithoutEqDecibels,
-					new Dictionary<string, string>
-					{
-						["Bank"] = candidate.Bank.ToString(CultureInfo.InvariantCulture),
-						["Cab Type"] = candidate.Type.ToString(CultureInfo.InvariantCulture)
-					},
+					AudioFiles.Read(context.Input(stem), stemStart ?? 0, seconds, out _), Math.Clamp(count ?? 10, 1, 50), filter,
+					include: CabSource(include));
+				return Ranking(ranked);
+			});
+
+		internal static Fm9CabSource CabSource(string? include) => include?.Trim().ToLowerInvariant() switch
+		{
+			null or "" or "factory" => Fm9CabSource.Factory,
+			"dynacab" or "dyna-cab" => Fm9CabSource.DynaCab,
+			"both" => Fm9CabSource.Both,
+			_ => throw new ArgumentException($"include is \"factory\", \"dynacab\" or \"both\", not '{include}'.")
+		};
+
+		internal static Fm9CabRanking Ranking(IReadOnlyList<Fm9CabCandidate> ranked) =>
+			new(ranked.Select(candidate => new Fm9CabRankingEntry(candidate.Name, candidate.GapDecibels,
+					candidate.GapWithoutEqDecibels, candidate.CabSettings,
 					new Dictionary<string, string>(Fractal.Application.Fm9ParametricEq.ToParameters(candidate.Eq))
 					{
 						["Type 1"] = "Shelving", ["Type 2"] = "Peaking", ["Type 3"] = "Peaking", ["Type 4"] = "Peaking", ["Type 5"] = "Shelving"
 					})).ToArray());
-			});
 	}
 
 	public sealed record Fm9CabRankingEntry(string Cab, double GapDecibels, double GapWithoutEqDecibels,

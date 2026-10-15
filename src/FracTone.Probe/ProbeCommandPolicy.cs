@@ -5,7 +5,8 @@ namespace FracTone.Probe
 	public sealed class ProbeRefusedException(string message) : Exception(message);
 
 	// The allow-list from FracCompat's device brief (section 4): every outgoing frame is checked here before it reaches the
-	// port, so a script or a bug can't send anything else. Reads: 08 0C 0D 13 03 and 1F (one block's values). Edit-buffer
+	// port, so a script or a bug can't send anything else. Reads: 08 0C 0D 13 03 and 1F (one block's values); 0D names a
+	// stored preset only for the Axe-Fx III's preset 1023 (its Mk I/Mk II check). Edit-buffer
 	// loads: 77/78/79 addressed 7F 7F. Function 01 only as 27 (switch, to the safe slot or back to the preset found
 	// showing), 09/52 (live type and value changes, never to Global or Control blocks) and 30/32/35 (grid edits, inside the
 	// device's grid, never inserting a Global or Control block); 26 (store) only to the safe slot and only when level 3 was
@@ -36,6 +37,9 @@ namespace FracTone.Probe
 				case 0x08 or 0x13 when frame.Length == 8:
 					return;
 				case 0x0D when frame.Length == 10 && frame[6] == 0x7F && frame[7] == 0x7F:
+					return;
+				// The Axe-Fx III's Mk I/Mk II check: the name of preset 1023, a read; no other stored preset is asked for.
+				case 0x0D when frame.Length == 10 && Device == Gen3Device.AxeFx3 && (frame[6] | (frame[7] << 7)) == ProbeEngine.MkIICheckPreset:
 					return;
 				case 0x0C when frame.Length == 9 && (frame[6] == 0x7F || frame[6] < 8):
 					return;

@@ -6,7 +6,7 @@ namespace FracTone.Probe.Gui.Tests
 {
 	public sealed class WizardViewModelTests
 	{
-		private static readonly ProbeIdentity Fm9 = new(Gen3Device.Fm9, "12.00", Scripted: true);
+		private static readonly ProbeIdentity Fm9 = new(Gen3Device.Fm9, "12.00", Scripted: true, Presets: 512);
 
 		[Fact]
 		public async Task TheWizardWalksFromBeforeYouStartToDoneInOrder()
@@ -71,6 +71,19 @@ namespace FracTone.Probe.Gui.Tests
 			Assert.StartsWith(error, wizard.SlotError, StringComparison.Ordinal);
 			Assert.Empty(probe.SlotsRead);
 			Assert.False(wizard.NextCommand.CanExecute());
+		}
+
+		[Fact]
+		public async Task AnAxeFx3MkIIOffersItsPresetsAbove511()
+		{
+			FakeProbe probe = new() { Identity = new ProbeIdentity(Gen3Device.AxeFx3, "32.06", Scripted: true, Presets: 1024, ProbeDeviceVariant.MkIIOrTurbo) };
+			WizardViewModel wizard = await ToSafeSlot(probe);
+
+			wizard.SlotText = "900";
+			await wizard.CheckSlotCommand.ExecuteAsync();
+
+			Assert.Equal("Type a preset number from 0 to 1023.", wizard.SlotHint);
+			Assert.Equal([900], probe.SlotsRead);
 		}
 
 		[Fact]

@@ -23,6 +23,10 @@ namespace Fractal.Fm9.Tests
 		public int Opens { get; set; }
 		// What the FM9 does to an imported preset before holding it (it recalculates some Amp values for a new model).
 		public Func<Fm9PresetDump, Fm9PresetDump> OnImport { get; set; } = dump => dump;
+		// What a preset read (03) actually returns, by read number from 1: a busy FM9 can cut a dump short or interleave
+		// other frames with it.
+		public Func<int, IReadOnlyList<FractalSysExFrame>, IReadOnlyList<FractalSysExFrame>> OnRead { get; set; } = (_, frames) => frames;
+		public int Reads { get; private set; }
 
 		public Task SelectPresetAsync(int presetNumber, int midiChannel, CancellationToken cancellationToken)
 		{
@@ -87,7 +91,7 @@ namespace Fractal.Fm9.Tests
 				0x0D => [Frame(0x0D, [(byte)(Preset & 0x7F), (byte)(Preset >> 7), .. Name(EditBuffer?.PresetName ?? "")])],
 				0x0C => [Frame(0x0C, [(byte)(Scene - 1)])],
 				0x0A or 0x0B => BlockState(function, bytes[6] | (bytes[7] << 7), bytes[8]),
-				0x03 => Read((bytes[6] << 7) | bytes[7]),
+				0x03 => OnRead(++Reads, Read((bytes[6] << 7) | bytes[7])),
 				0x77 or 0x78 or 0x79 => Import(request),
 				_ => throw new InvalidOperationException($"Unexpected request function 0x{function:X2}.")
 			};
@@ -168,7 +172,7 @@ namespace Fractal.Fm9.Tests
 				return new FractalSysExFrame(bytes);
 			}).ToArray();
 
-		private static FractalSysExFrame Frame(byte function, byte[] payload)
+		internal static FractalSysExFrame Frame(byte function, byte[] payload)
 		{
 			byte[] body = [0x00, 0x01, 0x74, 0x12, function, .. payload];
 			byte checksum = 0xF0;

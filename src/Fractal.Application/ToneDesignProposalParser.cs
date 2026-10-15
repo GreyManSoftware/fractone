@@ -78,6 +78,10 @@ namespace Fractal.Application
 								parameters[name] = valueElement.ValueKind == JsonValueKind.String ? valueElement.GetString() ?? string.Empty : valueElement.GetRawText();
 						}
 					}
+					// A Cab may play DynaCab (only offered when the player allows it): its slots become the Cab's own settings.
+					if (string.Equals(blockType, "Cab", StringComparison.OrdinalIgnoreCase) &&
+						ToneDesignDynaCab.ParseContract(blockElement) is { } dynaCab)
+						parameters = new Dictionary<string, string>(ToneDesignDynaCab.WithSlots(parameters, dynaCab));
 					blocks.Add(Fm9QualifiedModelCatalog.Normalize(new ToneDesignBlockProposal(
 						blockType,
 						instance,

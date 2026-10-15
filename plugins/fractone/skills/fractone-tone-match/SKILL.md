@@ -85,26 +85,35 @@ a full mix (the "full mix" hint). Skip it for isolated stems and isolated-guitar
 - Silence at the start of the DI is trimmed up to the first note unless `trim` is given. A silent take means the DI
   didn't reach that scene: check Input 4's cabling and the Output level.
 
-## Choosing the cab: one cab and a gentle EQ
+## Choosing the cab: shortlist, then the player's ears
 
-When a match stays far off, or the user relies on an IR blend, find the factory cab that gets closest with only a gentle
-EQ after it. One cab and broad EQ moves of 3 dB or less often beat a downloaded IR (Ride the Lightning, 2026-10-14:
-3.35 dB with the user's IR blend, 2.75 dB with a factory 4x12 and a gentle PEQ).
+When a match stays far off, or the user relies on an IR blend, look for a factory cab (or a DynaCab placement) that gets
+close with only a gentle EQ after it. One cab and broad EQ moves of 3 dB or less can beat a downloaded IR (Ride the
+Lightning, 2026-10-14: 3.35 dB with the user's IR blend, 2.75 dB with a factory 4x12 and a gentle PEQ).
 
-1. Re-amp the scene once with its **Cab block and any EQ after the cab bypassed** (`set_block`, then `reamp`). Keep
-   the amp, drive and everything before the cab as they are.
-2. Call `rank_cabs` with that take and the stem. It predicts every factory cab from its measured response, in about
-   15 seconds, so nothing else plays.
-3. Many cabs land within a few tenths of a dB. Choose one that suits the player's gear and era over a slightly smaller
-   gap: pass a `filter` such as `"4x12"`, or the speaker (`"V30"`, `"G12"`). A 1x8 practice amp at the top of a metal
-   song's list is a near tie to ignore, not a discovery.
-4. Apply it as an A/B, never over the user's sound: `copy_channel` the Cab channel the scene plays onto a channel no
-   scene plays, `set_channel` the returned `cabSettings` there plus `Mute2: "1"` (slot 2 off), `Level: "0"`,
-   `Low Cut: "20"`, `High Cut: "20000"`, `Proximity: "0"`; `set_channel` the returned `parametricEqSettings` on a free
-   Parametric EQ channel; then `compose_scene` a free scene as a copy of the original playing those channels, with the
-   Parametric EQ engaged and any other post-cab EQ bypassed.
-5. Re-amp both scenes with `level: true` and `levelTarget: "match <original>"` so loudness doesn't decide the
-   comparison, and report both gaps against the stem. Then let the user listen.
+**The gap is a shortlist, not a verdict.** It rewards the low-mid body a stem carries from bleed and mastering. On Ride
+the player hated the closest cab ("too much fat", lost the sustained, scooped sound) and found the cab from his own IR
+blend, alone, far closer by ear. Use `rank_cabs` to narrow the field; the player chooses.
+
+1. Re-amp the scene once with its **Cab block and any Parametric EQ you will fit bypassed** (`set_block`, then `reamp`).
+   Keep the amp, drive and everything before the cab as they are. If the player plays rather than uses a DI, record a
+   take instead.
+2. Call `rank_cabs` with that take and the stem. It predicts every cab from its measured response, so nothing else
+   plays. `include` picks the pool: `"factory"` (default), `"dynacab"` (DynaCab types and mics at a few positions, 1 cm
+   out) or `"both"`.
+3. **Prefer the cab family of the player's own IR or rig** over a slightly smaller gap: pass a `filter` with its name
+   (`"1960"`, `"V30"`, `"Recto"`) or size (`"4x12"`). Many cabs land within a few tenths of a dB, and a 1x8 practice
+   amp at the top of a metal song's list is a near tie to ignore, not a discovery.
+4. Apply **one change at a time** as an A/B, never over the user's sound: `copy_channel` the Cab channel the scene
+   plays onto a channel no scene plays, `set_channel` the returned `cabSettings` there (they set Mode, the cab or the
+   DynaCab type, mic, position and Distance in cm, and mute slot 2) plus `Level: "0"`, `Low Cut: "20"`,
+   `High Cut: "20000"`, `Proximity: "0"`; then `compose_scene` a free scene as a copy of the original playing that
+   channel. Try the cab alone first; add the returned `parametricEqSettings` on a free Parametric EQ channel as a
+   separate step only if the player wants it.
+5. **Keep the player's post-cab EQ** (e.g. their Graphic EQ) engaged in every comparison scene: it is part of their
+   tone, not something the fit replaces.
+6. Level the scenes (`level: true`, `levelTarget: "match <original>"`) so loudness doesn't decide, report the gaps,
+   then let the player listen and choose. Their ears outrank the score.
 
 ## Judging the result
 

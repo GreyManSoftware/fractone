@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Fractal.Fm9;
+using Fractone.Mcp.Tools;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;
 
@@ -163,6 +164,32 @@ namespace Fractone.Mcp.Tests
 
 			Assert.Equal("Test amps", listed[0].GetProperty("name").GetString());
 			Assert.StartsWith(Path.Combine(_root, "library", "Amplifier"), listed[0].GetProperty("path").GetString(), StringComparison.OrdinalIgnoreCase);
+		}
+
+		[DictionaryFact]
+		public async Task ARankedDynaCabIsPlayedBySettingItsCabSettingsOnAChannel()
+		{
+			Fm9DynaCabPlacement placement = new("4x12 RECTO STRAIGHT", "Ribbon", 2, 1);
+			Fm9CabRankingEntry best = ToneTools.Ranking(
+				Fm9CabRanker.Rank(Fm9CabRanker.Curve(placement), count: 1, include: ToneTools.CabSource("both"))).Cabs[0];
+
+			JsonElement result = await Call("set_channel", new()
+			{
+				["file"] = "metallica.syx", ["block"] = "Cab", ["channel"] = "D", ["settings"] = best.CabSettings
+			});
+
+			IReadOnlyDictionary<string, string> channel = Fm9Presets.GetChannel(result.GetProperty("output").GetString()!, new("Cab", 1), "D");
+			Assert.Equal("DynaCab 4x12 RECTO STRAIGHT, Ribbon", Fm9Names.Model("Cab", channel));
+			Assert.Equal(5, best.ParametricEqSettings.Keys.Count(key => key.StartsWith("Type ", StringComparison.Ordinal)));
+		}
+
+		[Fact]
+		public void RankCabsTakesFactoryDynaCabOrBoth()
+		{
+			Assert.Equal(Fm9CabSource.Factory, ToneTools.CabSource(null));
+			Assert.Equal(Fm9CabSource.DynaCab, ToneTools.CabSource("DynaCab"));
+			Assert.Equal(Fm9CabSource.Both, ToneTools.CabSource("both"));
+			Assert.Throws<ArgumentException>(() => ToneTools.CabSource("user"));
 		}
 
 		private async Task<JsonElement> Call(string tool, Dictionary<string, object?> arguments)

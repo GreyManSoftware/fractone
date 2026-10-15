@@ -25,6 +25,13 @@ namespace FracTone.Probe
 			void Note(string step, string note) => plan.Add(new PlannedFrame(step, "", note));
 
 			Add("identify", ProbeFrames.Firmware(device.Model), $"firmware request ({device.Name}; the other models are asked if it stays silent)");
+			if (device == Gen3Device.AxeFx3)
+			{
+				Add("identify-variant", ProbeFrames.StoredPresetName(device, ProbeEngine.MkIICheckPreset),
+					"preset 1023's name: a name means Mk II or Turbo (1,024 presets); error 0E or silence keeps the run to 0-511");
+				if (slot >= 512)
+					Note("identify-variant", $"the safe slot {slot} needs a Mk II or Turbo answer; a Mk I or no answer stops the run here");
+			}
 			if (scripted is null)
 				Note("identify", $"no script for {device.Name} {firmware}: read-only steps only, labelled unverified");
 			Add("where", ProbeFrames.CurrentPreset(device), "preset showing");

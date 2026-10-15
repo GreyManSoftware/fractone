@@ -95,9 +95,18 @@ namespace FracTone.Probe
 					session.Run.Device = device.Name;
 					session.Run.Model = $"0x{device.Model:X2}";
 					session.Run.Firmware = firmware;
+					session.Run.PresetSlots = Math.Min(device.Presets, 512);
 					data["device"] = device.Name;
 					data["firmware"] = firmware;
-					return $"{device.Name}, firmware {firmware}.";
+					if (device != Gen3Device.AxeFx3)
+						return $"{device.Name}, firmware {firmware}.";
+					ProbeDeviceVariant variant = await AxeFx3VariantAsync(session, cancellationToken);
+					session.Run.DeviceVariant = variant;
+					session.Run.DeviceVariantVerified = false;
+					session.Run.PresetSlots = variant == ProbeDeviceVariant.MkIIOrTurbo ? device.Presets : 512;
+					data["variant"] = variant.ToString();
+					data["presetSlots"] = session.Run.PresetSlots.Value.ToString(CultureInfo.InvariantCulture);
+					return $"{device.Name} ({VariantName(variant)}, unverified check), firmware {firmware}.";
 				}
 				throw new ProbeStopException(
 					"No Fractal device answered the firmware request. Quit Axe-Edit, FM3-Edit, FM9-Edit and Fractal-Bot (they hold the port), " +
@@ -114,10 +123,43 @@ namespace FracTone.Probe
 				Log(session, $"No probe script for {device.Name} firmware {session.Run.Firmware}: read-only steps only, labelled unverified.");
 			session.Total = 6 + session.Script.Steps.Count(step => step.Level <= session.Run.LevelRun);
 			int slot = session.Options.Slot;
-			if (SafeSlotProblem(device, slot) is string problem)
+			if (SafeSlotProblem(device, slot, session.Run.PresetSlots) is string problem)
 				throw new ProbeStopException(problem);
 			session.Link.Policy = new ProbeCommandPolicy(device, slot, null, session.Options.AllowStore && session.Run.LevelRun == 3);
 		}
+
+		// The Axe-Fx III Mk I, Mk II and Turbo all send model 0x10. Asking for preset 1023's name tells them apart (FracCompat's
+		// brief, unverified): a name means 1,024 presets, error 0x0E (invalid patch number) a Mk I's 512. Anything else, a
+		// timeout included, is Unknown and the run keeps to 0-511, which every variant has.
+		private static async Task<ProbeDeviceVariant> AxeFx3VariantAsync(Session session, CancellationToken cancellationToken)
+		{
+			Gen3Device device = session.Device!;
+			// Reads only until the safe slot is checked; this policy allows nothing that changes the device.
+			session.Link.Policy = new ProbeCommandPolicy(device, session.Options.Slot, null, allowStore: false);
+			IReadOnlyList<byte[]> replies;
+			try
+			{
+				// A Mk I that says nothing is an unknown, not a wedge.
+				replies = await session.Link.RequestAsync(ProbeFrames.StoredPresetName(device, MkIICheckPreset), session.Options.QueryTimeout,
+					cancellationToken, countsTowardsWedge: false);
+			}
+			catch (ProbeTimeoutException)
+			{
+				return ProbeDeviceVariant.Unknown;
+			}
+			if (replies.Any(reply => IsReply(session, reply, 0x0D) && reply.Length >= 42 && (reply[6] | (reply[7] << 7)) == MkIICheckPreset))
+				return ProbeDeviceVariant.MkIIOrTurbo;
+			if (replies.Any(reply => IsReply(session, reply, 0x64) && reply.Length > 8 && reply[6] == 0x0D && reply[7] == 0x0E))
+				return ProbeDeviceVariant.MkI;
+			return ProbeDeviceVariant.Unknown;
+		}
+
+		private static string VariantName(ProbeDeviceVariant variant) => variant switch
+		{
+			ProbeDeviceVariant.MkI => "Mk I, 512 presets",
+			ProbeDeviceVariant.MkIIOrTurbo => "Mk II or Turbo, 1,024 presets",
+			_ => "Mk I or Mk II not told apart, so presets 0-511"
+		};
 
 		private static async Task<byte[]?> AskFirmwareAsync(Session session, byte model, CancellationToken cancellationToken)
 		{
@@ -622,26 +664,34 @@ namespace FracTone.Probe
 			}
 		}
 
+		// The preset the Axe-Fx III Mk I/Mk II check names: only a Mk II or Turbo has it.
+		public const int MkIICheckPreset = 1023;
+
 		// Why the slot can't be the safe slot on this device, or null when it can. The GUI checks the same rule up front.
-		public static string? SafeSlotProblem(Gen3Device device, int slot)
+		// presets is what the identity step found (ProbeIdentity.Presets); without it only 0-511, which every unit has.
+		public static string? SafeSlotProblem(Gen3Device device, int slot, int? presets = null)
 		{
 			ArgumentNullException.ThrowIfNull(device);
-			if (slot < 0 || slot >= device.Presets)
-				return $"The {device.Name} has presets 0 to {device.Presets - 1}; the safe slot {slot} isn't one.";
-			if (slot >= 512)
-				return "Slots above 511 need an Axe-Fx III Mk II, which can't be told from a Mk I yet; choose a slot from 0 to 511.";
+			int limit = Math.Min(presets ?? 512, device.Presets);
+			if (slot >= limit && slot < device.Presets)
+				return $"Slots above {limit - 1} need an Axe-Fx III Mk II or Turbo, and this one answered as a Mk I (or couldn't be told " +
+					$"apart); choose a slot from 0 to {limit - 1}.";
+			if (slot < 0 || slot >= limit)
+				return $"The {device.Name} has presets 0 to {limit - 1}; the safe slot {slot} isn't one.";
 			return null;
 		}
 
-		// Read-only: asks for the firmware (the only frame allowed before the device is known) and says which device
-		// answered. Throws ProbeStopException when nothing or an unknown model answers.
+		// Read-only: asks for the firmware (the only frame allowed before the device is known), on an Axe-Fx III also preset
+		// 1023's name (the Mk I/Mk II check), and says which device answered. Throws ProbeStopException when nothing or an
+		// unknown model answers.
 		public async Task<ProbeIdentity> IdentifyAsync(byte? modelHint, CancellationToken cancellationToken)
 		{
 			ProbeOptions options = new(0) { ModelHint = modelHint };
 			// Slot 0 exists on every gen-3 unit, so the identity step's slot check always passes here.
 			Session session = new(new ProbeRun { StartedAt = _clock.Now }, new ProbeLink(port, _clock, options.Pacing), options);
 			await IdentifyAsync(session, cancellationToken);
-			return new ProbeIdentity(session.Device!, session.Run.Firmware!, session.Run.FirmwareScripted == true);
+			return new ProbeIdentity(session.Device!, session.Run.Firmware!, session.Run.FirmwareScripted == true, session.Run.PresetSlots!.Value,
+				session.Run.DeviceVariant);
 		}
 
 		// Read-only: the name of the preset stored in a slot (03 read, nothing sent that changes the device), or null for
@@ -649,7 +699,7 @@ namespace FracTone.Probe
 		public async Task<string?> ReadPresetNameAsync(ProbeIdentity identity, int slot, CancellationToken cancellationToken)
 		{
 			ArgumentNullException.ThrowIfNull(identity);
-			if (SafeSlotProblem(identity.Device, slot) is string problem)
+			if (SafeSlotProblem(identity.Device, slot, identity.Presets) is string problem)
 				throw new ArgumentOutOfRangeException(nameof(slot), problem);
 			ProbeOptions options = new(slot);
 			Session session = new(new ProbeRun { StartedAt = _clock.Now, Slot = slot }, new ProbeLink(port, _clock, options.Pacing), options)

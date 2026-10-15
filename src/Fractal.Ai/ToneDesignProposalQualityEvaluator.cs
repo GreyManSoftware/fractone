@@ -323,11 +323,18 @@ namespace Fractal.Ai
 			IReadOnlyList<ToneDesignSectionRequest>? requestedSections = null,
 			IReadOnlyList<ToneDesignEvidenceCitationBinding>? citationBindings = null,
 			bool requireGroundedSelections = false,
-			Func<string, string, bool>? isDeviceSetting = null)
+			Func<string, string, bool>? isDeviceSetting = null,
+			ToneDesignDeviceConstraints? device = null)
 		{
 			ArgumentNullException.ThrowIfNull(proposal);
 			List<string> corrections = [];
 			ToneDesignModelGrounding.Evaluate(proposal, citationBindings, requireGroundedSelections, corrections);
+			// The target unit's own limits (none beyond the contract for the FM9), so the model corrects them in its round.
+			if (device is not null)
+				corrections.AddRange(device.Problems(proposal));
+			// A DynaCab the player allowed must name a listed type and mic and stay in its ranges on this unit.
+			foreach (ToneDesignBlockProposal cab in proposal.Blocks.Where(ToneDesignDynaCab.IsCab))
+				corrections.AddRange(ToneDesignDynaCab.Problems(cab, device?.Device));
 
 			if (string.IsNullOrWhiteSpace(proposal.Summary))
 			{
@@ -650,7 +657,8 @@ namespace Fractal.Ai
 					out ParameterConstraint? constraint))
 				{
 					// Any other device setting was checked against the FM9's dictionary (RepairEffects); it is not unsupported.
-					if (isDeviceSetting?.Invoke(block.BlockType, parameter.Key) == true)
+					if (isDeviceSetting?.Invoke(block.BlockType, parameter.Key) == true ||
+						(ToneDesignDynaCab.IsCab(block) && ToneDesignDynaCab.IsSetting(parameter.Key)))
 						continue;
 					corrections.Add(
 						$"Remove unsupported parameter {label} {parameter.Key}.");

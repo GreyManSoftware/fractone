@@ -252,6 +252,82 @@ namespace FracTone.Probe.Tests
 			Assert.All(fm9.Received, frame => Assert.Equal(0x08, frame[5]));
 		}
 
+		[Fact]
+		public async Task AnAxeFx3ThatNamesPreset1023IsAMkIIAndMayUseASafeSlotAbove511()
+		{
+			SimulatedGen3 axe = Unit(Gen3Device.AxeFx3, "gen3-axe3-32.06-ride.syx", (32, 6));
+			axe.Slots[900] = axe.Slots[Safe];
+
+			ProbeRun run = await RunOnSlot(axe, 900);
+
+			Assert.Equal(ProbeOutcome.Completed, run.Outcome);
+			Assert.Equal(((ProbeDeviceVariant?)ProbeDeviceVariant.MkIIOrTurbo, (bool?)false, (int?)1024),
+				(run.DeviceVariant, run.DeviceVariantVerified, run.PresetSlots));
+			// 0D 7F 07: preset 1023, low septet first, and no other stored preset is asked for by name.
+			Assert.Single(axe.Received, frame => frame[5] == 0x0D && !(frame[6] == 0x7F && frame[7] == 0x7F));
+			Assert.Contains(axe.Received, frame => frame[5] == 0x0D && frame[6] == 0x7F && frame[7] == 0x07);
+			Assert.Contains(run.Readbacks, readback => readback.Name == "backup-slot-900.syx");
+			string json = System.Text.Json.JsonSerializer.Serialize(ProbeReportWriter.Anonymise(run, false), ProbeScript.Json);
+			Assert.Contains("\"MkIIOrTurbo\"", json, StringComparison.Ordinal);
+		}
+
+		[Fact]
+		public async Task AnAxeFx3ThatCallsPreset1023InvalidIsAMkIAndKeepsTo512Presets()
+		{
+			SimulatedGen3 axe = Unit(Gen3Device.AxeFx3, "gen3-axe3-32.06-ride.syx", (32, 6));
+			axe.PresetCount = 512;
+
+			ProbeRun run = await RunOnSlot(axe, 900);
+
+			Assert.Equal(ProbeOutcome.Stopped, run.Outcome);
+			Assert.Equal(((ProbeDeviceVariant?)ProbeDeviceVariant.MkI, (int?)512), (run.DeviceVariant, run.PresetSlots));
+			Assert.Contains("0 to 511", run.StopReason, StringComparison.Ordinal);
+			Assert.DoesNotContain(axe.Received, frame => ProbeCommandPolicy.ChangesState(frame) || frame[5] == 0x03);
+		}
+
+		[Fact]
+		public async Task AnAxeFx3ThatDoesNotAnswerTheMkIICheckIsUnknownAndKeepsTo512Presets()
+		{
+			static SimulatedGen3 Silent()
+			{
+				SimulatedGen3 axe = Unit(Gen3Device.AxeFx3, "gen3-axe3-32.06-ride.syx", (32, 6));
+				axe.Silent = frame => frame[5] == 0x0D && frame[7] != 0x7F;
+				axe.SilentCount = 1;
+				return axe;
+			}
+
+			ProbeRun run = await Run(Silent(), 2);
+			ProbeRun above511 = await RunOnSlot(Silent(), 900);
+
+			Assert.Equal(ProbeOutcome.Completed, run.Outcome);
+			Assert.Equal(((ProbeDeviceVariant?)ProbeDeviceVariant.Unknown, (int?)512), (run.DeviceVariant, run.PresetSlots));
+			Assert.True(run.Restore!.LeftAsFound);
+			Assert.Equal(ProbeOutcome.Stopped, above511.Outcome);
+		}
+
+		[Fact]
+		public void OnlyTheAxeFx3MayAskForAStoredPresetsNameAndOnlyPreset1023()
+		{
+			ProbeCommandPolicy axe = new(Gen3Device.AxeFx3, 503, 7, allowStore: false);
+			ProbeCommandPolicy fm9 = new(Gen3Device.Fm9, 503, 7, allowStore: false);
+
+			axe.Check(ProbeFrames.StoredPresetName(Gen3Device.AxeFx3, 1023));
+			Assert.Throws<ProbeRefusedException>(() => axe.Check(ProbeFrames.StoredPresetName(Gen3Device.AxeFx3, 503)));
+			Assert.Throws<ProbeRefusedException>(() => fm9.Check(ProbeFrames.StoredPresetName(Gen3Device.Fm9, 7)));
+		}
+
+		[Fact]
+		public async Task AnFm9RunRecordsNoVariantAnd512Presets()
+		{
+			ProbeRun run = await Run(Unit(Gen3Device.Fm9, "metallica-eight-scenes.syx", (12, 0)), 1);
+
+			Assert.Equal(((ProbeDeviceVariant?)null, (int?)512), (run.DeviceVariant, run.PresetSlots));
+		}
+
+		private static Task<ProbeRun> RunOnSlot(SimulatedGen3 unit, int slot) =>
+			new ProbeEngine(unit, new FakeClock()).RunAsync(
+				new ProbeOptions(slot, 1) { QueryTimeout = TimeSpan.FromMilliseconds(150) }, CancellationToken.None);
+
 		internal static SimulatedGen3 Unit(Gen3Device device, string preset, (byte, byte) firmware)
 		{
 			IReadOnlyList<byte[]> frames = SimulatedGen3.Load(preset);

@@ -340,8 +340,9 @@ namespace Fractal.Fm9
 			throw new InvalidOperationException("The FM9 did not say which scene is playing.");
 		}
 
-		private static async Task<Fm9PresetDump> ReadBufferAsync(IFractalMidiTransport transport, CancellationToken token) =>
-			(await new Fm9StoredPresetReader(transport).ReadAsync(EditBuffer, token)).Dump;
+		// Retries back off with Wait, so tests that replace it don't sleep.
+		private async Task<Fm9PresetDump> ReadBufferAsync(IFractalMidiTransport transport, CancellationToken token) =>
+			(await new Fm9StoredPresetReader(transport, delayAsync: Wait).ReadAsync(EditBuffer, token)).Dump;
 
 		// Continuous settings travel normalized (word / 65534); choices and whole numbers as their value, signed ones as such.
 		private static FractalSysExFrame Frame(int effectId, int id, Fm9EffectParameter parameter, int word) => parameter.Kind switch

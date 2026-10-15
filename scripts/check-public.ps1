@@ -1,6 +1,7 @@
 # Fails if the tree (and its git history, when there is one) carries anything that must not be public: FM9-Edit's
-# dictionary (Fractal's data, which also lists the user's own preset names), a player's amp-level table, personal email
-# addresses, user-folder paths, Azure details or the FracTone site deployment. Run by CI on every push and before any release.
+# dictionary (Fractal's data, which also lists the user's own preset names), the FM3/Axe-Fx III export map derived from
+# Fractal's device dictionaries, a player's amp-level table, personal email addresses, user-folder paths, Azure details
+# or the FracTone site deployment. Run by CI on every push and before any release.
 param(
 	[string] $Root = (Resolve-Path "$PSScriptRoot/..").Path,
 	[switch] $AllowAmpLevels
@@ -10,7 +11,7 @@ $ErrorActionPreference = 'Stop'
 $problems = [System.Collections.Generic.List[string]]::new()
 
 # Files that must never be in the tree, whatever they contain.
-$forbiddenNames = @('*effect-definitions*.cache', 'effectDefinitions_*.cache', '*.pfx', '*.tfvars', '*.db', '*.db-wal', 'settings.local.json', 'http-token')
+$forbiddenNames = @('*effect-definitions*.cache', 'effectDefinitions_*.cache', 'gen3-export-catalogue*.json', '*.pfx', '*.tfvars', '*.db', '*.db-wal', 'settings.local.json', 'http-token')
 if (-not $AllowAmpLevels) { $forbiddenNames += 'fm9-12-amp-levels.json' }
 
 $files = Get-ChildItem -Path $Root -Recurse -File -Force |

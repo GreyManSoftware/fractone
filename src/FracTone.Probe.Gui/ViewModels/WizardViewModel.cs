@@ -152,7 +152,7 @@ namespace FracTone.Probe.Gui.ViewModels
 		}
 
 		// Page 3: safe slot.
-		public string SlotHint => _identity is null ? "" : $"Type a preset number from 0 to {Math.Min(_identity.Device.Presets, 512) - 1}.";
+		public string SlotHint => _identity is null ? "" : $"Type a preset number from 0 to {_identity.Presets - 1}.";
 
 		public string SlotText
 		{
@@ -420,7 +420,7 @@ namespace FracTone.Probe.Gui.ViewModels
 				SlotError = "Please type a preset number, for example 503.";
 				return;
 			}
-			if (ProbeEngine.SafeSlotProblem(_identity!.Device, slot) is not null)
+			if (ProbeEngine.SafeSlotProblem(_identity!.Device, slot, _identity.Presets) is not null)
 			{
 				SlotError = $"That isn't a preset number we can use. {SlotHint}";
 				return;

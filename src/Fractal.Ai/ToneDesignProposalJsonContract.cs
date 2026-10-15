@@ -376,6 +376,68 @@ namespace Fractal.Ai
 			return JsonSerializer.SerializeToElement(root);
 		}
 
+		// The contract for a device with fewer effect slots than the FM9 (the FM3's narrower grid): the same schema with the
+		// effects capped, so structured output can't exceed it. Null keeps the FM9's own schema untouched.
+		public static ToneDesignResponseSchema? ForDevice(ToneDesignDeviceConstraints device)
+		{
+			ArgumentNullException.ThrowIfNull(device);
+			if (device.MaximumEffects >= ToneDesignEffects.MaximumEffects)
+				return null;
+			JsonObject root = JsonNode.Parse(Schema.GetRawText())!.AsObject();
+			root["properties"]!["effects"]!["maxItems"] = device.MaximumEffects;
+			root["properties"]!["scenes"]!["items"]!["properties"]!["effectStates"]!["maxItems"] = device.MaximumEffects;
+			return new ToneDesignResponseSchema(SchemaName, JsonSerializer.SerializeToElement(root));
+		}
+
+		// The contract for one request: the device's, and when the player allows DynaCab the Cab block also carries
+		// "dynaCab" (null for a factory cab, or one or two slots naming a listed type and mic). Without DynaCab this is
+		// exactly ForDevice, so an unticked request sends the schema it always has.
+		public static ToneDesignResponseSchema? ForRequest(ToneDesignDeviceConstraints device, bool allowDynaCab)
+		{
+			ToneDesignResponseSchema? schema = ForDevice(device);
+			if (!allowDynaCab)
+				return schema;
+			JsonObject root = JsonNode.Parse((schema?.Schema ?? Schema).GetRawText())!.AsObject();
+			JsonNode cab = root["properties"]!["blocks"]!["items"]!["oneOf"]!.AsArray()
+				.Single(block => block!["properties"]!["blockType"]!["const"]!.GetValue<string>() == "Cab")!;
+			cab["required"]!.AsArray().Add("dynaCab");
+			JsonArray Names(IEnumerable<string> names) => new(names.Select(name => (JsonNode?)JsonValue.Create(name)).ToArray());
+			cab["properties"]!["dynaCab"] = new JsonObject
+			{
+				["anyOf"] = new JsonArray(
+					JsonNode.Parse("""{"type":"null"}"""),
+					new JsonObject
+					{
+						["type"] = "object",
+						["additionalProperties"] = false,
+						["required"] = new JsonArray("slots"),
+						["properties"] = new JsonObject
+						{
+							["slots"] = new JsonObject
+							{
+								["type"] = "array",
+								["minItems"] = 1,
+								["maxItems"] = ToneDesignDynaCab.AuthoredSlots,
+								["items"] = new JsonObject
+								{
+									["type"] = "object",
+									["additionalProperties"] = false,
+									["required"] = new JsonArray("type", "mic", "position", "distanceCm"),
+									["properties"] = new JsonObject
+									{
+										["type"] = new JsonObject { ["type"] = "string", ["enum"] = Names(ToneDesignDynaCab.Types) },
+										["mic"] = new JsonObject { ["type"] = "string", ["enum"] = Names(ToneDesignDynaCab.Mics) },
+										["position"] = JsonNode.Parse($$"""{"type":"number","minimum":{{ToneDesignDynaCab.MinimumPosition}},"maximum":{{ToneDesignDynaCab.MaximumPosition}}}"""),
+										["distanceCm"] = JsonNode.Parse($$"""{"type":"number","minimum":{{ToneDesignDynaCab.MinimumDistance}},"maximum":{{ToneDesignDynaCab.MaximumDistance}}}""")
+									}
+								}
+							}
+						}
+					})
+			};
+			return new ToneDesignResponseSchema(SchemaName, JsonSerializer.SerializeToElement(root));
+		}
+
 		// Effect blocks beyond the Ride chain: each names the block it follows and its settings as name/value pairs (strict
 		// structured output cannot hold an open map); the server checks both against the FM9's parameter dictionary and
 		// lays out row 3 and its cables itself. Each scene gives every effect an on/bypassed state.

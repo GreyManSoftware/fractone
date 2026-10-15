@@ -109,3 +109,14 @@ unchanged. That package's NOTICE reads, in its relevant parts:
 
 Its trademark statement applies here too: "Fractal Audio", "Axe-Fx", "FM3", "FM9" and related product names are
 trademarks of Fractal Audio Systems, Inc. This project is an unaffiliated community tool and claims no endorsement.
+
+## Markdig
+
+The website renders its public docs and FAQ with
+[`Markdig` 0.38.0](https://www.nuget.org/packages/Markdig/0.38.0)
+(github.com/xoofx/markdig).
+
+Copyright (c) 2016-2026, Alexandre Mutel
+
+Markdig is licensed under the BSD 2-Clause License. Its licence text is included at
+`third_party/LICENSES/BSD-2-Clause-Markdig.txt`.

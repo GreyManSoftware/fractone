@@ -32,6 +32,9 @@ namespace Fractal.Application
 		// eight Ride blocks.
 		public IToneDesignEffectCatalog? Effects { get; init; }
 
+		// The player allows a DynaCab (multi-mic cab) in place of a factory cab; without it the Cab stays a factory cab.
+		public bool AllowDynaCab { get; init; }
+
 		public string GetPromptWithDeviceProfile()
 		{
 			ValidateSections();
@@ -56,6 +59,8 @@ namespace Fractal.Application
 					Device profile validation status: templates={DeviceProfile.TemplateState}; parameter mappings={DeviceProfile.ParameterMappingState}; connection={DeviceProfile.ConnectionState}.
 					Device profile constraint: {DeviceProfile.ValidationRequirement}
 					""");
+				if (DeviceProfile.IsBeta)
+					context.Add($"Beta generation enabled for the {DeviceProfile.DisplayName}: follow the {DeviceProfile.DisplayName} limits in the system message.");
 			}
 
 			return string.Join(Environment.NewLine, context);
@@ -221,6 +226,10 @@ namespace Fractal.Application
 		public int OutputBlockInstance { get; init; } = 1;
 		// The preset's name (as on the FM9, see Fm9PresetName): suggested from the request, kept from an upload, renameable.
 		public string? PresetName { get; init; }
+		// The unit the preset is for; null is the FM9 (every proposal saved before other devices existed). Left out of the
+		// stored JSON when null so FM9 proposals serialise exactly as before.
+		[System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+		public FractalDeviceId? Device { get; init; }
 		// An uploaded preset this proposal edits in place: only changed settings are written, and its layout, routing and
 		// every block FracTone does not model are kept exactly. Null for presets built on FracTone's own template.
 		public byte[]? BasePreset { get; init; }

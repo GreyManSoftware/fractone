@@ -28,6 +28,16 @@ namespace Fractal.Application
 			TemplateState == DeviceProfileValidationState.Verified &&
 			ParameterMappingState == DeviceProfileValidationState.Verified &&
 			ConnectionState == DeviceProfileValidationState.Verified;
+
+		// Generation is offered as a beta: presets are translated from the FM9's vocabulary by an exporter nobody has
+		// proved on this hardware yet, so the profile stays unverified and every output says so.
+		public bool IsBeta { get; init; }
+
+		// Whether the designer may generate and edit presets for this device (verified, or as a labelled beta).
+		public bool IsGenerationEligible => IsOutputEligible || IsBeta;
+
+		// How the device is named in choices and file names: betas carry their label so it can't be missed.
+		public string ChoiceLabel => IsBeta ? $"{DisplayName} (Beta: unverified on hardware)" : DisplayName;
 	}
 
 	public sealed class FractalDeviceProfileCatalog
@@ -56,7 +66,10 @@ namespace Fractal.Application
 				[],
 				0,
 				0,
-				"FM3 requires its own validated template, parameter mappings, and connection protocol before any generated output or connection is enabled."),
+				"FM3 generation is a beta, unverified on hardware: presets are translated from the FM9 template and must be checked on the FM3 before use.")
+			{
+				IsBeta = true
+			},
 			new(
 				FractalDeviceId.AxeFxIii,
 				"Axe-Fx III",
@@ -66,7 +79,10 @@ namespace Fractal.Application
 				[],
 				0,
 				0,
-				"Axe-Fx III requires its own validated template, parameter mappings, and connection protocol before any generated output or connection is enabled.")
+				"Axe-Fx III generation is a beta, unverified on hardware: presets are translated from the FM9 template and must be checked on the Axe-Fx III before use.")
+			{
+				IsBeta = true
+			}
 		];
 
 		public IReadOnlyList<FractalDeviceProfile> GetAll()

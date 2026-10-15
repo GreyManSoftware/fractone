@@ -7,6 +7,7 @@ namespace FracTone.Probe
 	public sealed record ProbeProgress(int Completed, int Total, string Step, string Kind, ProbeStepStatus? Status, string? Message);
 
 	// What the read-only identity check found: the device, its firmware, and whether a probe script covers that firmware
-	// (without one, a run does the read-only steps only).
-	public sealed record ProbeIdentity(Gen3Device Device, string Firmware, bool Scripted);
+	// (without one, a run does the read-only steps only). Presets is how many slots a run may name (an Axe-Fx III Mk I,
+	// or one that couldn't be told apart, has 512); Variant is set only for the Axe-Fx III.
+	public sealed record ProbeIdentity(Gen3Device Device, string Firmware, bool Scripted, int Presets, ProbeDeviceVariant? Variant = null);
 }
